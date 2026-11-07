@@ -20,6 +20,23 @@ export interface BuyerProfileInput {
   readonly telefono: string
 }
 
+export interface ProductInput {
+  readonly activo: boolean
+  readonly categoriaId: EntityId
+  readonly descripcion: string
+  readonly existencias: number
+  readonly imagenUrl: string
+  readonly nombre: string
+  readonly precioPyme: number
+  readonly precioRegular: number
+}
+
+export interface CategoryInput {
+  readonly activo: boolean
+  readonly descripcion: string
+  readonly nombre: string
+}
+
 export interface UserRepository {
   createBuyer(
     input: BuyerProfileInput,
@@ -42,6 +59,14 @@ export interface UserRepository {
 }
 
 export interface CatalogRepository {
+  createCategory(
+    input: CategoryInput,
+    options?: RepositoryRequestOptions,
+  ): Promise<Categoria>
+  createProduct(
+    input: ProductInput,
+    options?: RepositoryRequestOptions,
+  ): Promise<Producto>
   getProductById(
     id: EntityId,
     options?: RepositoryRequestOptions,
@@ -49,10 +74,36 @@ export interface CatalogRepository {
   listCategories(
     options?: RepositoryRequestOptions,
   ): Promise<readonly Categoria[]>
+  listManagedCategories(
+    options?: RepositoryRequestOptions,
+  ): Promise<readonly Categoria[]>
+  listManagedProducts(
+    options?: RepositoryRequestOptions,
+  ): Promise<readonly Producto[]>
   listInventory(
     options?: RepositoryRequestOptions,
   ): Promise<readonly InventarioProducto[]>
   listProducts(options?: RepositoryRequestOptions): Promise<readonly Producto[]>
+  setCategoryActive(
+    id: EntityId,
+    active: boolean,
+    options?: RepositoryRequestOptions,
+  ): Promise<Categoria>
+  setProductActive(
+    id: EntityId,
+    active: boolean,
+    options?: RepositoryRequestOptions,
+  ): Promise<Producto>
+  updateCategory(
+    id: EntityId,
+    input: CategoryInput,
+    options?: RepositoryRequestOptions,
+  ): Promise<Categoria>
+  updateProduct(
+    id: EntityId,
+    input: ProductInput,
+    options?: RepositoryRequestOptions,
+  ): Promise<Producto>
 }
 
 export interface CommerceRepository {

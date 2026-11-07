@@ -4,10 +4,18 @@ import {
 } from '../../services'
 
 export type MockOperation =
+  | 'catalog.createCategory'
+  | 'catalog.createProduct'
   | 'catalog.getProductById'
   | 'catalog.listCategories'
   | 'catalog.listInventory'
+  | 'catalog.listManagedCategories'
+  | 'catalog.listManagedProducts'
   | 'catalog.listProducts'
+  | 'catalog.setCategoryActive'
+  | 'catalog.setProductActive'
+  | 'catalog.updateCategory'
+  | 'catalog.updateProduct'
   | 'commerce.getCartByUser'
   | 'commerce.listOrdersByUser'
   | 'commerce.listPaymentsByUser'

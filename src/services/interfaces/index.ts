@@ -19,10 +19,12 @@ export type {
 } from './demo-session'
 export type {
   BuyerProfileInput,
+  CategoryInput,
   CatalogRepository,
   CommerceRepository,
   PymeRepository,
   ReportRepository,
   SubmitPymeRequestInput,
+  ProductInput,
   UserRepository,
 } from './repositories'

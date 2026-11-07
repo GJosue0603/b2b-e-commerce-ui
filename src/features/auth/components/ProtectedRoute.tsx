@@ -3,6 +3,7 @@ import { Link, Navigate, useLocation } from 'react-router-dom'
 import type { RolUsuario } from '../../../domain'
 import { routePatterns } from '../../../app/router/paths'
 import { Alert, Skeleton } from '../../../shared/ui'
+import { canAccessRole } from '../../../shared/navigation'
 import { useAuth } from '../state'
 
 export interface ProtectedRouteProps {
@@ -32,7 +33,7 @@ export function ProtectedRoute({ allowedRoles, children }: ProtectedRouteProps) 
     )
   }
 
-  if (!allowedRoles.includes(user.rol)) {
+  if (!canAccessRole(user.rol, allowedRoles)) {
     return (
       <main className="container route-access-state">
         <Alert title="Acceso restringido" variant="warning">

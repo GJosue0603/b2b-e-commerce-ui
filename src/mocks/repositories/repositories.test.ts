@@ -113,4 +113,51 @@ describe('repositorios mock', () => {
       )
     },
   )
+
+  it('mantiene una sola fuente mutable para tienda y gestión', async () => {
+    const services = createMockServices({ latencyMs: 0 })
+    const categoryId = 'demo-categoria-accesorios-oficina'
+    const created = await services.catalog.createProduct({
+      activo: true,
+      categoriaId: categoryId,
+      descripcion: 'Producto creado desde el panel Vendedor.',
+      existencias: 6,
+      imagenUrl: '/images/demo/nuevo.webp',
+      nombre: 'Producto compartido',
+      precioPyme: 9_000,
+      precioRegular: 10_000,
+    })
+
+    expect(await services.catalog.listProducts()).toContainEqual(created)
+    expect(await services.catalog.listManagedProducts()).toContainEqual(created)
+
+    await services.catalog.updateProduct(created.id, {
+      ...created,
+      activo: false,
+      existencias: 2,
+    })
+
+    expect((await services.catalog.listProducts()).some((item) => item.id === created.id)).toBe(false)
+    expect(await services.catalog.listManagedProducts()).toContainEqual(
+      expect.objectContaining({
+        activo: false,
+        existencias: 2,
+        fechaModificacion: expect.any(String),
+      }),
+    )
+  })
+
+  it('oculta una categoría inactiva y sus productos del catálogo público', async () => {
+    const services = createMockServices({ latencyMs: 0 })
+    const categoryId = 'demo-categoria-accesorios-oficina'
+    const managedProduct = (await services.catalog.listManagedProducts()).find(
+      (product) => product.categoriaId === categoryId,
+    )
+
+    await services.catalog.setCategoryActive(categoryId, false)
+
+    expect((await services.catalog.listCategories()).some((item) => item.id === categoryId)).toBe(false)
+    expect((await services.catalog.listProducts()).some((item) => item.id === managedProduct?.id)).toBe(false)
+    expect((await services.catalog.listManagedCategories()).find((item) => item.id === categoryId)?.activo).toBe(false)
+  })
 })

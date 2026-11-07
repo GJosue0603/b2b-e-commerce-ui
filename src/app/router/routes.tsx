@@ -26,6 +26,11 @@ import {
   RoutePlaceholder,
 } from '../../routes/RoutePlaceholder'
 import { routePatterns } from './paths'
+import { routePermissions } from '../../shared/navigation'
+import { CategoriesPage } from '../../features/vendor/pages/CategoriesPage'
+import { EditProductPage } from '../../features/vendor/pages/EditProductPage'
+import { ProductsPage } from '../../features/vendor/pages/ProductsPage'
+import { VendorReportsPage } from '../../features/vendor/pages/VendorReportsPage'
 
 const publicStoreRoutes: RouteObject = {
   element: <DemoStoreLayout />,
@@ -59,7 +64,7 @@ const publicStoreRoutes: RouteObject = {
 
 const buyerRoutes: RouteObject = {
   element: (
-    <ProtectedRoute allowedRoles={['comprador']}>
+    <ProtectedRoute allowedRoles={routePermissions.buyer}>
       <DemoStoreLayout />
     </ProtectedRoute>
   ),
@@ -108,7 +113,7 @@ const authRoutes: RouteObject = {
 const sellerRoutes: RouteObject = {
   path: routePatterns.sellerRoot,
   element: (
-    <ProtectedRoute allowedRoles={['vendedor']}>
+    <ProtectedRoute allowedRoles={routePermissions.seller}>
       <DemoDashboardLayout fallbackRole="vendedor" />
     </ProtectedRoute>
   ),
@@ -119,53 +124,23 @@ const sellerRoutes: RouteObject = {
     },
     {
       path: routePatterns.sellerProducts,
-      element: (
-        <RoutePlaceholder
-          audience="Vendedor"
-          description="Administración del catálogo, precios e inventario."
-          title="Productos e inventario"
-        />
-      ),
+      element: <ProductsPage />,
     },
     {
       path: routePatterns.sellerProductCreate,
-      element: (
-        <RoutePlaceholder
-          audience="Vendedor"
-          description="Registro de un producto del catálogo de NexoTech."
-          title="Nuevo producto"
-        />
-      ),
+      element: <EditProductPage mode="create" />,
     },
     {
       path: routePatterns.sellerProductEdit,
-      element: (
-        <RoutePlaceholder
-          audience="Vendedor"
-          description="Edición de datos, precios y existencias del producto."
-          title="Editar producto"
-        />
-      ),
+      element: <EditProductPage mode="edit" />,
     },
     {
       path: routePatterns.sellerCategories,
-      element: (
-        <RoutePlaceholder
-          audience="Vendedor"
-          description="Organización de las categorías del catálogo propio."
-          title="Categorías"
-        />
-      ),
+      element: <CategoriesPage />,
     },
     {
       path: routePatterns.sellerReports,
-      element: (
-        <RoutePlaceholder
-          audience="Vendedor"
-          description="Consulta analítica de ventas e inventario."
-          title="Análisis de ventas"
-        />
-      ),
+      element: <VendorReportsPage />,
     },
   ],
 }
@@ -173,7 +148,7 @@ const sellerRoutes: RouteObject = {
 const administratorRoutes: RouteObject = {
   path: routePatterns.adminRoot,
   element: (
-    <ProtectedRoute allowedRoles={['administrador']}>
+    <ProtectedRoute allowedRoles={routePermissions.administrator}>
       <DemoDashboardLayout fallbackRole="administrador" />
     </ProtectedRoute>
   ),
@@ -214,13 +189,7 @@ const administratorRoutes: RouteObject = {
     },
     {
       path: routePatterns.adminProducts,
-      element: (
-        <RoutePlaceholder
-          audience="Administrador"
-          description="Supervisión administrativa del catálogo."
-          title="Productos"
-        />
-      ),
+      element: <ProductsPage supervision />,
     },
     {
       path: routePatterns.adminOrders,

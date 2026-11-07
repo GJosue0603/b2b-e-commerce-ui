@@ -9,8 +9,10 @@ export {
   type ButtonVariant,
 } from './Button'
 export { ConfirmDialog, type ConfirmDialogProps } from './ConfirmDialog'
+export { DataTable, type DataTableColumn, type DataTableProps } from './DataTable'
 export { EmptyState, type EmptyStateProps } from './EmptyState'
 export { FileUpload, type FileUploadProps } from './FileUpload'
+export { KpiCard, type KpiCardProps, type KpiCardTone } from './KpiCard'
 export { Modal, type ModalProps, type ModalSize } from './Modal'
 export { Pagination, type PaginationProps } from './Pagination'
 export { Select, type SelectProps } from './Select'

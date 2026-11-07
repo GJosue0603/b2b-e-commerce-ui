@@ -1,6 +1,7 @@
 import type {
   AcreditacionPyme,
   Carrito,
+  Categoria,
   EntityId,
   InventarioProducto,
   Pago,
@@ -31,6 +32,7 @@ import {
   solicitudesPyme,
   usuarios,
 } from '../fixtures'
+import { colaboradores } from '../fixtures/usuarios'
 import {
   createMockRequest,
   type MockRepositoryConfig,
@@ -178,6 +180,8 @@ export function createMockServices(
   let userStore: Usuario[] = [...usuarios]
   let registeredBuyerSequence = 0
   let submittedRequestSequence = 0
+  let productSequence = 0
+  let categorySequence = 0
   const requestStore: SolicitudPyme[] = solicitudesPyme.map((item) => ({
     ...item,
     documentos: [...item.documentos],
@@ -204,6 +208,7 @@ export function createMockServices(
     })) as Pedido[],
     products: productos.map((product) => ({ ...product })) as Producto[],
   }
+  let categoryStore = categorias.map((category) => ({ ...category })) as Categoria[]
   const paymentGateway = createMockPaymentGateway(request, {
     attempts: new Map(),
     payments: paymentStore,
@@ -305,18 +310,195 @@ export function createMockServices(
       },
     },
     catalog: {
+      createCategory: async (input, options) => {
+        await request('catalog.createCategory', null, options)
+        const nombre = input.nombre.trim()
+        const descripcion = input.descripcion.trim()
+        if (!nombre || !descripcion) {
+          throw new RepositoryError('Completa los campos requeridos.', 'conflict')
+        }
+        categorySequence += 1
+        const category: Categoria = {
+          ...input,
+          nombre,
+          descripcion,
+          id: `demo-categoria-${categorySequence}`,
+          creadoPor: colaboradores.vendedor,
+          fechaCreacion: '2026-11-07T20:00:00.000Z',
+        }
+        categoryStore = [...categoryStore, category]
+        return structuredClone(category)
+      },
+      createProduct: async (input, options) => {
+        await request('catalog.createProduct', null, options)
+        if (!categoryStore.some((category) => category.id === input.categoriaId)) {
+          throw new RepositoryError('La categoría seleccionada no existe.', 'not_found')
+        }
+        if (
+          !input.nombre.trim() ||
+          !input.descripcion.trim() ||
+          !input.imagenUrl.trim() ||
+          input.precioRegular < 0 ||
+          input.precioPyme < 0 ||
+          !Number.isInteger(input.existencias) ||
+          input.existencias < 0
+        ) {
+          throw new RepositoryError('Los datos del producto no son válidos.', 'conflict')
+        }
+        productSequence += 1
+        const product: Producto = {
+          ...input,
+          nombre: input.nombre.trim(),
+          descripcion: input.descripcion.trim(),
+          imagenUrl: input.imagenUrl.trim(),
+          id: `demo-producto-${productSequence}`,
+          creadoPor: colaboradores.vendedor,
+          fechaCreacion: '2026-11-07T20:00:00.000Z',
+        }
+        commerceStore.products.push(product)
+        commerceStore.inventory.push({
+          productoId: product.id,
+          existencias: product.existencias,
+          estado: product.existencias === 0 ? 'agotado' : product.existencias <= 5 ? 'bajo' : 'disponible',
+          umbralBajo: 5,
+          fechaActualizacion: '2026-11-07T20:00:00.000Z',
+        })
+        return structuredClone(product)
+      },
       getProductById: (id, options) =>
         request(
           'catalog.getProductById',
-          commerceStore.products.find((product) => product.id === id) ?? null,
+          commerceStore.products.find(
+            (product) =>
+              product.id === id &&
+              product.activo &&
+              categoryStore.some(
+                (category) => category.id === product.categoriaId && category.activo,
+              ),
+          ) ?? null,
           options,
         ),
       listCategories: (options) =>
-        request('catalog.listCategories', categorias, options),
+        request(
+          'catalog.listCategories',
+          categoryStore.filter((category) => category.activo),
+          options,
+        ),
+      listManagedCategories: (options) =>
+        request('catalog.listManagedCategories', categoryStore, options),
+      listManagedProducts: (options) =>
+        request('catalog.listManagedProducts', commerceStore.products, options),
       listInventory: (options) =>
         request('catalog.listInventory', commerceStore.inventory, options),
       listProducts: (options) =>
-        request('catalog.listProducts', commerceStore.products, options),
+        request(
+          'catalog.listProducts',
+          commerceStore.products.filter(
+            (product) =>
+              product.activo &&
+              categoryStore.some(
+                (category) => category.id === product.categoriaId && category.activo,
+              ),
+          ),
+          options,
+        ),
+      setCategoryActive: async (id, active, options) => {
+        await request('catalog.setCategoryActive', null, options)
+        const current = categoryStore.find((category) => category.id === id)
+        if (!current) {
+          throw new RepositoryError('La categoría no existe.', 'not_found')
+        }
+        const updated: Categoria = {
+          ...current,
+          activo: active,
+          modificadoPor: colaboradores.vendedor,
+          fechaModificacion: '2026-11-07T20:00:00.000Z',
+        }
+        categoryStore = categoryStore.map((category) =>
+          category.id === id ? updated : category,
+        )
+        return structuredClone(updated)
+      },
+      setProductActive: async (id, active, options) => {
+        await request('catalog.setProductActive', null, options)
+        const current = commerceStore.products.find((product) => product.id === id)
+        if (!current) {
+          throw new RepositoryError('El producto no existe.', 'not_found')
+        }
+        const updated: Producto = {
+          ...current,
+          activo: active,
+          modificadoPor: colaboradores.vendedor,
+          fechaModificacion: '2026-11-07T20:00:00.000Z',
+        }
+        commerceStore.products = commerceStore.products.map((product) =>
+          product.id === id ? updated : product,
+        )
+        return structuredClone(updated)
+      },
+      updateCategory: async (id, input, options) => {
+        await request('catalog.updateCategory', null, options)
+        const current = categoryStore.find((category) => category.id === id)
+        if (!current) {
+          throw new RepositoryError('La categoría no existe.', 'not_found')
+        }
+        if (!input.nombre.trim() || !input.descripcion.trim()) {
+          throw new RepositoryError('Completa los campos requeridos.', 'conflict')
+        }
+        const updated: Categoria = {
+          ...current,
+          ...input,
+          nombre: input.nombre.trim(),
+          descripcion: input.descripcion.trim(),
+          modificadoPor: colaboradores.vendedor,
+          fechaModificacion: '2026-11-07T20:00:00.000Z',
+        }
+        categoryStore = categoryStore.map((category) =>
+          category.id === id ? updated : category,
+        )
+        return structuredClone(updated)
+      },
+      updateProduct: async (id, input, options) => {
+        await request('catalog.updateProduct', null, options)
+        const current = commerceStore.products.find((product) => product.id === id)
+        if (!current) {
+          throw new RepositoryError('El producto no existe.', 'not_found')
+        }
+        if (
+          !input.nombre.trim() ||
+          !input.descripcion.trim() ||
+          !input.imagenUrl.trim() ||
+          input.precioRegular < 0 ||
+          input.precioPyme < 0 ||
+          !Number.isInteger(input.existencias) ||
+          input.existencias < 0
+        ) {
+          throw new RepositoryError('Los datos del producto no son válidos.', 'conflict')
+        }
+        const updated: Producto = {
+          ...current,
+          ...input,
+          nombre: input.nombre.trim(),
+          descripcion: input.descripcion.trim(),
+          imagenUrl: input.imagenUrl.trim(),
+          modificadoPor: colaboradores.vendedor,
+          fechaModificacion: '2026-11-07T20:00:00.000Z',
+        }
+        commerceStore.products = commerceStore.products.map((product) =>
+          product.id === id ? updated : product,
+        )
+        commerceStore.inventory = commerceStore.inventory.map((entry) =>
+          entry.productoId === id
+            ? {
+                ...entry,
+                existencias: updated.existencias,
+                estado: updated.existencias === 0 ? 'agotado' : updated.existencias <= entry.umbralBajo ? 'bajo' : 'disponible',
+                fechaActualizacion: '2026-11-07T20:00:00.000Z',
+              }
+            : entry,
+        )
+        return structuredClone(updated)
+      },
     },
     commerce: {
       getCartByUser: (userId, options) =>

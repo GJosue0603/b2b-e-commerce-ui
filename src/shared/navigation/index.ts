@@ -10,5 +10,6 @@ export {
   type NavigationRole,
 } from './navigation'
 export { Sidebar, type SidebarProps } from './Sidebar'
+export { canAccessRole, routePermissions } from './permissions'
 export { StoreFooter, type StoreFooterProps } from './StoreFooter'
 export { StoreHeader, type StoreHeaderProps } from './StoreHeader'
