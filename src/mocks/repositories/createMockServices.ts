@@ -55,8 +55,8 @@ const demoScenarios = [
   },
   {
     id: 'buyer-pyme-active',
-    label: 'Comprador PYME activo',
-    description: 'Acreditación activa y vigente; PrecioPyme habilitado.',
+    label: 'Comprador PYME',
+    description: 'Comprador con acceso a la vista unificada de acreditación.',
     landingPath: '/acreditacion/estado',
   },
   {
@@ -96,6 +96,14 @@ const demoScenarios = [
     landingPath: '/admin/acreditaciones',
   },
 ] as const satisfies readonly DemoScenario[]
+
+const visibleDemoScenarioIds = new Set<DemoScenarioId>([
+  'visitor',
+  'buyer-regular',
+  'buyer-pyme-active',
+  'seller',
+  'administrator',
+])
 
 const scenarioUserIds: Record<DemoScenarioId, EntityId | null> = {
   visitor: null,
@@ -442,7 +450,13 @@ export function createMockServices(
           options,
         ),
       listScenarios: (options) =>
-        request('demoSession.listScenarios', demoScenarios, options),
+        request(
+          'demoSession.listScenarios',
+          demoScenarios.filter((scenario) =>
+            visibleDemoScenarioIds.has(scenario.id),
+          ),
+          options,
+        ),
     },
   }
 }

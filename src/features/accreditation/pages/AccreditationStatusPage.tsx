@@ -4,9 +4,13 @@ import type { AcreditacionPyme, SolicitudPyme } from '../../../domain'
 import { useAppServices } from '../../../app/services'
 import { Alert, Badge, Button, Skeleton } from '../../../shared/ui'
 import type { AsyncState } from '../../../services'
+import type { DemoScenarioId } from '../../../services'
 import { useAuth } from '../../auth/state'
 import { AccreditationHistory, AccreditationStatusCard } from '../components'
-import { resolveAccreditationStatus } from '../usecases'
+import {
+  resolveAccreditationStatus,
+  type AccreditationDisplayStatus,
+} from '../usecases'
 import './accreditation-page.css'
 
 interface AccreditationData {
@@ -14,9 +18,23 @@ interface AccreditationData {
   readonly requests: readonly SolicitudPyme[]
 }
 
+type PreviewStatus = Exclude<AccreditationDisplayStatus, 'none'>
+
+const previewOptions = [
+  { id: 'pending', label: 'Pendiente', scenarioId: 'buyer-pyme-pending' },
+  { id: 'rejected', label: 'Rechazada', scenarioId: 'buyer-pyme-rejected' },
+  { id: 'active', label: 'Activa', scenarioId: 'buyer-pyme-active' },
+  { id: 'expired', label: 'Vencida', scenarioId: 'buyer-pyme-expired' },
+  { id: 'revoked', label: 'Revocada', scenarioId: 'buyer-pyme-revoked' },
+] as const satisfies readonly {
+  readonly id: PreviewStatus
+  readonly label: string
+  readonly scenarioId: DemoScenarioId
+}[]
+
 export function AccreditationStatusPage() {
   const location = useLocation()
-  const { pyme } = useAppServices()
+  const { demoSession, pyme } = useAppServices()
   const { user } = useAuth()
   const [state, setState] = useState<AsyncState<AccreditationData>>({
     status: 'loading',
@@ -45,6 +63,29 @@ export function AccreditationStatusPage() {
       })
     }
   }, [pyme, user])
+
+  const preview = async (status: PreviewStatus) => {
+    const option = previewOptions.find((item) => item.id === status)
+    if (!option) return
+    setState({ status: 'loading' })
+    try {
+      const session = await demoSession.getByScenario(option.scenarioId)
+      if (!session.user) throw new Error('El escenario no tiene comprador.')
+      const [requests, accreditations] = await Promise.all([
+        pyme.listRequestsByUser(session.user.id),
+        pyme.getAccreditationsByUser(session.user.id),
+      ])
+      setState({ status: 'success', data: { accreditations, requests } })
+    } catch (reason) {
+      setState({
+        status: 'error',
+        error:
+          reason instanceof Error
+            ? reason
+            : new Error('No fue posible cargar la vista demostrativa.'),
+      })
+    }
+  }
 
   useEffect(() => {
     const timer = window.setTimeout(() => void load(), 0)
@@ -79,16 +120,50 @@ export function AccreditationStatusPage() {
         </Alert>
       )}
       {state.status === 'success' && (
-        <>
-          <AccreditationStatusCard
-            model={resolveAccreditationStatus(
-              state.data.requests,
-              state.data.accreditations,
-            )}
-          />
-          <AccreditationHistory requests={state.data.requests} />
-        </>
+        <AccreditationContent data={state.data} onPreview={preview} />
       )}
     </div>
+  )
+}
+
+function AccreditationContent({
+  data,
+  onPreview,
+}: {
+  readonly data: AccreditationData
+  readonly onPreview: (status: PreviewStatus) => Promise<void>
+}) {
+  const model = resolveAccreditationStatus(
+    data.requests,
+    data.accreditations,
+  )
+
+  return (
+    <>
+      {import.meta.env.DEV && (
+        <section className="accreditation-preview" aria-label="Vista demostrativa">
+          <div>
+            <strong>Vista demostrativa de acreditación</strong>
+            <small>
+              Cambia la presentación sin modificar la sesión del Comprador.
+            </small>
+          </div>
+          <div aria-label="Estados de acreditación" role="group">
+            {previewOptions.map((option) => (
+              <button
+                aria-pressed={model.status === option.id}
+                key={option.id}
+                onClick={() => void onPreview(option.id)}
+                type="button"
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
+        </section>
+      )}
+      <AccreditationStatusCard model={model} />
+      <AccreditationHistory requests={data.requests} />
+    </>
   )
 }

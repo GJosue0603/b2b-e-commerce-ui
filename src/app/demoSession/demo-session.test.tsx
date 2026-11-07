@@ -66,4 +66,17 @@ describe('control de sesión demostrativa', () => {
     expect(await screen.findByText('No se pudo cargar la demo')).toBeVisible()
     expect(screen.getByRole('button', { name: 'Reintentar' })).toBeEnabled()
   })
+
+  it('muestra un solo Comprador PYME en el selector global', async () => {
+    const user = userEvent.setup()
+    renderDemo()
+    await user.click(await screen.findByText('Demo'))
+    const select = screen.getByLabelText('Escenario de demostración')
+
+    expect(within(select).getByRole('option', { name: 'Comprador PYME' })).toBeVisible()
+    expect(within(select).queryByRole('option', { name: /pendiente/i })).toBeNull()
+    expect(within(select).queryByRole('option', { name: /rechazado/i })).toBeNull()
+    expect(within(select).queryByRole('option', { name: /vencido/i })).toBeNull()
+    expect(within(select).queryByRole('option', { name: /revocado/i })).toBeNull()
+  })
 })

@@ -1,20 +1,22 @@
 import { screen, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
-import type { DemoScenarioId } from '../../../services'
 import { renderTestApp } from '../../../test/renderApp'
 
 const statusCases = [
-  ['buyer-pyme-pending', 'Solicitud en revisión'],
-  ['buyer-pyme-rejected', 'Solicitud rechazada'],
-  ['buyer-pyme-active', 'PrecioPyme habilitado'],
-  ['buyer-pyme-expired', 'Acreditación vencida'],
-  ['buyer-pyme-revoked', 'Beneficio revocado'],
-] as const satisfies readonly [DemoScenarioId, string][]
+  ['Pendiente', 'Solicitud en revisión'],
+  ['Rechazada', 'Solicitud rechazada'],
+  ['Activa', 'PrecioPyme habilitado'],
+  ['Vencida', 'Acreditación vencida'],
+  ['Revocada', 'Beneficio revocado'],
+] as const
 
 describe('AccreditationStatusPage', () => {
-  it.each(statusCases)('presenta la variante %s', async (scenario, title) => {
-    renderTestApp('/acreditacion/estado', scenario)
+  it.each(statusCases)('presenta la variante %s desde sus tabs', async (tab, title) => {
+    const user = userEvent.setup()
+    renderTestApp('/acreditacion/estado', 'buyer-pyme-active')
 
+    await user.click(await screen.findByRole('button', { name: tab }))
     expect(await screen.findByRole('heading', { name: title })).toBeVisible()
   })
 
@@ -30,30 +32,30 @@ describe('AccreditationStatusPage', () => {
   })
 
   it('ofrece nueva solicitud tras rechazo y renovación tras vencimiento', async () => {
-    const { unmount } = renderTestApp(
-      '/acreditacion/estado',
-      'buyer-pyme-rejected',
-    )
+    const user = userEvent.setup()
+    renderTestApp('/acreditacion/estado', 'buyer-pyme-active')
+    await user.click(await screen.findByRole('button', { name: 'Rechazada' }))
     expect(
       await screen.findByRole('link', { name: 'Nueva solicitud' }),
     ).toHaveAttribute('href', '/acreditacion/solicitar')
 
-    unmount()
-    renderTestApp('/acreditacion/estado', 'buyer-pyme-expired')
+    await user.click(await screen.findByRole('button', { name: 'Vencida' }))
     expect(
       await screen.findByRole('link', { name: 'Solicitar renovación' }),
     ).toHaveAttribute('href', '/acreditacion/solicitar')
   })
 
   it.each([
-    ['buyer-pyme-pending', 'false'],
-    ['buyer-pyme-rejected', 'false'],
-    ['buyer-pyme-expired', 'false'],
-    ['buyer-pyme-revoked', 'false'],
+    ['Pendiente', 'false'],
+    ['Rechazada', 'false'],
+    ['Vencida', 'false'],
+    ['Revocada', 'false'],
   ] as const)(
-    'no habilita beneficios en %s',
-    async (scenario, expected) => {
-      renderTestApp('/acreditacion/estado', scenario)
+    'no habilita beneficios en el tab %s',
+    async (tab, expected) => {
+      const user = userEvent.setup()
+      renderTestApp('/acreditacion/estado', 'buyer-pyme-active')
+      await user.click(await screen.findByRole('button', { name: tab }))
       await waitFor(() =>
         expect(
           document.querySelector(`[data-benefits-enabled="${expected}"]`),

@@ -10,31 +10,10 @@ export const demoAccessProfiles = [
   },
   {
     email: 'diego.pyme@nexotech.demo.test',
-    label: 'Comprador PYME activo',
+    label: 'Comprador PYME',
     password: 'CompradorPyme123!',
     role: 'comprador',
     scenarioId: 'buyer-pyme-active',
-  },
-  {
-    email: 'marco.pendiente@nexotech.demo.test',
-    label: 'Comprador PYME pendiente',
-    password: 'CompradorPendiente123!',
-    role: 'comprador',
-    scenarioId: 'buyer-pyme-pending',
-  },
-  {
-    email: 'natalia.rechazada@nexotech.demo.test',
-    label: 'Comprador PYME rechazado',
-    password: 'CompradorRechazado123!',
-    role: 'comprador',
-    scenarioId: 'buyer-pyme-rejected',
-  },
-  {
-    email: 'sofia.revocada@nexotech.demo.test',
-    label: 'Comprador PYME revocado',
-    password: 'CompradorRevocado123!',
-    role: 'comprador',
-    scenarioId: 'buyer-pyme-revoked',
   },
   {
     email: 'vendedor@nexotech.demo.test',
