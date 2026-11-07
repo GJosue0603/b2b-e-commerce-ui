@@ -31,6 +31,7 @@ import {
   reportes,
   solicitudesPyme,
   usuarios,
+  ventasReporteDemo,
 } from '../fixtures'
 import { colaboradores } from '../fixtures/usuarios'
 import {
@@ -622,6 +623,18 @@ export function createMockServices(
       },
     },
     reports: {
+      getSalesDataset: (options) =>
+        request(
+          'reports.getSalesDataset',
+          {
+            categorias: categoryStore,
+            demostrativo: true,
+            generadoEn: '2026-11-07T20:00:00.000Z',
+            productos: commerceStore.products,
+            ventas: ventasReporteDemo,
+          },
+          options,
+        ),
       list: (options) => request('reports.list', reportes, options),
     },
     demoSession: {

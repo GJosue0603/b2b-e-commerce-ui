@@ -13,7 +13,7 @@ export {
   solicitudPymeRevocada,
   solicitudPymeVencida,
 } from './pyme'
-export { reportes } from './reportes'
+export { reportes, ventasReporteDemo } from './reportes'
 export {
   colaboradores,
   compradores,

@@ -35,6 +35,7 @@ export type MockOperation =
   | 'pyme.listRequests'
   | 'pyme.submitRequest'
   | 'reports.list'
+  | 'reports.getSalesDataset'
   | 'users.getById'
   | 'users.getByEmail'
   | 'users.createBuyer'

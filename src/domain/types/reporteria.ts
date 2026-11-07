@@ -1,3 +1,4 @@
+import type { Categoria, Producto } from './catalogo'
 import type { EntityId, IsoDateTime, MontoColones } from './common'
 
 export type TipoPeriodoReporte = 'mensual' | 'trimestral' | 'anual'
@@ -51,4 +52,44 @@ export interface ReporteVentas {
   readonly productosBajoInventario: readonly EntityId[]
   readonly generadoEn: IsoDateTime
   readonly demostrativo: true
+}
+
+export type SegmentoCompradorReporte = 'convencional' | 'pyme-vigente'
+
+export interface VentaReporteDemo {
+  readonly categoriaId: EntityId
+  readonly comprador: SegmentoCompradorReporte
+  readonly fecha: IsoDateTime
+  readonly ingreso: MontoColones
+  readonly productoId: EntityId
+  readonly unidades: number
+  readonly ventaId: EntityId
+}
+
+export interface DatasetReporteVentas {
+  readonly categorias: readonly Categoria[]
+  readonly demostrativo: true
+  readonly generadoEn: IsoDateTime
+  readonly productos: readonly Producto[]
+  readonly ventas: readonly VentaReporteDemo[]
+}
+
+export type TrimestreReporte = 1 | 2 | 3 | 4
+
+export interface FiltroReporteVentas {
+  readonly anio: number
+  readonly mes?: number
+  readonly periodo: TipoPeriodoReporte
+  readonly trimestre?: TrimestreReporte
+}
+
+export interface ResumenReporteVentas {
+  readonly distribucionCompradores: DistribucionCompradores
+  readonly indicadores: IndicadoresVentas
+  readonly productosBajoInventario: readonly EntityId[]
+  readonly productosMasVendidos: readonly RendimientoProducto[]
+  readonly productosMenosVendidos: readonly RendimientoProducto[]
+  readonly tendencia: readonly PuntoTendenciaVentas[]
+  readonly ventasFiltradas: readonly VentaReporteDemo[]
+  readonly ventasPorCategoria: readonly VentasPorCategoria[]
 }

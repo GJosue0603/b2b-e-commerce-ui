@@ -9,6 +9,7 @@ import {
   pedidos,
   productos,
   reportes,
+  ventasReporteDemo,
   solicitudesPyme,
 } from '.'
 
@@ -147,6 +148,7 @@ describe('fixtures de dominio', () => {
         ...reporte.productosMasVendidos.map((producto) => producto.ingresos),
         ...reporte.productosMenosVendidos.map((producto) => producto.ingresos),
       ]),
+      ...ventasReporteDemo.map((venta) => venta.ingreso),
     ]
 
     expectWholeColones(montos)

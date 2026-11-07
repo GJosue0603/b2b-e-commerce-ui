@@ -52,7 +52,7 @@ const routeCases = [
   ['/vendedor/productos/nuevo', 'Nuevo producto', 'seller'],
   ['/vendedor/productos/demo-producto-teclado-mecanico/editar', 'Editar: Teclado mecánico inalámbrico', 'seller'],
   ['/vendedor/categorias', 'Categorías de productos', 'seller'],
-  ['/vendedor/reportes', 'Reporte operativo del catálogo', 'seller'],
+  ['/vendedor/reportes', 'Análisis de ventas', 'seller'],
   ['/admin/acreditaciones', 'Solicitudes PYME', 'administrator'],
   ['/admin/acreditaciones/solicitud-demo', 'Revisar solicitud PYME', 'administrator'],
   ['/admin/usuarios', 'Usuarios', 'administrator'],

@@ -160,4 +160,16 @@ describe('repositorios mock', () => {
     expect((await services.catalog.listProducts()).some((item) => item.id === managedProduct?.id)).toBe(false)
     expect((await services.catalog.listManagedCategories()).find((item) => item.id === categoryId)?.activo).toBe(false)
   })
+
+  it('entrega reportes desde una sola fuente con el inventario vigente', async () => {
+    const services = createMockServices({ latencyMs: 0 })
+    const productId = 'demo-producto-teclado-mecanico'
+    const current = (await services.catalog.listManagedProducts()).find((product) => product.id === productId)
+    expect(current).toBeDefined()
+    await services.catalog.updateProduct(productId, { ...current!, existencias: 3 })
+
+    const dataset = await services.reports.getSalesDataset()
+    expect(dataset.demostrativo).toBe(true)
+    expect(dataset.productos.find((product) => product.id === productId)?.existencias).toBe(3)
+  })
 })

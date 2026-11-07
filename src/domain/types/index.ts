@@ -29,12 +29,18 @@ export type {
 } from './pyme'
 export type {
   DistribucionCompradores,
+  DatasetReporteVentas,
+  FiltroReporteVentas,
   IndicadoresVentas,
   PeriodoReporte,
   PuntoTendenciaVentas,
   RendimientoProducto,
   ReporteVentas,
+  ResumenReporteVentas,
+  SegmentoCompradorReporte,
+  TrimestreReporte,
   TipoPeriodoReporte,
   VentasPorCategoria,
+  VentaReporteDemo,
 } from './reporteria'
 export type { RolUsuario, Usuario } from './usuario'

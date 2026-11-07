@@ -2,6 +2,7 @@ import type {
   AcreditacionPyme,
   Carrito,
   Categoria,
+  DatasetReporteVentas,
   EntityId,
   InventarioProducto,
   Pago,
@@ -156,5 +157,8 @@ export interface SubmitPymeRequestInput {
 }
 
 export interface ReportRepository {
+  getSalesDataset(
+    options?: RepositoryRequestOptions,
+  ): Promise<DatasetReporteVentas>
   list(options?: RepositoryRequestOptions): Promise<readonly ReporteVentas[]>
 }

@@ -30,7 +30,7 @@ import { routePermissions } from '../../shared/navigation'
 import { CategoriesPage } from '../../features/vendor/pages/CategoriesPage'
 import { EditProductPage } from '../../features/vendor/pages/EditProductPage'
 import { ProductsPage } from '../../features/vendor/pages/ProductsPage'
-import { VendorReportsPage } from '../../features/vendor/pages/VendorReportsPage'
+import { SalesDashboardPage } from '../../features/reports/pages/SalesDashboardPage'
 
 const publicStoreRoutes: RouteObject = {
   element: <DemoStoreLayout />,
@@ -140,7 +140,7 @@ const sellerRoutes: RouteObject = {
     },
     {
       path: routePatterns.sellerReports,
-      element: <VendorReportsPage />,
+      element: <SalesDashboardPage />,
     },
   ],
 }
@@ -203,13 +203,7 @@ const administratorRoutes: RouteObject = {
     },
     {
       path: routePatterns.adminReports,
-      element: (
-        <RoutePlaceholder
-          audience="Administrador"
-          description="Análisis consolidado de ventas e inventario."
-          title="Análisis de ventas"
-        />
-      ),
+      element: <SalesDashboardPage />,
     },
   ],
 }
