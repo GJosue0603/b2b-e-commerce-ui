@@ -3,12 +3,22 @@ import { StoreFooter, StoreHeader } from '../navigation'
 
 export interface StoreLayoutProps {
   readonly authenticated?: boolean
+  readonly cartItemCount?: number
+  readonly cartStatus?: 'loading' | 'success' | 'error'
 }
 
-export function StoreLayout({ authenticated = false }: StoreLayoutProps) {
+export function StoreLayout({
+  authenticated = false,
+  cartItemCount = 0,
+  cartStatus = 'success',
+}: StoreLayoutProps) {
   return (
     <div className="store-layout">
-      <StoreHeader authenticated={authenticated} />
+      <StoreHeader
+        authenticated={authenticated}
+        cartItemCount={cartItemCount}
+        cartStatus={cartStatus}
+      />
       <main className="store-layout__content">
         <Outlet />
       </main>

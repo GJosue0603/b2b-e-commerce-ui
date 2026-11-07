@@ -1,13 +1,27 @@
 import type { DashboardRole } from '../../shared/navigation'
 import { DashboardLayout, StoreLayout } from '../../shared/layouts'
+import { useCartSummary } from '../../features/cart/useCartSummary'
 import { useDemoSession } from './useDemoSession'
 
 export function DemoStoreLayout() {
   const { state } = useDemoSession()
+  const buyerId =
+    state.status !== 'success'
+      ? undefined
+      : state.data.session.user?.rol === 'comprador'
+        ? state.data.session.user.id
+        : null
+  const cart = useCartSummary(buyerId)
   const authenticated =
     state.status === 'success' && state.data.session.user?.rol === 'comprador'
 
-  return <StoreLayout authenticated={authenticated} />
+  return (
+    <StoreLayout
+      authenticated={authenticated}
+      cartItemCount={cart.itemCount}
+      cartStatus={cart.status}
+    />
+  )
 }
 
 export interface DemoDashboardLayoutProps {

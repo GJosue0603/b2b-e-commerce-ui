@@ -9,8 +9,10 @@ export function StoreFooter({ authenticated = false }: StoreFooterProps) {
   return (
     <footer className="store-footer">
       <div className="container store-footer__content">
-        <div>
-          <strong>NexoTech</strong>
+        <div className="store-footer__brand">
+          <strong>
+            Nexo<span>Tech</span>
+          </strong>
           <p>Tecnología para tu día a día y tu negocio.</p>
         </div>
         <nav aria-label="Enlaces del pie de página">
@@ -19,6 +21,7 @@ export function StoreFooter({ authenticated = false }: StoreFooterProps) {
             {authenticated ? 'Mi cuenta' : 'Ingresar'}
           </Link>
         </nav>
+        <small>© {new Date().getFullYear()} NexoTech.</small>
       </div>
     </footer>
   )

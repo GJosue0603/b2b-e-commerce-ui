@@ -26,6 +26,8 @@ export const routePatterns = {
   adminReports: '/admin/reportes',
 } as const
 
+export const catalogSearchParameter = 'q' as const
+
 export const paths = {
   ...routePatterns,
   productDetail: (productId: string) =>
