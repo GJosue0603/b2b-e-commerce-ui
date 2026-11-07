@@ -1,6 +1,7 @@
 import { routePatterns } from '../../app/router/paths'
+import type { RolUsuario } from '../../domain'
 
-export type NavigationRole = 'comprador' | 'vendedor' | 'administrador'
+export type NavigationRole = RolUsuario
 export type DashboardRole = Exclude<NavigationRole, 'comprador'>
 
 export interface NavigationItem {
