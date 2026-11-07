@@ -2,6 +2,7 @@ import { Navigate, type RouteObject } from 'react-router-dom'
 import { UiShowcase } from '../UiShowcase'
 import {
   DemoAppFrame,
+  DemoCatalogPage,
   DemoDashboardLayout,
   DemoHomePage,
   DemoStoreLayout,
@@ -24,13 +25,7 @@ const publicStoreRoutes: RouteObject = {
     },
     {
       path: routePatterns.catalog,
-      element: (
-        <RoutePlaceholder
-          audience="Público"
-          description="Exploración, búsqueda y filtrado de productos."
-          title="Catálogo"
-        />
-      ),
+      element: <DemoCatalogPage />,
     },
     {
       path: routePatterns.productDetail,

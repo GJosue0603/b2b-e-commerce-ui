@@ -1,4 +1,8 @@
-import type { AcreditacionPyme, MontoColones } from '../../domain'
+import type {
+  AcreditacionPyme,
+  MontoColones,
+  Producto,
+} from '../../domain'
 
 const crcFormatter = new Intl.NumberFormat('es-CR', {
   currency: 'CRC',
@@ -22,4 +26,14 @@ export function hasActivePymeAccreditation(
 
   if ([startsAt, expiresAt, checkedAt].some(Number.isNaN)) return false
   return startsAt <= checkedAt && checkedAt <= expiresAt
+}
+
+export function getProductPriceForCustomer(
+  product: Pick<Producto, 'precioPyme' | 'precioRegular'>,
+  accreditation: AcreditacionPyme | null | undefined,
+  referenceDate?: Date,
+): MontoColones {
+  return hasActivePymeAccreditation(accreditation, referenceDate)
+    ? product.precioPyme
+    : product.precioRegular
 }

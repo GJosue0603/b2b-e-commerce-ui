@@ -1,6 +1,7 @@
 import type { DashboardRole } from '../../shared/navigation'
 import { DashboardLayout, StoreLayout } from '../../shared/layouts'
 import { useCartSummary } from '../../features/cart/useCartSummary'
+import { CatalogPage } from '../../features/catalog/pages/CatalogPage'
 import { HomePage } from '../../features/store/pages/HomePage'
 import { useDemoSession } from './useDemoSession'
 
@@ -31,6 +32,14 @@ export function DemoHomePage() {
     state.status === 'success' ? state.data.session.accreditation : null
 
   return <HomePage accreditation={accreditation} />
+}
+
+export function DemoCatalogPage() {
+  const { state } = useDemoSession()
+  const accreditation =
+    state.status === 'success' ? state.data.session.accreditation : null
+
+  return <CatalogPage accreditation={accreditation} />
 }
 
 export interface DemoDashboardLayoutProps {

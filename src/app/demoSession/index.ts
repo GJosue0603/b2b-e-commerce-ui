@@ -2,6 +2,7 @@ import './demo-session.css'
 
 export { DemoAppFrame } from './DemoAppFrame'
 export {
+  DemoCatalogPage,
   DemoDashboardLayout,
   type DemoDashboardLayoutProps,
   DemoHomePage,

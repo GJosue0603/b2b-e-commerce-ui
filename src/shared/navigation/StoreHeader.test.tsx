@@ -35,7 +35,10 @@ describe('StoreHeader', () => {
     await user.type(searchInput, 'teclado mecánico{Enter}')
 
     expect(
-      await screen.findByRole('heading', { level: 1, name: 'Catálogo' }),
+      await screen.findByRole('heading', {
+        level: 1,
+        name: 'Explora nuestros productos',
+      }),
     ).toBeVisible()
     expect(router.state.location.pathname).toBe('/catalogo')
     expect(new URLSearchParams(router.state.location.search).get('q')).toBe(
