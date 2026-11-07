@@ -1,6 +1,7 @@
 import type { DashboardRole } from '../../shared/navigation'
 import { DashboardLayout, StoreLayout } from '../../shared/layouts'
 import { useCartSummary } from '../../features/cart/useCartSummary'
+import { HomePage } from '../../features/store/pages/HomePage'
 import { useDemoSession } from './useDemoSession'
 
 export function DemoStoreLayout() {
@@ -22,6 +23,14 @@ export function DemoStoreLayout() {
       cartStatus={cart.status}
     />
   )
+}
+
+export function DemoHomePage() {
+  const { state } = useDemoSession()
+  const accreditation =
+    state.status === 'success' ? state.data.session.accreditation : null
+
+  return <HomePage accreditation={accreditation} />
 }
 
 export interface DemoDashboardLayoutProps {

@@ -1,11 +1,16 @@
 import { Link } from 'react-router-dom'
+import type { AcreditacionPyme } from '../../../domain'
 import { paths, routePatterns } from '../../../app/router/paths'
+import { ProductCard } from '../../catalog/components'
 import { Alert, EmptyState, Skeleton } from '../../../shared/ui'
-import { ProductCard } from '../components/ProductCard'
 import { useHomeCatalog, type HomeCatalogData } from '../hooks/useHomeCatalog'
 import './home-page.css'
 
-export function HomePage() {
+export interface HomePageProps {
+  readonly accreditation?: AcreditacionPyme | null
+}
+
+export function HomePage({ accreditation }: HomePageProps) {
   const catalogState = useHomeCatalog()
 
   return (
@@ -19,7 +24,10 @@ export function HomePage() {
           </Alert>
         )}
         {catalogState.status === 'success' && (
-          <HomeCatalogSections data={catalogState.data} />
+          <HomeCatalogSections
+            accreditation={accreditation}
+            data={catalogState.data}
+          />
         )}
         <PymeInvitation />
       </div>
@@ -76,7 +84,13 @@ function HomeHero() {
   )
 }
 
-function HomeCatalogSections({ data }: { readonly data: HomeCatalogData }) {
+function HomeCatalogSections({
+  accreditation,
+  data,
+}: {
+  readonly accreditation?: AcreditacionPyme | null
+  readonly data: HomeCatalogData
+}) {
   const categoryNames = new Map(
     data.categories.map((category) => [category.id, category.nombre]),
   )
@@ -142,7 +156,17 @@ function HomeCatalogSections({ data }: { readonly data: HomeCatalogData }) {
           <div className="home-products">
             {data.featuredProducts.map((product) => (
               <ProductCard
+                accreditation={accreditation}
                 categoryName={categoryNames.get(product.categoriaId)}
+                cta={{
+                  kind: 'detail',
+                  label: 'Ver detalle',
+                  to: paths.productDetail(product.id),
+                }}
+                image={{
+                  alt: product.nombre,
+                  src: product.imagenUrl,
+                }}
                 key={product.id}
                 product={product}
               />

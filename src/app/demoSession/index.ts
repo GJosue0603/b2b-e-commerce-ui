@@ -4,6 +4,7 @@ export { DemoAppFrame } from './DemoAppFrame'
 export {
   DemoDashboardLayout,
   type DemoDashboardLayoutProps,
+  DemoHomePage,
   DemoStoreLayout,
 } from './DemoLayouts'
 export {

@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest'
 import { createMockServices } from '../../../mocks/repositories'
 import type { AppServices, CatalogRepository } from '../../../services'
 import { AppServicesProvider } from '../../../app/services'
-import { formatColones } from '../../../shared/utils/currency'
+import { formatCRC } from '../../../shared/utils/pricing'
 import { HomePage } from './HomePage'
 
 function renderHome(catalogOverride?: Partial<CatalogRepository>) {
@@ -42,14 +42,14 @@ describe('HomePage', () => {
       screen.getByText(
         (_, element) =>
           element?.tagName === 'STRONG' &&
-          element.textContent === formatColones(42_900),
+          element.textContent === formatCRC(42_900),
       ),
     ).toBeVisible()
     expect(
       screen.queryByText(
         (_, element) =>
           element?.tagName === 'STRONG' &&
-          element.textContent === formatColones(39_900),
+          element.textContent === formatCRC(39_900),
       ),
     ).toBeNull()
   })

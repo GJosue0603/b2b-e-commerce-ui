@@ -1,9 +1,9 @@
 import { Navigate, type RouteObject } from 'react-router-dom'
 import { UiShowcase } from '../UiShowcase'
-import { HomePage } from '../../features/store/pages/HomePage'
 import {
   DemoAppFrame,
   DemoDashboardLayout,
+  DemoHomePage,
   DemoStoreLayout,
 } from '../demoSession'
 import {
@@ -20,7 +20,7 @@ const publicStoreRoutes: RouteObject = {
   children: [
     {
       path: routePatterns.home,
-      element: <HomePage />,
+      element: <DemoHomePage />,
     },
     {
       path: routePatterns.catalog,
