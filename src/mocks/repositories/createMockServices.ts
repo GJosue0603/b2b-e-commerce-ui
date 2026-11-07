@@ -1,6 +1,11 @@
 import type {
   AcreditacionPyme,
+  Carrito,
   EntityId,
+  InventarioProducto,
+  Pago,
+  Pedido,
+  Producto,
   Usuario,
 } from '../../domain'
 import { isAccreditationValid } from '../../domain'
@@ -29,6 +34,8 @@ import {
   createMockRequest,
   type MockRepositoryConfig,
 } from './mock-request'
+import { createMockPaymentGateway } from '../paymentGateway'
+import { createMockOrderRepository } from '../orderRepository'
 
 const DEMO_REFERENCE_DATE = new Date('2026-11-07T12:00:00.000-06:00')
 
@@ -133,6 +140,24 @@ export function createMockServices(
   const request = createMockRequest(config)
   let userStore: Usuario[] = [...usuarios]
   let registeredBuyerSequence = 0
+  const paymentStore: Pago[] = pagos.map((payment) => ({ ...payment }))
+  const commerceStore = {
+    carts: carritos.map((cart) => ({
+      ...cart,
+      items: cart.items.map((item) => ({ ...item })),
+    })) as Carrito[],
+    inventory: inventario.map((entry) => ({ ...entry })) as InventarioProducto[],
+    orders: pedidos.map((order) => ({
+      ...order,
+      items: order.items.map((item) => ({ ...item })),
+    })) as Pedido[],
+    products: productos.map((product) => ({ ...product })) as Producto[],
+  }
+  const paymentGateway = createMockPaymentGateway(request, {
+    attempts: new Map(),
+    payments: paymentStore,
+  })
+  const orderRepository = createMockOrderRepository(request, commerceStore)
 
   return {
     demoAuth: {
@@ -228,36 +253,38 @@ export function createMockServices(
       getProductById: (id, options) =>
         request(
           'catalog.getProductById',
-          productos.find((product) => product.id === id) ?? null,
+          commerceStore.products.find((product) => product.id === id) ?? null,
           options,
         ),
       listCategories: (options) =>
         request('catalog.listCategories', categorias, options),
       listInventory: (options) =>
-        request('catalog.listInventory', inventario, options),
+        request('catalog.listInventory', commerceStore.inventory, options),
       listProducts: (options) =>
-        request('catalog.listProducts', productos, options),
+        request('catalog.listProducts', commerceStore.products, options),
     },
     commerce: {
       getCartByUser: (userId, options) =>
         request(
           'commerce.getCartByUser',
-          carritos.find((cart) => cart.usuarioId === userId) ?? null,
+          commerceStore.carts.find((cart) => cart.usuarioId === userId) ?? null,
           options,
         ),
       listOrdersByUser: (userId, options) =>
         request(
           'commerce.listOrdersByUser',
-          pedidos.filter((order) => order.usuarioId === userId),
+          commerceStore.orders.filter((order) => order.usuarioId === userId),
           options,
         ),
       listPaymentsByUser: (userId, options) =>
         request(
           'commerce.listPaymentsByUser',
-          pagos.filter((payment) => payment.usuarioId === userId),
+          paymentStore.filter((payment) => payment.usuarioId === userId),
           options,
         ),
     },
+    orders: orderRepository,
+    paymentGateway,
     pyme: {
       getAccreditationByUser: (userId, options) =>
         request(
