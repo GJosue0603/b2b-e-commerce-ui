@@ -31,6 +31,14 @@ function renderStore(initialScenarioId: DemoScenarioId = 'visitor') {
 }
 
 describe('StoreHeader', () => {
+  it('inicia como visitante y ofrece ingreso y registro', async () => {
+    renderStore()
+
+    expect((await screen.findAllByRole('link', { name: 'Ingresar' })).length).toBeGreaterThan(0)
+    expect(screen.getAllByRole('link', { name: 'Registrarse' }).length).toBeGreaterThan(0)
+    expect(screen.queryByRole('link', { name: 'Mi cuenta' })).toBeNull()
+  })
+
   it('busca en el catálogo mediante navegación cliente parametrizada', async () => {
     const user = userEvent.setup()
     const router = renderStore()

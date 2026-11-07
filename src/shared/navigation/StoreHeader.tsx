@@ -71,6 +71,14 @@ export function StoreHeader({
             <AccountIcon />
             <span>{accountLabel}</span>
           </Link>
+          {!authenticated && (
+            <Link
+              className="header-action header-action--register"
+              to={routePatterns.signUp}
+            >
+              Registrarse
+            </Link>
+          )}
           <Link
             aria-busy={cartStatus === 'loading' || undefined}
             aria-label={cartLabel}
@@ -98,6 +106,11 @@ export function StoreHeader({
                 <Link className="navigation-link" to={accountPath}>
                   {accountLabel}
                 </Link>
+                {!authenticated && (
+                  <Link className="navigation-link" to={routePatterns.signUp}>
+                    Registrarse
+                  </Link>
+                )}
               </nav>
             </div>
           </details>

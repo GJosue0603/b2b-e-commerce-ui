@@ -11,6 +11,8 @@ export type MockOperation =
   | 'commerce.getCartByUser'
   | 'commerce.listOrdersByUser'
   | 'commerce.listPaymentsByUser'
+  | 'demoAuth.authenticate'
+  | 'demoAuth.listAccessProfiles'
   | 'demoSession.getByScenario'
   | 'demoSession.listScenarios'
   | 'pyme.getAccreditationByUser'

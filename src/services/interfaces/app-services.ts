@@ -1,4 +1,5 @@
 import type { DemoSessionRepository } from './demo-session'
+import type { DemoAuthRepository } from './demo-auth'
 import type {
   CatalogRepository,
   CommerceRepository,
@@ -8,6 +9,7 @@ import type {
 } from './repositories'
 
 export interface AppServices {
+  readonly demoAuth: DemoAuthRepository
   readonly catalog: CatalogRepository
   readonly commerce: CommerceRepository
   readonly demoSession: DemoSessionRepository

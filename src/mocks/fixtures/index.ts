@@ -1,4 +1,5 @@
 export { carritos, pagos, pedidos } from './compras'
+export { demoAccessProfiles } from './demo-auth'
 export { categorias } from './categorias'
 export { fixtureIds } from './ids'
 export { inventario } from './inventario'

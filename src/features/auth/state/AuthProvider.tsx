@@ -30,7 +30,7 @@ function errorResult(reason: unknown): AuthResult {
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
-  const { users } = useAppServices()
+  const { demoAuth, users } = useAppServices()
   const { selectScenario, state: demoState } = useDemoSession()
   const [identityOverride, setIdentityOverride] = useState<{
     readonly scenarioId: string | undefined
@@ -77,15 +77,19 @@ export function AuthProvider({ children }: AuthProviderProps) {
   )
 
   const signIn = useCallback(
-    (email: string) =>
+    (email: string, password: string) =>
       runAction(async () => {
-        const found = await users.getByEmail(email)
-        if (!found?.activo) {
+        const authentication = await demoAuth.authenticate({ email, password })
+        if (!authentication?.user.activo) {
           throw new Error('Las credenciales demostrativas no son válidas.')
         }
-        return found
+        const session = await selectScenario(authentication.scenarioId)
+        if (!session?.user) {
+          throw new Error('No fue posible iniciar el escenario demostrativo.')
+        }
+        return session.user
       }),
-    [runAction, users],
+    [demoAuth, runAction, selectScenario],
   )
 
   const register = useCallback(

@@ -1,4 +1,10 @@
 export type { AppServices } from './app-services'
+export type {
+  DemoAccessProfile,
+  DemoAuthentication,
+  DemoAuthRepository,
+  DemoCredentials,
+} from './demo-auth'
 export {
   RepositoryError,
   type AsyncState,

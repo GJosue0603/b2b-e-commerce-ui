@@ -28,23 +28,66 @@ describe('autenticación demostrativa', () => {
     expect(screen.queryByLabelText(/rol/i)).toBeNull()
   })
 
-  it('muestra error para un correo no registrado y permite ingresar al comprador demo', async () => {
+  it('rechaza credenciales incorrectas y permite ingresar al comprador demo', async () => {
     const user = userEvent.setup()
     const { router } = renderTestApp('/ingresar')
     await screen.findByRole('heading', { name: 'Iniciar sesión' })
 
-    await user.type(screen.getByLabelText(/Correo electrónico/), 'nadie@example.test')
-    await user.type(screen.getByLabelText(/Contraseña/), 'Clave1234')
-    await user.click(screen.getByRole('button', { name: 'Ingresar' }))
-    expect(await screen.findByText(/credenciales demostrativas/i)).toBeVisible()
-
-    await user.clear(screen.getByLabelText(/Correo electrónico/))
     await user.type(
       screen.getByLabelText(/Correo electrónico/),
       'camila.regular@nexotech.demo.test',
     )
+    await user.type(screen.getByLabelText(/Contraseña/), 'Clave1234')
+    await user.click(screen.getByRole('button', { name: 'Ingresar' }))
+    expect(await screen.findByText(/credenciales demostrativas/i)).toBeVisible()
+
+    await user.clear(screen.getByLabelText(/Contraseña/))
+    await user.type(screen.getByLabelText(/Contraseña/), 'Comprador123!')
     await user.click(screen.getByRole('button', { name: 'Ingresar' }))
     expect(await screen.findByRole('heading', { name: 'Mi cuenta' })).toBeVisible()
     expect(router.state.location.pathname).toBe('/mi-cuenta')
+  })
+
+  it.each([
+    [
+      'Vendedor',
+      'vendedor@nexotech.demo.test',
+      'Vendedor123!',
+      'Productos e inventario',
+      '/vendedor/productos',
+    ],
+    [
+      'Administrador',
+      'admin@nexotech.demo.test',
+      'Admin123!',
+      'Solicitudes PYME',
+      '/admin/acreditaciones',
+    ],
+  ])(
+    'redirige las credenciales de %s a su dashboard',
+    async (_role, email, password, heading, path) => {
+      const user = userEvent.setup()
+      const { router } = renderTestApp('/ingresar')
+      await screen.findByRole('heading', { name: 'Iniciar sesión' })
+
+      await user.type(screen.getByLabelText(/Correo electrónico/), email)
+      await user.type(screen.getByLabelText(/Contraseña/), password)
+      await user.click(screen.getByRole('button', { name: 'Ingresar' }))
+
+      expect(await screen.findByRole('heading', { name: heading })).toBeVisible()
+      expect(router.state.location.pathname).toBe(path)
+    },
+  )
+
+  it('permite completar el formulario desde la lista de accesos demo', async () => {
+    const user = userEvent.setup()
+    renderTestApp('/ingresar')
+    await user.click(await screen.findByText('Ver credenciales de demostración'))
+    await user.click(screen.getByRole('button', { name: /Comprador regular/ }))
+
+    expect(screen.getByLabelText(/Correo electrónico/)).toHaveValue(
+      'camila.regular@nexotech.demo.test',
+    )
+    expect(screen.getByLabelText(/Contraseña/)).toHaveValue('Comprador123!')
   })
 })

@@ -28,6 +28,28 @@ describe('repositorios mock', () => {
     expect(firstRead).toEqual(secondRead)
   })
 
+  it('autentica credenciales demo y rechaza una contraseña incorrecta', async () => {
+    const services = createMockServices({ latencyMs: 0 })
+
+    await expect(
+      services.demoAuth.authenticate({
+        email: 'admin@nexotech.demo.test',
+        password: 'Admin123!',
+      }),
+    ).resolves.toEqual(
+      expect.objectContaining({
+        scenarioId: 'administrator',
+        user: expect.objectContaining({ rol: 'administrador' }),
+      }),
+    )
+    await expect(
+      services.demoAuth.authenticate({
+        email: 'admin@nexotech.demo.test',
+        password: 'incorrecta',
+      }),
+    ).resolves.toBeNull()
+  })
+
   it('permite simular errores de forma explícita y repetible', async () => {
     const services = createMockServices({
       failOperations: ['catalog.listProducts'],

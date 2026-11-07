@@ -15,6 +15,7 @@ import {
   acreditacionesPyme,
   carritos,
   categorias,
+  demoAccessProfiles,
   fixtureIds,
   inventario,
   pagos,
@@ -134,6 +135,24 @@ export function createMockServices(
   let registeredBuyerSequence = 0
 
   return {
+    demoAuth: {
+      authenticate: async (credentials, options) => {
+        await request('demoAuth.authenticate', null, options)
+        const email = credentials.email.trim().toLocaleLowerCase('es')
+        const accessProfile = demoAccessProfiles.find(
+          (profile) =>
+            profile.email.toLocaleLowerCase('es') === email &&
+            profile.password === credentials.password,
+        )
+        if (!accessProfile) return null
+        const session = buildDemoSession(accessProfile.scenarioId, userStore)
+        return session.user
+          ? { scenarioId: accessProfile.scenarioId, user: session.user }
+          : null
+      },
+      listAccessProfiles: (options) =>
+        request('demoAuth.listAccessProfiles', demoAccessProfiles, options),
+    },
     users: {
       createBuyer: async (input, options) => {
         await request('users.createBuyer', null, options)

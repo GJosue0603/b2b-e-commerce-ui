@@ -5,6 +5,7 @@ import { routePatterns } from '../../../app/router/paths'
 import { Alert, Button, TextField } from '../../../shared/ui'
 import { useAuth } from '../state'
 import { validateEmail, validatePassword } from '../validation'
+import { useDemoAccessProfiles } from '../hooks/useDemoAccessProfiles'
 import './auth-pages.css'
 
 function landingPath(role: RolUsuario): string {
@@ -17,6 +18,7 @@ export function LoginPage() {
   const navigate = useNavigate()
   const location = useLocation()
   const { actionStatus, signIn } = useAuth()
+  const accessProfiles = useDemoAccessProfiles()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({})
@@ -32,7 +34,7 @@ export function LoginPage() {
     setMessage(undefined)
     if (nextErrors.email || nextErrors.password) return
 
-    const result = await signIn(email)
+    const result = await signIn(email, password)
     if (!result.ok) {
       setMessage(result.message)
       return
@@ -69,7 +71,7 @@ export function LoginPage() {
         <TextField
           autoComplete="current-password"
           error={errors.password}
-          hint="En la demo se valida el usuario, pero no se almacena la contraseña."
+          hint="Credencial exclusiva de la demo; no se guarda en la cuenta ni en el navegador."
           label="Contraseña"
           onChange={(event) => setPassword(event.target.value)}
           required
@@ -85,6 +87,29 @@ export function LoginPage() {
           Ingresar
         </Button>
       </form>
+      {accessProfiles.status === 'success' && (
+        <details className="demo-access-list">
+          <summary>Ver credenciales de demostración</summary>
+          <div>
+            {accessProfiles.data.map((profile) => (
+              <button
+                key={profile.scenarioId}
+                onClick={() => {
+                  setEmail(profile.email)
+                  setPassword(profile.password)
+                  setErrors({})
+                  setMessage(undefined)
+                }}
+                type="button"
+              >
+                <strong>{profile.label}</strong>
+                <span>{profile.email}</span>
+                <code>{profile.password}</code>
+              </button>
+            ))}
+          </div>
+        </details>
+      )}
       <p className="auth-page__switch">
         ¿Aún no tienes una cuenta? <Link to={routePatterns.signUp}>Crear cuenta</Link>
       </p>

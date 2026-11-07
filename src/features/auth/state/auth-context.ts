@@ -14,7 +14,7 @@ export interface AuthResult {
 export interface AuthContextValue {
   readonly actionStatus: AuthActionStatus
   readonly register: (input: BuyerProfileInput) => Promise<AuthResult>
-  readonly signIn: (email: string) => Promise<AuthResult>
+  readonly signIn: (email: string, password: string) => Promise<AuthResult>
   readonly signOut: () => Promise<void>
   readonly status: AuthStatus
   readonly updateProfile: (input: BuyerProfileInput) => Promise<AuthResult>
