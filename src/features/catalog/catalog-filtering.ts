@@ -1,5 +1,8 @@
-import type { AcreditacionPyme, Producto } from '../../domain'
-import { getProductPriceForCustomer } from '../../shared/utils/pricing'
+import {
+  calculateUnitPrice,
+  type AcreditacionPyme,
+  type Producto,
+} from '../../domain'
 import type { CatalogQuery } from './catalog-query'
 
 export const CATALOG_PAGE_SIZE = 4
@@ -26,7 +29,7 @@ export function filterCatalogProducts(
 ): CatalogResult {
   const query = normalize(filters.query)
   const getPrice = (product: Producto) =>
-    getProductPriceForCustomer(product, accreditation, referenceDate)
+    calculateUnitPrice(product, accreditation, referenceDate)
 
   const filtered = products.filter((product) => {
     if (!product.activo) return false

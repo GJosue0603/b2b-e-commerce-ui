@@ -1,8 +1,9 @@
-import type { AcreditacionPyme, MontoColones } from '../../../domain'
 import {
-  formatCRC,
-  hasActivePymeAccreditation,
-} from '../../../shared/utils/pricing'
+  isAccreditationValid,
+  type AcreditacionPyme,
+  type MontoColones,
+} from '../../../domain'
+import { formatCRC } from '../../../shared/utils/pricing'
 
 export interface PriceDisplayProps {
   readonly accreditation?: AcreditacionPyme | null
@@ -17,10 +18,7 @@ export function PriceDisplay({
   referenceDate,
   regularPrice,
 }: PriceDisplayProps) {
-  const showPymePrice = hasActivePymeAccreditation(
-    accreditation,
-    referenceDate,
-  )
+  const showPymePrice = isAccreditationValid(accreditation, referenceDate)
 
   if (!showPymePrice) {
     return (

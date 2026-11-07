@@ -3,6 +3,7 @@ import type {
   EntityId,
   Usuario,
 } from '../../domain'
+import { isAccreditationValid } from '../../domain'
 import {
   RepositoryError,
   type AppServices,
@@ -92,16 +93,6 @@ function findAccreditation(userId: EntityId | null): AcreditacionPyme | null {
   )
 }
 
-function hasCurrentAccreditation(
-  accreditation: AcreditacionPyme | null,
-): boolean {
-  if (accreditation?.estado !== 'activa') return false
-
-  const startsAt = new Date(accreditation.fechaInicio)
-  const expiresAt = new Date(accreditation.fechaVencimiento)
-  return startsAt <= DEMO_REFERENCE_DATE && expiresAt >= DEMO_REFERENCE_DATE
-}
-
 function buildDemoSession(scenarioId: DemoScenarioId): DemoSession {
   const scenario = demoScenarios.find((item) => item.id === scenarioId)
   if (!scenario) {
@@ -121,7 +112,10 @@ function buildDemoSession(scenarioId: DemoScenarioId): DemoSession {
     scenario,
     user,
     accreditation,
-    pymePricingEnabled: hasCurrentAccreditation(accreditation),
+    pymePricingEnabled: isAccreditationValid(
+      accreditation,
+      DEMO_REFERENCE_DATE,
+    ),
     simulated: true,
   }
 }
