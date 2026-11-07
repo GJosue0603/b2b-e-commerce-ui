@@ -8,6 +8,7 @@ import { MyOrdersPage } from '../../features/orders/pages/MyOrdersPage'
 import {
   DemoAppFrame,
   DemoCartPage,
+  DemoCheckoutPage,
   DemoCatalogPage,
   DemoDashboardLayout,
   DemoHomePage,
@@ -62,13 +63,7 @@ const buyerRoutes: RouteObject = {
   children: [
     {
       path: routePatterns.checkout,
-      element: (
-        <RoutePlaceholder
-          audience="Comprador"
-          description="Revisión previa a la pasarela de pago externa."
-          title="Revisar y pagar"
-        />
-      ),
+      element: <DemoCheckoutPage />,
     },
     {
       path: routePatterns.paymentResult,

@@ -3,6 +3,7 @@ import './demo-session.css'
 export { DemoAppFrame } from './DemoAppFrame'
 export {
   DemoCartPage,
+  DemoCheckoutPage,
   DemoCatalogPage,
   DemoDashboardLayout,
   type DemoDashboardLayoutProps,
