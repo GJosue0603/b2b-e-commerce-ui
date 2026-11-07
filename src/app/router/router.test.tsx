@@ -41,7 +41,7 @@ const routeCases = [
   ['/producto/demo-producto-teclado-mecanico', 'Teclado mecánico inalámbrico', 'visitor'],
   ['/carrito', 'Tu carrito', 'visitor'],
   ['/checkout', 'Revisar y pagar', 'buyer-regular'],
-  ['/pago/resultado', 'Resultado del pago', 'buyer-regular'],
+  ['/pago/resultado', 'Compra demostrativa confirmada', 'buyer-regular'],
   ['/ingresar', 'Iniciar sesión', 'visitor'],
   ['/registro', 'Crear cuenta', 'visitor'],
   ['/mi-cuenta', 'Mi cuenta', 'buyer-regular'],

@@ -158,11 +158,24 @@
   color: color-mix(in srgb, var(--color-text) 65%, transparent);
 }
 
-.checkout-summary {
+.checkout-page__summary-column {
   position: sticky;
   display: grid;
   gap: var(--space-2);
   inset-block-start: 6.5rem;
+}
+
+.checkout-summary {
+  position: static;
+}
+
+.payment-scenario-control {
+  display: grid;
+  gap: var(--space-1);
+  padding: var(--space-2);
+  border: 1px dashed var(--color-primary);
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--color-primary) 5%, var(--color-surface));
 }
 
 .checkout-summary__savings {
@@ -213,7 +226,7 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .checkout-summary {
+  .checkout-page__summary-column {
     position: static;
   }
 

@@ -3,6 +3,7 @@ import { DashboardLayout, StoreLayout } from '../../shared/layouts'
 import { useCart } from '../../features/cart/state'
 import { CartPage } from '../../features/cart/pages/CartPage'
 import { CheckoutPage } from '../../features/checkout/pages/CheckoutPage'
+import { PaymentResultPage } from '../../features/checkout/pages/PaymentResultPage'
 import { CatalogPage } from '../../features/catalog/pages/CatalogPage'
 import { ProductDetailPage } from '../../features/catalog/pages/ProductDetailPage'
 import { HomePage } from '../../features/store/pages/HomePage'
@@ -77,6 +78,14 @@ export function DemoCheckoutPage() {
     state.status === 'success' ? state.data.session.accreditation : null
 
   return <CheckoutPage accreditation={accreditation} />
+}
+
+export function DemoPaymentResultPage() {
+  const { state } = useDemoSession()
+  const accreditation =
+    state.status === 'success' ? state.data.session.accreditation : null
+
+  return <PaymentResultPage accreditation={accreditation} />
 }
 
 export interface DemoDashboardLayoutProps {

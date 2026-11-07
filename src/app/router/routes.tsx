@@ -12,6 +12,7 @@ import {
   DemoCatalogPage,
   DemoDashboardLayout,
   DemoHomePage,
+  DemoPaymentResultPage,
   DemoProductDetailPage,
   DemoStoreLayout,
 } from '../demoSession'
@@ -67,13 +68,7 @@ const buyerRoutes: RouteObject = {
     },
     {
       path: routePatterns.paymentResult,
-      element: (
-        <RoutePlaceholder
-          audience="Comprador"
-          description="Resultado simulado de la verificación del pago."
-          title="Resultado del pago"
-        />
-      ),
+      element: <DemoPaymentResultPage />,
     },
     {
       path: routePatterns.account,

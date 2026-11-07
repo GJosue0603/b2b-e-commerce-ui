@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   calculateCartTotals,
@@ -7,10 +8,15 @@ import {
 import { routePatterns } from '../../../app/router/paths'
 import { Alert, EmptyState, Skeleton } from '../../../shared/ui'
 import { formatCRC } from '../../../shared/utils/pricing'
+import type { MockPaymentOutcome } from '../../../services'
 import { useAuth } from '../../auth/state'
 import { useCartProducts } from '../../cart/hooks/useCartProducts'
 import { useCart } from '../../cart/state'
-import { CheckoutSteps, CheckoutSummary } from '../components'
+import {
+  CheckoutSteps,
+  CheckoutSummary,
+  PaymentScenarioControl,
+} from '../components'
 import './checkout-page.css'
 
 export interface CheckoutPageProps {
@@ -18,6 +24,8 @@ export interface CheckoutPageProps {
 }
 
 export function CheckoutPage({ accreditation }: CheckoutPageProps) {
+  const [paymentOutcome, setPaymentOutcome] =
+    useState<MockPaymentOutcome>('aprobado')
   const { user } = useAuth()
   const cart = useCart()
   const productsState = useCartProducts()
@@ -107,11 +115,17 @@ export function CheckoutPage({ accreditation }: CheckoutPageProps) {
           </Link>
         </div>
 
-        <CheckoutSummary
-          canContinue={canContinue}
-          paymentPath={routePatterns.paymentResult}
-          totals={totals}
-        />
+        <div className="checkout-page__summary-column">
+          <CheckoutSummary
+            canContinue={canContinue}
+            paymentPath={`${routePatterns.paymentResult}?resultado=${paymentOutcome}`}
+            totals={totals}
+          />
+          <PaymentScenarioControl
+            onChange={setPaymentOutcome}
+            value={paymentOutcome}
+          />
+        </div>
       </div>
     </div>
   )

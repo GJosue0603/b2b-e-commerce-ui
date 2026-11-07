@@ -16,7 +16,7 @@ describe('CheckoutPage', () => {
     expect(screen.queryByText('Ahorro PYME')).toBeNull()
     expect(
       screen.getByRole('link', { name: 'Continuar al pago simulado' }),
-    ).toHaveAttribute('href', '/pago/resultado')
+    ).toHaveAttribute('href', '/pago/resultado?resultado=aprobado')
     expect(screen.queryByLabelText(/número de tarjeta/i)).toBeNull()
     expect(screen.queryByLabelText(/cvv/i)).toBeNull()
   })

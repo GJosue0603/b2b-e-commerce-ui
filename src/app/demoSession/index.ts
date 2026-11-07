@@ -8,6 +8,7 @@ export {
   DemoDashboardLayout,
   type DemoDashboardLayoutProps,
   DemoHomePage,
+  DemoPaymentResultPage,
   DemoProductDetailPage,
   DemoStoreLayout,
 } from './DemoLayouts'
