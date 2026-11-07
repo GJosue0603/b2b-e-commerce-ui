@@ -1,18 +1,31 @@
-import { render, screen, within } from '@testing-library/react'
+import { cleanup, render, screen, within } from '@testing-library/react'
 import {
   createMemoryRouter,
   RouterProvider,
   type InitialEntry,
 } from 'react-router-dom'
 import { describe, expect, it } from 'vitest'
+import { createMockServices } from '../../mocks/repositories'
+import type { DemoScenarioId } from '../../services'
+import { DemoSessionProvider } from '../demoSession'
+import { AppServicesProvider } from '../services'
 import { routeDefinitions } from './routes'
 
-function renderRoute(initialEntry: InitialEntry) {
+function renderRoute(
+  initialEntry: InitialEntry,
+  initialScenarioId: DemoScenarioId = 'visitor',
+) {
   const router = createMemoryRouter(routeDefinitions, {
     initialEntries: [initialEntry],
   })
 
-  render(<RouterProvider router={router} />)
+  render(
+    <AppServicesProvider services={createMockServices({ latencyMs: 0 })}>
+      <DemoSessionProvider initialScenarioId={initialScenarioId}>
+        <RouterProvider router={router} />
+      </DemoSessionProvider>
+    </AppServicesProvider>,
+  )
   return router
 }
 
@@ -86,18 +99,12 @@ describe('mapa de rutas', () => {
   })
 
   it('distingue la navegación pública de la experiencia Comprador', async () => {
-    const { unmount } = render(
-      <RouterProvider
-        router={createMemoryRouter(routeDefinitions, {
-          initialEntries: ['/catalogo'],
-        })}
-      />,
-    )
+    renderRoute('/catalogo')
     expect(screen.getAllByRole('link', { name: 'Ingresar' })).toHaveLength(2)
     expect(screen.queryByRole('link', { name: 'Mi cuenta' })).toBeNull()
 
-    unmount()
-    renderRoute('/mi-cuenta')
+    cleanup()
+    renderRoute('/mi-cuenta', 'buyer-regular')
     expect(await screen.findAllByRole('link', { name: 'Mi cuenta' })).toHaveLength(2)
     expect(screen.getAllByRole('link', { name: 'Mis pedidos' }).length).toBeGreaterThan(0)
   })

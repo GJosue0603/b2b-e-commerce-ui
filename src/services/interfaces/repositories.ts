@@ -1,0 +1,69 @@
+import type {
+  AcreditacionPyme,
+  Carrito,
+  Categoria,
+  EntityId,
+  InventarioProducto,
+  Pago,
+  Pedido,
+  Producto,
+  ReporteVentas,
+  SolicitudPyme,
+  Usuario,
+} from '../../domain'
+import type { RepositoryRequestOptions } from './common'
+
+export interface UserRepository {
+  getById(
+    id: EntityId,
+    options?: RepositoryRequestOptions,
+  ): Promise<Usuario | null>
+  list(options?: RepositoryRequestOptions): Promise<readonly Usuario[]>
+}
+
+export interface CatalogRepository {
+  getProductById(
+    id: EntityId,
+    options?: RepositoryRequestOptions,
+  ): Promise<Producto | null>
+  listCategories(
+    options?: RepositoryRequestOptions,
+  ): Promise<readonly Categoria[]>
+  listInventory(
+    options?: RepositoryRequestOptions,
+  ): Promise<readonly InventarioProducto[]>
+  listProducts(options?: RepositoryRequestOptions): Promise<readonly Producto[]>
+}
+
+export interface CommerceRepository {
+  getCartByUser(
+    userId: EntityId,
+    options?: RepositoryRequestOptions,
+  ): Promise<Carrito | null>
+  listOrdersByUser(
+    userId: EntityId,
+    options?: RepositoryRequestOptions,
+  ): Promise<readonly Pedido[]>
+  listPaymentsByUser(
+    userId: EntityId,
+    options?: RepositoryRequestOptions,
+  ): Promise<readonly Pago[]>
+}
+
+export interface PymeRepository {
+  getAccreditationByUser(
+    userId: EntityId,
+    options?: RepositoryRequestOptions,
+  ): Promise<AcreditacionPyme | null>
+  getRequestByUser(
+    userId: EntityId,
+    options?: RepositoryRequestOptions,
+  ): Promise<SolicitudPyme | null>
+  listRequests(
+    options?: RepositoryRequestOptions,
+  ): Promise<readonly SolicitudPyme[]>
+}
+
+export interface ReportRepository {
+  list(options?: RepositoryRequestOptions): Promise<readonly ReporteVentas[]>
+}

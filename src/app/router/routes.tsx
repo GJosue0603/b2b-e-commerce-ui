@@ -1,9 +1,12 @@
 import { Navigate, type RouteObject } from 'react-router-dom'
 import { UiShowcase } from '../UiShowcase'
 import {
+  DemoAppFrame,
+  DemoDashboardLayout,
+  DemoStoreLayout,
+} from '../demoSession'
+import {
   AuthLayout,
-  DashboardLayout,
-  StoreLayout,
 } from '../../shared/layouts'
 import {
   NotFoundPage,
@@ -12,7 +15,7 @@ import {
 import { routePatterns } from './paths'
 
 const publicStoreRoutes: RouteObject = {
-  element: <StoreLayout />,
+  element: <DemoStoreLayout />,
   children: [
     {
       path: routePatterns.home,
@@ -66,7 +69,7 @@ const publicStoreRoutes: RouteObject = {
 }
 
 const buyerRoutes: RouteObject = {
-  element: <StoreLayout authenticated />,
+  element: <DemoStoreLayout />,
   children: [
     {
       path: routePatterns.checkout,
@@ -159,7 +162,7 @@ const authRoutes: RouteObject = {
 
 const sellerRoutes: RouteObject = {
   path: routePatterns.sellerRoot,
-  element: <DashboardLayout role="vendedor" />,
+  element: <DemoDashboardLayout fallbackRole="vendedor" />,
   children: [
     {
       index: true,
@@ -220,7 +223,7 @@ const sellerRoutes: RouteObject = {
 
 const administratorRoutes: RouteObject = {
   path: routePatterns.adminRoot,
-  element: <DashboardLayout role="administrador" />,
+  element: <DemoDashboardLayout fallbackRole="administrador" />,
   children: [
     {
       index: true,
@@ -290,10 +293,15 @@ const administratorRoutes: RouteObject = {
 }
 
 export const routeDefinitions: RouteObject[] = [
-  publicStoreRoutes,
-  buyerRoutes,
-  authRoutes,
-  sellerRoutes,
-  administratorRoutes,
-  { path: '*', element: <NotFoundPage /> },
+  {
+    element: <DemoAppFrame />,
+    children: [
+      publicStoreRoutes,
+      buyerRoutes,
+      authRoutes,
+      sellerRoutes,
+      administratorRoutes,
+      { path: '*', element: <NotFoundPage /> },
+    ],
+  },
 ]

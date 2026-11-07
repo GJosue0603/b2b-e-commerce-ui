@@ -2,7 +2,7 @@ import { Outlet } from 'react-router-dom'
 import { StoreFooter, StoreHeader } from '../navigation'
 
 export interface StoreLayoutProps {
-  authenticated?: boolean
+  readonly authenticated?: boolean
 }
 
 export function StoreLayout({ authenticated = false }: StoreLayoutProps) {
