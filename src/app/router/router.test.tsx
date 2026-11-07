@@ -6,6 +6,7 @@ import {
 } from 'react-router-dom'
 import { describe, expect, it } from 'vitest'
 import { createMockServices } from '../../mocks/repositories'
+import { CartProvider } from '../../features/cart/state'
 import type { DemoScenarioId } from '../../services'
 import { DemoSessionProvider } from '../demoSession'
 import { AppServicesProvider } from '../services'
@@ -22,7 +23,9 @@ function renderRoute(
   render(
     <AppServicesProvider services={createMockServices({ latencyMs: 0 })}>
       <DemoSessionProvider initialScenarioId={initialScenarioId}>
-        <RouterProvider router={router} />
+        <CartProvider>
+          <RouterProvider router={router} />
+        </CartProvider>
       </DemoSessionProvider>
     </AppServicesProvider>,
   )
@@ -32,8 +35,8 @@ function renderRoute(
 const routeCases = [
   ['/', 'Tecnología para tu día a día y tu negocio'],
   ['/catalogo', 'Explora nuestros productos'],
-  ['/producto/producto-demo', 'Detalle de producto'],
-  ['/carrito', 'Carrito'],
+  ['/producto/demo-producto-teclado-mecanico', 'Teclado mecánico inalámbrico'],
+  ['/carrito', 'Tu carrito'],
   ['/checkout', 'Revisar y pagar'],
   ['/pago/resultado', 'Resultado del pago'],
   ['/ingresar', 'Iniciar sesión'],

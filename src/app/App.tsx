@@ -1,4 +1,5 @@
 import { createMockServices } from '../mocks/repositories'
+import { CartProvider } from '../features/cart/state'
 import { DemoSessionProvider } from './demoSession'
 import { AppRouter } from './router/AppRouter'
 import { AppServicesProvider } from './services'
@@ -9,7 +10,9 @@ export function App() {
   return (
     <AppServicesProvider services={demoServices}>
       <DemoSessionProvider>
-        <AppRouter />
+        <CartProvider>
+          <AppRouter />
+        </CartProvider>
       </DemoSessionProvider>
     </AppServicesProvider>
   )

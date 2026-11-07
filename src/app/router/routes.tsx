@@ -2,9 +2,11 @@ import { Navigate, type RouteObject } from 'react-router-dom'
 import { UiShowcase } from '../UiShowcase'
 import {
   DemoAppFrame,
+  DemoCartPage,
   DemoCatalogPage,
   DemoDashboardLayout,
   DemoHomePage,
+  DemoProductDetailPage,
   DemoStoreLayout,
 } from '../demoSession'
 import {
@@ -29,23 +31,11 @@ const publicStoreRoutes: RouteObject = {
     },
     {
       path: routePatterns.productDetail,
-      element: (
-        <RoutePlaceholder
-          audience="Público"
-          description="Detalle del producto y selección de cantidad."
-          title="Detalle de producto"
-        />
-      ),
+      element: <DemoProductDetailPage />,
     },
     {
       path: routePatterns.cart,
-      element: (
-        <RoutePlaceholder
-          audience="Público"
-          description="Resumen de productos antes de iniciar el pago."
-          title="Carrito"
-        />
-      ),
+      element: <DemoCartPage />,
     },
     ...(import.meta.env.DEV
       ? [

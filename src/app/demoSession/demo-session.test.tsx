@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { createMemoryRouter, RouterProvider } from 'react-router-dom'
 import { describe, expect, it } from 'vitest'
 import { createMockServices } from '../../mocks/repositories'
+import { CartProvider } from '../../features/cart/state'
 import { routeDefinitions } from '../router/routes'
 import { AppServicesProvider } from '../services'
 import { DemoSessionProvider } from './DemoSessionProvider'
@@ -21,7 +22,9 @@ function renderDemo(fail = false) {
   render(
     <AppServicesProvider services={services}>
       <DemoSessionProvider>
-        <RouterProvider router={router} />
+        <CartProvider>
+          <RouterProvider router={router} />
+        </CartProvider>
       </DemoSessionProvider>
     </AppServicesProvider>,
   )

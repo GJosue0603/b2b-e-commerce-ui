@@ -1,19 +1,15 @@
 import type { DashboardRole } from '../../shared/navigation'
 import { DashboardLayout, StoreLayout } from '../../shared/layouts'
-import { useCartSummary } from '../../features/cart/useCartSummary'
+import { useCart } from '../../features/cart/state'
+import { CartPage } from '../../features/cart/pages/CartPage'
 import { CatalogPage } from '../../features/catalog/pages/CatalogPage'
+import { ProductDetailPage } from '../../features/catalog/pages/ProductDetailPage'
 import { HomePage } from '../../features/store/pages/HomePage'
 import { useDemoSession } from './useDemoSession'
 
 export function DemoStoreLayout() {
   const { state } = useDemoSession()
-  const buyerId =
-    state.status !== 'success'
-      ? undefined
-      : state.data.session.user?.rol === 'comprador'
-        ? state.data.session.user.id
-        : null
-  const cart = useCartSummary(buyerId)
+  const cart = useCart()
   const authenticated =
     state.status === 'success' && state.data.session.user?.rol === 'comprador'
 
@@ -40,6 +36,30 @@ export function DemoCatalogPage() {
     state.status === 'success' ? state.data.session.accreditation : null
 
   return <CatalogPage accreditation={accreditation} />
+}
+
+export function DemoProductDetailPage() {
+  const { state } = useDemoSession()
+  const { addItem } = useCart()
+  const accreditation =
+    state.status === 'success' ? state.data.session.accreditation : null
+
+  return (
+    <ProductDetailPage
+      accreditation={accreditation}
+      onAddToCart={(product, quantity) =>
+        addItem(product.id, quantity, product.existencias)
+      }
+    />
+  )
+}
+
+export function DemoCartPage() {
+  const { state } = useDemoSession()
+  const accreditation =
+    state.status === 'success' ? state.data.session.accreditation : null
+
+  return <CartPage accreditation={accreditation} />
 }
 
 export interface DemoDashboardLayoutProps {
