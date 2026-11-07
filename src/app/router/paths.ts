@@ -27,9 +27,23 @@ export const routePatterns = {
 } as const
 
 export const catalogSearchParameter = 'q' as const
+export const catalogCategoryParameter = 'categoria' as const
 
 export const paths = {
   ...routePatterns,
+  catalogWithFilters: ({
+    categoryId,
+    query,
+  }: {
+    categoryId?: string
+    query?: string
+  } = {}) => {
+    const search = new URLSearchParams()
+    if (query) search.set(catalogSearchParameter, query)
+    if (categoryId) search.set(catalogCategoryParameter, categoryId)
+    const queryString = search.toString()
+    return `${routePatterns.catalog}${queryString ? `?${queryString}` : ''}`
+  },
   productDetail: (productId: string) =>
     `/producto/${encodeURIComponent(productId)}` as const,
   sellerProductEdit: (productId: string) =>

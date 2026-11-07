@@ -30,7 +30,7 @@ function renderRoute(
 }
 
 const routeCases = [
-  ['/', 'Inicio'],
+  ['/', 'Tecnología para tu día a día y tu negocio'],
   ['/catalogo', 'Catálogo'],
   ['/producto/producto-demo', 'Detalle de producto'],
   ['/carrito', 'Carrito'],

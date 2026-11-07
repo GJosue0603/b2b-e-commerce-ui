@@ -1,5 +1,6 @@
 import { Navigate, type RouteObject } from 'react-router-dom'
 import { UiShowcase } from '../UiShowcase'
+import { HomePage } from '../../features/store/pages/HomePage'
 import {
   DemoAppFrame,
   DemoDashboardLayout,
@@ -19,13 +20,7 @@ const publicStoreRoutes: RouteObject = {
   children: [
     {
       path: routePatterns.home,
-      element: (
-        <RoutePlaceholder
-          audience="Público"
-          description="Portada pública de la tienda y acceso al catálogo."
-          title="Inicio"
-        />
-      ),
+      element: <HomePage />,
     },
     {
       path: routePatterns.catalog,
