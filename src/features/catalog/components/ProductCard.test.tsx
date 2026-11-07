@@ -118,6 +118,31 @@ describe('PriceDisplay', () => {
 
     expect(screen.queryByText('Precio PYME')).toBeNull()
   })
+
+  it('recalcula inmediatamente cuando la acreditación cambia a revocada', () => {
+    const referenceDate = new Date('2026-06-01T00:00:00.000Z')
+    const { rerender } = render(
+      <PriceDisplay
+        accreditation={accreditation('activa')}
+        pymePrice={45_000}
+        referenceDate={referenceDate}
+        regularPrice={50_000}
+      />,
+    )
+    expect(screen.getByText('Precio PYME')).toBeVisible()
+
+    rerender(
+      <PriceDisplay
+        accreditation={accreditation('revocada')}
+        pymePrice={45_000}
+        referenceDate={referenceDate}
+        regularPrice={50_000}
+      />,
+    )
+
+    expect(screen.queryByText('Precio PYME')).toBeNull()
+    expect(document.body.textContent).toContain(formatCRC(50_000))
+  })
 })
 
 describe('ProductCard y StockBadge', () => {

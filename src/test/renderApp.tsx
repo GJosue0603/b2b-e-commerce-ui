@@ -22,7 +22,7 @@ export function renderTestApp(
   const router = createMemoryRouter(routeDefinitions, {
     initialEntries: [initialEntry],
   })
-  render(
+  const renderResult = render(
     <AppServicesProvider services={services}>
       <DemoSessionProvider initialScenarioId={scenarioId}>
         <AuthProvider>
@@ -33,5 +33,5 @@ export function renderTestApp(
       </DemoSessionProvider>
     </AppServicesProvider>,
   )
-  return { router, services }
+  return { ...renderResult, router, services }
 }

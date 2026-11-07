@@ -6,6 +6,9 @@ export type DemoScenarioId =
   | 'buyer-regular'
   | 'buyer-pyme-active'
   | 'buyer-pyme-expired'
+  | 'buyer-pyme-pending'
+  | 'buyer-pyme-rejected'
+  | 'buyer-pyme-revoked'
   | 'seller'
   | 'administrator'
 

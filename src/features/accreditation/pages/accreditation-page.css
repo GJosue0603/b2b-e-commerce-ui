@@ -1,0 +1,202 @@
+.accreditation-page {
+  display: grid;
+  gap: var(--space-3);
+  padding-block: var(--space-4);
+}
+
+.accreditation-page__header {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.accreditation-page__header h1,
+.accreditation-page__header p {
+  margin: 0;
+}
+
+.accreditation-page__header p,
+.accreditation-card > p {
+  color: color-mix(in srgb, var(--color-text) 68%, transparent);
+}
+
+.accreditation-page__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(17rem, 0.34fr);
+  gap: var(--space-3);
+  align-items: start;
+}
+
+.accreditation-card {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.accreditation-card h2 {
+  margin: 0;
+}
+
+.accreditation-card--aside {
+  border-inline-start: 0.25rem solid var(--color-accent);
+}
+
+.accreditation-card--aside ol {
+  display: grid;
+  gap: var(--space-2);
+  padding-inline-start: var(--space-3);
+}
+
+.accreditation-card a {
+  color: var(--color-primary);
+  font-weight: 650;
+}
+
+.accreditation-request-form {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.accreditation-request-form__row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+
+.accreditation-request-form__declaration {
+  display: flex;
+  gap: var(--space-1);
+  align-items: start;
+  padding: var(--space-2);
+  border-radius: var(--radius-md);
+  background: var(--color-background);
+}
+
+.accreditation-request-form__error {
+  margin: 0;
+  color: var(--color-danger);
+}
+
+.accreditation-request-form .ui-button {
+  justify-self: end;
+}
+
+.accreditation-status-page {
+  max-width: 62rem;
+}
+
+.accreditation-status-card,
+.accreditation-history {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.accreditation-status-card {
+  border-block-start: 0.3rem solid var(--color-primary);
+}
+
+.accreditation-status-card--active {
+  border-block-start-color: var(--color-accent);
+}
+
+.accreditation-status-card--expired,
+.accreditation-status-card--rejected,
+.accreditation-status-card--revoked {
+  border-block-start-color: var(--color-warning);
+}
+
+.accreditation-status-card header {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.accreditation-status-card h2,
+.accreditation-status-card p,
+.accreditation-history h2 {
+  margin: 0;
+}
+
+.accreditation-status-card__details {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-1);
+  margin: 0;
+}
+
+.accreditation-status-card__details > div {
+  display: grid;
+  gap: 0.25rem;
+  padding: var(--space-2);
+  border-radius: var(--radius-md);
+  background: var(--color-background);
+}
+
+.accreditation-status-card__details dt {
+  color: color-mix(in srgb, var(--color-text) 62%, transparent);
+  font-size: 0.75rem;
+}
+
+.accreditation-status-card__details dd {
+  margin: 0;
+  font-weight: 700;
+}
+
+.accreditation-status-card__benefit {
+  padding: var(--space-2);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--color-accent) 12%, var(--color-surface));
+  color: var(--color-accent);
+  font-weight: 650;
+}
+
+.accreditation-status-card__reason {
+  padding: var(--space-2);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--color-danger) 8%, var(--color-surface));
+  color: var(--color-danger);
+}
+
+.accreditation-status-card > a {
+  width: fit-content;
+  padding: 0.75rem var(--space-2);
+  border-radius: var(--radius-md);
+  background: var(--color-primary);
+  color: var(--color-surface);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.accreditation-history__scroll {
+  overflow-x: auto;
+}
+
+.accreditation-history table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.accreditation-history th,
+.accreditation-history td {
+  padding: var(--space-1);
+  border-block-end: 1px solid var(--color-border);
+  text-align: start;
+  white-space: nowrap;
+}
+
+@media (max-width: 48rem) {
+  .accreditation-page__layout,
+  .accreditation-request-form__row,
+  .accreditation-status-card__details {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .accreditation-request-form .ui-button {
+    width: 100%;
+  }
+}

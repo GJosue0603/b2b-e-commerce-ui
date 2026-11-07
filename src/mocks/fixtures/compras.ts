@@ -22,6 +22,26 @@ export const carritos = [
     fechaCreacion: '2026-11-02T15:00:00.000Z',
     fechaModificacion: '2026-11-02T15:04:00.000Z',
   },
+  {
+    id: fixtureIds.carts.pymeExpired,
+    usuarioId: fixtureIds.users.buyerPymeExpired,
+    items: [
+      { productoId: fixtureIds.products.keyboard, cantidad: 1 },
+      { productoId: fixtureIds.products.mouse, cantidad: 1 },
+    ],
+    fechaCreacion: '2026-11-03T15:00:00.000Z',
+    fechaModificacion: '2026-11-03T15:04:00.000Z',
+  },
+  {
+    id: fixtureIds.carts.pymeRevoked,
+    usuarioId: fixtureIds.users.buyerPymeRevoked,
+    items: [
+      { productoId: fixtureIds.products.keyboard, cantidad: 1 },
+      { productoId: fixtureIds.products.mouse, cantidad: 1 },
+    ],
+    fechaCreacion: '2026-11-04T15:00:00.000Z',
+    fechaModificacion: '2026-11-04T15:04:00.000Z',
+  },
 ] as const satisfies readonly Carrito[]
 
 export const pagos = [

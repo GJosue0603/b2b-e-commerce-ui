@@ -62,4 +62,55 @@ describe('repositorios mock', () => {
       }),
     )
   })
+
+  it('registra una solicitud pendiente y evita solicitudes incompatibles', async () => {
+    const services = createMockServices({ latencyMs: 0 })
+    const input = {
+      actividadEconomica: 'Comercio',
+      documentos: ['local-demo://personeria.pdf'],
+      identificacionNegocio: '3-101-999999',
+      nombreComercial: 'Nexo Café',
+      usuarioId: 'demo-usuario-comprador-regular',
+    }
+
+    await expect(services.pyme.submitRequest(input)).resolves.toMatchObject({
+      estado: 'pendiente',
+      usuarioId: input.usuarioId,
+    })
+    await expect(services.pyme.submitRequest(input)).rejects.toMatchObject({
+      code: 'conflict',
+    })
+    await expect(
+      services.pyme.submitRequest({
+        ...input,
+        usuarioId: 'demo-usuario-comprador-pyme-activa',
+      }),
+    ).rejects.toMatchObject({ code: 'conflict' })
+  })
+
+  it.each([
+    ['demo-usuario-comprador-pyme-rechazada', 'Nueva solicitud'],
+    ['demo-usuario-comprador-pyme-vencida', 'Renovación'],
+  ])(
+    'preserva historial al registrar %s después de rechazo o vencimiento',
+    async (userId, nombreComercial) => {
+      const services = createMockServices({ latencyMs: 0 })
+      const before = await services.pyme.listRequestsByUser(userId)
+
+      await services.pyme.submitRequest({
+        actividadEconomica: 'Servicios tecnológicos',
+        documentos: ['local-demo://renovacion.pdf'],
+        identificacionNegocio: 'DEMO-RENOVACION',
+        nombreComercial,
+        usuarioId: userId,
+      })
+      const after = await services.pyme.listRequestsByUser(userId)
+
+      expect(after).toHaveLength(before.length + 1)
+      expect(after[0]).toMatchObject({ estado: 'pendiente', nombreComercial })
+      expect(after.map((request) => request.id)).toEqual(
+        expect.arrayContaining(before.map((request) => request.id)),
+      )
+    },
+  )
 })

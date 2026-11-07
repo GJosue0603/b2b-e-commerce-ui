@@ -71,6 +71,10 @@ export interface CommerceRepository {
 }
 
 export interface PymeRepository {
+  getAccreditationsByUser(
+    userId: EntityId,
+    options?: RepositoryRequestOptions,
+  ): Promise<readonly AcreditacionPyme[]>
   getAccreditationByUser(
     userId: EntityId,
     options?: RepositoryRequestOptions,
@@ -79,9 +83,25 @@ export interface PymeRepository {
     userId: EntityId,
     options?: RepositoryRequestOptions,
   ): Promise<SolicitudPyme | null>
+  listRequestsByUser(
+    userId: EntityId,
+    options?: RepositoryRequestOptions,
+  ): Promise<readonly SolicitudPyme[]>
   listRequests(
     options?: RepositoryRequestOptions,
   ): Promise<readonly SolicitudPyme[]>
+  submitRequest(
+    input: SubmitPymeRequestInput,
+    options?: RepositoryRequestOptions,
+  ): Promise<SolicitudPyme>
+}
+
+export interface SubmitPymeRequestInput {
+  readonly actividadEconomica: string
+  readonly documentos: readonly string[]
+  readonly identificacionNegocio: string
+  readonly nombreComercial: string
+  readonly usuarioId: EntityId
 }
 
 export interface ReportRepository {

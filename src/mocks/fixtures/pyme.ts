@@ -57,11 +57,25 @@ export const solicitudPymeRechazada = {
   motivoRechazo: 'Documento demostrativo incompleto.',
 } as const satisfies SolicitudPyme
 
+export const solicitudPymeRevocada = {
+  id: fixtureIds.requests.revoked,
+  usuarioId: fixtureIds.users.buyerPymeRevoked,
+  nombreComercial: 'Méndez Innovación Demo',
+  identificacionNegocio: 'DEMO-NEG-005',
+  actividadEconomica: 'Servicios tecnológicos',
+  documentos: ['/fixtures/documentos/demo-mendez-respaldo.pdf'],
+  estado: 'aprobada',
+  fechaSolicitud: '2025-03-20T14:00:00.000Z',
+  revisadoPor: colaboradores.administrador,
+  fechaRevision: '2025-03-24T17:00:00.000Z',
+} as const satisfies SolicitudPymeAprobada
+
 export const solicitudesPyme = [
   solicitudPymeActiva,
   solicitudPymeVencida,
   solicitudPymePendiente,
   solicitudPymeRechazada,
+  solicitudPymeRevocada,
 ] as const satisfies readonly SolicitudPyme[]
 
 export const acreditacionesPyme = [
@@ -80,5 +94,13 @@ export const acreditacionesPyme = [
     fechaInicio: '2024-01-17T00:00:00.000Z',
     fechaVencimiento: '2025-01-16T23:59:59.000Z',
     estado: 'vencida',
+  },
+  {
+    id: fixtureIds.accreditations.revoked,
+    usuarioId: fixtureIds.users.buyerPymeRevoked,
+    solicitudPyme: solicitudPymeRevocada,
+    fechaInicio: '2025-03-25T00:00:00.000Z',
+    fechaVencimiento: '2027-03-24T23:59:59.000Z',
+    estado: 'revocada',
   },
 ] as const satisfies readonly AcreditacionPyme[]

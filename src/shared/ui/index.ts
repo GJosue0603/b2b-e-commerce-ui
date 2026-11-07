@@ -10,6 +10,7 @@ export {
 } from './Button'
 export { ConfirmDialog, type ConfirmDialogProps } from './ConfirmDialog'
 export { EmptyState, type EmptyStateProps } from './EmptyState'
+export { FileUpload, type FileUploadProps } from './FileUpload'
 export { Modal, type ModalProps, type ModalSize } from './Modal'
 export { Pagination, type PaginationProps } from './Pagination'
 export { Select, type SelectProps } from './Select'

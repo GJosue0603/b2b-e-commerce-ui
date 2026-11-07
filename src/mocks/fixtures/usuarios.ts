@@ -63,6 +63,16 @@ export const compradores = [
     activo: true,
     fechaCreacion: '2026-07-15T18:20:00.000Z',
   },
+  {
+    id: fixtureIds.users.buyerPymeRevoked,
+    nombre: 'Sofía',
+    apellidos: 'Méndez Vargas',
+    correo: 'sofia.revocada@nexotech.demo.test',
+    telefono: '+506 0000-0006',
+    rol: 'comprador',
+    activo: true,
+    fechaCreacion: '2025-03-18T16:10:00.000Z',
+  },
 ] as const satisfies readonly Usuario[]
 
 export const usuariosInternos = [

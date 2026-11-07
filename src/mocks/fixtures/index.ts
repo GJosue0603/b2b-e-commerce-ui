@@ -10,6 +10,7 @@ export {
   solicitudPymeActiva,
   solicitudPymePendiente,
   solicitudPymeRechazada,
+  solicitudPymeRevocada,
   solicitudPymeVencida,
 } from './pyme'
 export { reportes } from './reportes'

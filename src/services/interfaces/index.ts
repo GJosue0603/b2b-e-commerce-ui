@@ -23,5 +23,6 @@ export type {
   CommerceRepository,
   PymeRepository,
   ReportRepository,
+  SubmitPymeRequestInput,
   UserRepository,
 } from './repositories'

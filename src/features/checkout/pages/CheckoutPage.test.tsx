@@ -41,7 +41,7 @@ describe('CheckoutPage', () => {
   })
 
   it('muestra estado vacío y desactiva continuar sin artículos', async () => {
-    renderTestApp('/checkout', 'buyer-pyme-expired')
+    renderTestApp('/checkout', 'buyer-pyme-pending')
 
     expect(
       await screen.findByRole('heading', {

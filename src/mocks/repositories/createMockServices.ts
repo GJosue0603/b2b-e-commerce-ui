@@ -6,6 +6,7 @@ import type {
   Pago,
   Pedido,
   Producto,
+  SolicitudPyme,
   Usuario,
 } from '../../domain'
 import { isAccreditationValid } from '../../domain'
@@ -65,6 +66,24 @@ const demoScenarios = [
     landingPath: '/acreditacion/estado',
   },
   {
+    id: 'buyer-pyme-pending',
+    label: 'Comprador PYME pendiente',
+    description: 'Solicitud pendiente; PrecioPyme no disponible.',
+    landingPath: '/acreditacion/estado',
+  },
+  {
+    id: 'buyer-pyme-rejected',
+    label: 'Comprador PYME rechazado',
+    description: 'Solicitud rechazada; puede presentar una nueva.',
+    landingPath: '/acreditacion/estado',
+  },
+  {
+    id: 'buyer-pyme-revoked',
+    label: 'Comprador PYME revocado',
+    description: 'Acreditación revocada; PrecioPyme no disponible.',
+    landingPath: '/acreditacion/estado',
+  },
+  {
     id: 'seller',
     label: 'Vendedor',
     description: 'Panel interno con navegación exclusiva de Vendedor.',
@@ -83,6 +102,9 @@ const scenarioUserIds: Record<DemoScenarioId, EntityId | null> = {
   'buyer-regular': fixtureIds.users.buyerRegular,
   'buyer-pyme-active': fixtureIds.users.buyerPymeActive,
   'buyer-pyme-expired': fixtureIds.users.buyerPymeExpired,
+  'buyer-pyme-pending': fixtureIds.users.buyerPymePending,
+  'buyer-pyme-rejected': fixtureIds.users.buyerPymeRejected,
+  'buyer-pyme-revoked': fixtureIds.users.buyerPymeRevoked,
   seller: fixtureIds.users.seller,
   administrator: fixtureIds.users.administrator,
 }
@@ -95,18 +117,22 @@ function findUser(
   return userStore.find((user) => user.id === userId) ?? null
 }
 
-function findAccreditation(userId: EntityId | null): AcreditacionPyme | null {
+function findAccreditation(
+  userId: EntityId | null,
+  accreditationStore: readonly AcreditacionPyme[] = acreditacionesPyme,
+): AcreditacionPyme | null {
   if (userId === null) return null
-  return (
-    acreditacionesPyme.find(
-      (accreditation) => accreditation.usuarioId === userId,
-    ) ?? null
-  )
+  return [...accreditationStore]
+    .filter((accreditation) => accreditation.usuarioId === userId)
+    .sort((left, right) =>
+      right.fechaInicio.localeCompare(left.fechaInicio),
+    )[0] ?? null
 }
 
 function buildDemoSession(
   scenarioId: DemoScenarioId,
   userStore: readonly Usuario[] = usuarios,
+  accreditationStore: readonly AcreditacionPyme[] = acreditacionesPyme,
 ): DemoSession {
   const scenario = demoScenarios.find((item) => item.id === scenarioId)
   if (!scenario) {
@@ -121,7 +147,10 @@ function buildDemoSession(
     )
   }
 
-  const accreditation = findAccreditation(user?.id ?? null)
+  const accreditation = findAccreditation(
+    user?.id ?? null,
+    accreditationStore,
+  )
   return {
     scenario,
     user,
@@ -140,6 +169,20 @@ export function createMockServices(
   const request = createMockRequest(config)
   let userStore: Usuario[] = [...usuarios]
   let registeredBuyerSequence = 0
+  let submittedRequestSequence = 0
+  const requestStore: SolicitudPyme[] = solicitudesPyme.map((item) => ({
+    ...item,
+    documentos: [...item.documentos],
+  }))
+  const accreditationStore: AcreditacionPyme[] = acreditacionesPyme.map(
+    (item) => ({
+      ...item,
+      solicitudPyme: {
+        ...item.solicitudPyme,
+        documentos: [...item.solicitudPyme.documentos],
+      },
+    }),
+  )
   const paymentStore: Pago[] = pagos.map((payment) => ({ ...payment }))
   const commerceStore = {
     carts: carritos.map((cart) => ({
@@ -170,7 +213,11 @@ export function createMockServices(
             profile.password === credentials.password,
         )
         if (!accessProfile) return null
-        const session = buildDemoSession(accessProfile.scenarioId, userStore)
+        const session = buildDemoSession(
+          accessProfile.scenarioId,
+          userStore,
+          accreditationStore,
+        )
         return session.user
           ? { scenarioId: accessProfile.scenarioId, user: session.user }
           : null
@@ -286,22 +333,103 @@ export function createMockServices(
     orders: orderRepository,
     paymentGateway,
     pyme: {
+      getAccreditationsByUser: (userId, options) =>
+        request(
+          'pyme.getAccreditationsByUser',
+          accreditationStore.filter((item) => item.usuarioId === userId),
+          options,
+        ),
       getAccreditationByUser: (userId, options) =>
         request(
           'pyme.getAccreditationByUser',
-          acreditacionesPyme.find(
-            (accreditation) => accreditation.usuarioId === userId,
-          ) ?? null,
+          findAccreditation(userId, accreditationStore),
           options,
         ),
       getRequestByUser: (userId, options) =>
         request(
           'pyme.getRequestByUser',
-          solicitudesPyme.find((item) => item.usuarioId === userId) ?? null,
+          [...requestStore]
+            .filter((item) => item.usuarioId === userId)
+            .sort((left, right) =>
+              right.fechaSolicitud.localeCompare(left.fechaSolicitud),
+            )[0] ?? null,
+          options,
+        ),
+      listRequestsByUser: (userId, options) =>
+        request(
+          'pyme.listRequestsByUser',
+          requestStore
+            .filter((item) => item.usuarioId === userId)
+            .sort((left, right) =>
+              right.fechaSolicitud.localeCompare(left.fechaSolicitud),
+            ),
           options,
         ),
       listRequests: (options) =>
-        request('pyme.listRequests', solicitudesPyme, options),
+        request('pyme.listRequests', requestStore, options),
+      submitRequest: async (input, options) => {
+        await request('pyme.submitRequest', null, options)
+        const buyer = userStore.find(
+          (user) => user.id === input.usuarioId && user.rol === 'comprador',
+        )
+        if (!buyer) {
+          throw new RepositoryError(
+            'Solo un Comprador registrado puede enviar la solicitud.',
+            'not_found',
+          )
+        }
+        if (
+          requestStore.some(
+            (item) =>
+              item.usuarioId === input.usuarioId && item.estado === 'pendiente',
+          )
+        ) {
+          throw new RepositoryError(
+            'Ya existe una solicitud pendiente de revisión.',
+            'conflict',
+          )
+        }
+        if (
+          accreditationStore.some(
+            (item) =>
+              item.usuarioId === input.usuarioId &&
+              isAccreditationValid(item, DEMO_REFERENCE_DATE),
+          )
+        ) {
+          throw new RepositoryError(
+            'Ya existe una acreditación activa y vigente.',
+            'conflict',
+          )
+        }
+        const nombreComercial = input.nombreComercial.trim()
+        const identificacionNegocio = input.identificacionNegocio.trim()
+        const actividadEconomica = input.actividadEconomica.trim()
+        const documentos = input.documentos.map((item) => item.trim()).filter(Boolean)
+        if (
+          !nombreComercial ||
+          !identificacionNegocio ||
+          !actividadEconomica ||
+          documentos.length === 0
+        ) {
+          throw new RepositoryError(
+            'La solicitud demostrativa está incompleta.',
+            'conflict',
+          )
+        }
+        submittedRequestSequence += 1
+        const submitted: SolicitudPyme = {
+          id: `demo-solicitud-enviada-${submittedRequestSequence}`,
+          usuarioId: input.usuarioId,
+          nombreComercial,
+          identificacionNegocio,
+          actividadEconomica,
+          documentos,
+          estado: 'pendiente',
+          fechaSolicitud: '2026-11-07T19:00:00.000Z',
+        }
+        requestStore.push(submitted)
+        return structuredClone(submitted)
+      },
     },
     reports: {
       list: (options) => request('reports.list', reportes, options),
@@ -310,7 +438,7 @@ export function createMockServices(
       getByScenario: async (scenarioId, options) =>
         request(
           'demoSession.getByScenario',
-          buildDemoSession(scenarioId, userStore),
+          buildDemoSession(scenarioId, userStore, accreditationStore),
           options,
         ),
       listScenarios: (options) =>
