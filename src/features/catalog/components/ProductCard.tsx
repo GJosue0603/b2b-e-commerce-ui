@@ -29,6 +29,7 @@ export interface ProductCardProps {
   readonly accreditation?: AcreditacionPyme | null
   readonly categoryName?: string
   readonly cta: ProductCardCta
+  readonly detailPath?: string
   readonly image: ProductCardImage
   readonly pricingReferenceDate?: Date
   readonly product: Producto
@@ -38,6 +39,7 @@ export function ProductCard({
   accreditation,
   categoryName,
   cta,
+  detailPath,
   image,
   pricingReferenceDate,
   product,
@@ -64,7 +66,9 @@ export function ProductCard({
       </div>
       <div className="product-card__body">
         {categoryName && <span>{categoryName}</span>}
-        <h3>{product.nombre}</h3>
+        <h3>
+          {detailPath ? <Link to={detailPath}>{product.nombre}</Link> : product.nombre}
+        </h3>
         <p>{product.descripcion}</p>
         <PriceDisplay
           accreditation={accreditation}

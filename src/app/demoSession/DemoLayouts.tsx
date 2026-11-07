@@ -32,10 +32,18 @@ export function DemoHomePage() {
 
 export function DemoCatalogPage() {
   const { state } = useDemoSession()
+  const { addItem } = useCart()
   const accreditation =
     state.status === 'success' ? state.data.session.accreditation : null
 
-  return <CatalogPage accreditation={accreditation} />
+  return (
+    <CatalogPage
+      accreditation={accreditation}
+      onAddToCart={(product, quantity) =>
+        addItem(product.id, quantity, product.existencias)
+      }
+    />
+  )
 }
 
 export function DemoProductDetailPage() {

@@ -1,7 +1,8 @@
 import { useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import type { AcreditacionPyme, Categoria, Producto } from '../../../domain'
 import { paths } from '../../../app/router/paths'
+import type { CartMutationResult } from '../../cart/state'
 import {
   Alert,
   Button,
@@ -19,15 +20,19 @@ import {
   type CatalogQueryPatch,
 } from '../catalog-query'
 import { CatalogFilters } from '../components/CatalogFilters'
-import { ProductCard } from '../components'
+import { CatalogActiveFilters, ProductCard } from '../components'
 import { useCatalogData } from '../hooks/useCatalogData'
 import './catalog-page.css'
 
 export interface CatalogPageProps {
   readonly accreditation?: AcreditacionPyme | null
+  readonly onAddToCart?: (
+    product: Producto,
+    quantity: number,
+  ) => CartMutationResult
 }
 
-export function CatalogPage({ accreditation }: CatalogPageProps) {
+export function CatalogPage({ accreditation, onAddToCart }: CatalogPageProps) {
   const [searchParams, setSearchParams] = useSearchParams()
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
   const dataState = useCatalogData()
@@ -42,10 +47,23 @@ export function CatalogPage({ accreditation }: CatalogPageProps) {
   return (
     <div className="container catalog-page">
       <header className="catalog-page__header">
-        <div>
-          <span>Catálogo NexoTech</span>
-          <h1>Explora nuestros productos</h1>
-          <p>Equipamiento tecnológico para personas y negocios.</p>
+        <nav aria-label="Migas de pan" className="catalog-breadcrumb">
+          <Link to={paths.home}>Inicio</Link>
+          <span aria-hidden="true">/</span>
+          <span aria-current="page">Catálogo de productos</span>
+        </nav>
+        <div className="catalog-page__heading">
+          <div>
+            <h1>Catálogo de Tecnología</h1>
+            <p>
+              Equipamiento certificado para hogar, estudio y entornos
+              profesionales con entrega en Costa Rica.
+            </p>
+          </div>
+          <div className="catalog-page__metadata" aria-label="Información comercial">
+            <span>San José, Costa Rica</span>
+            <span>Precios en colones (₡)</span>
+          </div>
         </div>
       </header>
 
@@ -64,6 +82,7 @@ export function CatalogPage({ accreditation }: CatalogPageProps) {
           mobileFiltersOpen={mobileFiltersOpen}
           onCloseMobileFilters={() => setMobileFiltersOpen(false)}
           onOpenMobileFilters={() => setMobileFiltersOpen(true)}
+          onAddToCart={onAddToCart}
           products={dataState.data.products}
           searchParams={searchParams}
           setSearchParams={setSearchParams}
@@ -82,6 +101,7 @@ interface CatalogContentProps {
   readonly mobileFiltersOpen: boolean
   readonly onCloseMobileFilters: () => void
   readonly onOpenMobileFilters: () => void
+  readonly onAddToCart?: CatalogPageProps['onAddToCart']
   readonly products: readonly Producto[]
   readonly searchParams: URLSearchParams
   readonly setSearchParams: ReturnType<typeof useSearchParams>[1]
@@ -96,6 +116,7 @@ function CatalogContent({
   mobileFiltersOpen,
   onCloseMobileFilters,
   onOpenMobileFilters,
+  onAddToCart,
   products,
   searchParams,
   setSearchParams,
@@ -119,17 +140,30 @@ function CatalogContent({
   return (
     <div className="catalog-layout">
       <aside aria-label="Filtros del catálogo" className="catalog-sidebar">
-        {filtersElement}
+        <div className="catalog-sidebar__filters">{filtersElement}</div>
+        <div className="catalog-pyme-callout">
+          <strong>¿Comprador empresarial?</strong>
+          <p>
+            Solicita la acreditación PYME desde tu cuenta para acceder a precios
+            preferenciales durante su vigencia.
+          </p>
+          <Link to={paths.accreditationStatus}>Consultar acreditación PYME →</Link>
+        </div>
       </aside>
 
       <section aria-labelledby="catalog-results-title" className="catalog-results">
         <div className="catalog-toolbar">
           <div>
-            <h2 id="catalog-results-title">Productos</h2>
-            <p aria-live="polite">
-              {result.totalItems}{' '}
-              {result.totalItems === 1 ? 'producto encontrado' : 'productos encontrados'}
-            </p>
+            <h2 id="catalog-results-title" aria-live="polite">
+              {result.totalItems === 1
+                ? 'Mostrando 1 producto'
+                : `Mostrando ${result.totalItems} productos`}
+            </h2>
+            <CatalogActiveFilters
+              categoryName={categoryNames.get(filters.categoryId)}
+              filters={filters}
+              onChange={updateFilters}
+            />
           </div>
           <Button
             className="catalog-mobile-filter-button"
@@ -175,11 +209,20 @@ function CatalogContent({
                 <ProductCard
                   accreditation={accreditation}
                   categoryName={categoryNames.get(product.categoriaId)}
-                  cta={{
-                    kind: 'detail',
-                    label: 'Ver detalle',
-                    to: paths.productDetail(product.id),
-                  }}
+                  cta={
+                    onAddToCart
+                      ? {
+                          kind: 'add-to-cart',
+                          label: 'Agregar al carrito',
+                          onClick: () => onAddToCart(product, 1),
+                        }
+                      : {
+                          kind: 'detail',
+                          label: 'Ver detalle',
+                          to: paths.productDetail(product.id),
+                        }
+                  }
+                  detailPath={paths.productDetail(product.id)}
                   image={{ alt: product.nombre, src: product.imagenUrl }}
                   key={product.id}
                   product={product}

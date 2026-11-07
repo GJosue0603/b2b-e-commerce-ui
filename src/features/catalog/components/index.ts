@@ -18,3 +18,7 @@ export {
   type StockBadgeProps,
   type StockState,
 } from './StockBadge'
+export {
+  CatalogActiveFilters,
+  type CatalogActiveFiltersProps,
+} from './CatalogActiveFilters'

@@ -37,7 +37,7 @@ function renderRoute(
 
 const routeCases = [
   ['/', 'Tecnología para tu día a día y tu negocio', 'visitor'],
-  ['/catalogo', 'Explora nuestros productos', 'visitor'],
+  ['/catalogo', 'Catálogo de Tecnología', 'visitor'],
   ['/producto/demo-producto-teclado-mecanico', 'Teclado mecánico inalámbrico', 'visitor'],
   ['/carrito', 'Tu carrito', 'visitor'],
   ['/checkout', 'Revisar y pagar', 'buyer-regular'],

@@ -43,7 +43,7 @@ describe('StoreHeader', () => {
     expect(
       await screen.findByRole('heading', {
         level: 1,
-        name: 'Explora nuestros productos',
+        name: 'Catálogo de Tecnología',
       }),
     ).toBeVisible()
     expect(router.state.location.pathname).toBe('/catalogo')

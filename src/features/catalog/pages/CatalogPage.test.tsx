@@ -4,6 +4,7 @@ import { createMemoryRouter, RouterProvider } from 'react-router-dom'
 import { describe, expect, it } from 'vitest'
 import { AppServicesProvider } from '../../../app/services'
 import { createMockServices } from '../../../mocks/repositories'
+import { renderTestApp } from '../../../test/renderApp'
 import { CatalogPage } from './CatalogPage'
 
 function renderCatalog(initialEntry = '/catalogo') {
@@ -25,7 +26,7 @@ describe('CatalogPage', () => {
     renderCatalog()
 
     expect(await screen.findAllByRole('article')).toHaveLength(4)
-    expect(screen.getByText('5 productos encontrados')).toBeVisible()
+    expect(screen.getByText('Mostrando 5 productos')).toBeVisible()
     expect(
       screen.getByRole('navigation', { name: 'Paginación del catálogo' }),
     ).toBeVisible()
@@ -39,7 +40,7 @@ describe('CatalogPage', () => {
 
     await user.selectOptions(availability, 'out-of-stock')
 
-    expect(await screen.findByText('1 producto encontrado')).toBeVisible()
+    expect(await screen.findByText('Mostrando 1 producto')).toBeVisible()
     expect(screen.getByRole('heading', { name: 'Monitor de 27 pulgadas' })).toBeVisible()
     expect(router.state.location.search).toContain(
       'disponibilidad=out-of-stock',
@@ -49,7 +50,7 @@ describe('CatalogPage', () => {
   it('conserva la búsqueda al paginar', async () => {
     const user = userEvent.setup()
     const router = renderCatalog('/catalogo?q=o')
-    await screen.findByText('5 productos encontrados')
+    await screen.findByText('Mostrando 5 productos')
 
     await user.click(screen.getByRole('button', { name: 'Ir a la página 2' }))
 
@@ -70,12 +71,44 @@ describe('CatalogPage', () => {
   it('abre los filtros móviles en un drawer dialog', async () => {
     const user = userEvent.setup()
     renderCatalog()
-    await screen.findByText('5 productos encontrados')
+    await screen.findByText('Mostrando 5 productos')
 
     await user.click(screen.getByRole('button', { name: 'Filtros' }))
 
     expect(
       screen.getByRole('dialog', { name: 'Filtrar productos' }),
+    ).toBeVisible()
+  })
+
+  it('permite quitar un filtro activo desde su chip', async () => {
+    const user = userEvent.setup()
+    const router = renderCatalog('/catalogo?q=teclado')
+    await screen.findByText('Mostrando 1 producto')
+
+    await user.click(
+      screen.getByRole('button', { name: 'Quitar filtro Búsqueda: teclado' }),
+    )
+
+    expect(await screen.findByText('Mostrando 5 productos')).toBeVisible()
+    expect(router.state.location.search).not.toContain('q=')
+  })
+
+  it('agrega desde la card y actualiza el contador compartido del Header', async () => {
+    const user = userEvent.setup()
+    renderTestApp('/catalogo')
+    expect(
+      await screen.findByRole('link', { name: 'Carrito, 0 productos' }),
+    ).toBeVisible()
+
+    const addButtons = await screen.findAllByRole('button', {
+      name: 'Agregar al carrito',
+    })
+    const firstButton = addButtons[0]
+    if (!firstButton) throw new Error('No se encontró un producto disponible.')
+    await user.click(firstButton)
+
+    expect(
+      screen.getByRole('link', { name: 'Carrito, 1 producto' }),
     ).toBeVisible()
   })
 })
