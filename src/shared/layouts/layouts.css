@@ -1,0 +1,108 @@
+.store-layout {
+  display: grid;
+  min-height: 100vh;
+  grid-template-rows: auto 1fr auto;
+}
+
+.store-layout__content {
+  width: 100%;
+}
+
+.auth-layout {
+  display: grid;
+  min-height: 100vh;
+  grid-template-columns: minmax(0, 1fr) minmax(20rem, 0.8fr);
+  background: var(--color-surface);
+}
+
+.auth-layout__form,
+.auth-layout__benefits {
+  display: grid;
+  align-content: center;
+  padding: clamp(var(--space-3), 6vw, 6rem);
+}
+
+.auth-layout__form {
+  justify-items: start;
+}
+
+.auth-layout__outlet {
+  width: min(100%, 32rem);
+  margin-block-start: var(--space-4);
+}
+
+.auth-layout__benefits {
+  background: var(--color-text);
+  color: var(--color-surface);
+}
+
+.auth-layout__benefits > div {
+  max-width: 32rem;
+}
+
+.auth-layout__eyebrow {
+  margin-block-end: var(--space-1);
+  color: color-mix(in srgb, var(--color-accent) 72%, var(--color-surface));
+  font-size: 0.875rem;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.dashboard-layout {
+  display: grid;
+  min-height: 100vh;
+  grid-template-columns: 16rem minmax(0, 1fr);
+}
+
+.dashboard-layout__workspace {
+  min-width: 0;
+}
+
+.dashboard-topbar {
+  display: flex;
+  min-height: 4.5rem;
+  gap: var(--space-2);
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+
+.dashboard-topbar strong,
+.dashboard-topbar span {
+  display: block;
+}
+
+.dashboard-topbar span {
+  color: color-mix(in srgb, var(--color-text) 62%, transparent);
+  font-size: 0.8125rem;
+}
+
+.dashboard-layout__content {
+  width: 100%;
+  max-width: var(--container-max-width);
+  margin-inline: auto;
+  padding: var(--space-3);
+}
+
+@media (max-width: 48rem) {
+  .auth-layout,
+  .dashboard-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .auth-layout__benefits {
+    display: none;
+  }
+
+  .auth-layout__form {
+    padding: var(--space-3) var(--space-2);
+  }
+
+  .dashboard-topbar,
+  .dashboard-layout__content {
+    padding-inline: var(--space-2);
+  }
+}

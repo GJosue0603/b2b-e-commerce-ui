@@ -1,5 +1,5 @@
-import { UiShowcase } from './UiShowcase'
+import { AppRouter } from './router/AppRouter'
 
 export function App() {
-  return <UiShowcase />
+  return <AppRouter />
 }
