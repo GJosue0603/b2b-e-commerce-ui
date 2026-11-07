@@ -5,13 +5,13 @@ import { CartPage } from '../../features/cart/pages/CartPage'
 import { CatalogPage } from '../../features/catalog/pages/CatalogPage'
 import { ProductDetailPage } from '../../features/catalog/pages/ProductDetailPage'
 import { HomePage } from '../../features/store/pages/HomePage'
+import { useAuth } from '../../features/auth/state'
 import { useDemoSession } from './useDemoSession'
 
 export function DemoStoreLayout() {
-  const { state } = useDemoSession()
+  const { user } = useAuth()
   const cart = useCart()
-  const authenticated =
-    state.status === 'success' && state.data.session.user?.rol === 'comprador'
+  const authenticated = user?.rol === 'comprador'
 
   return (
     <StoreLayout
@@ -69,9 +69,8 @@ export interface DemoDashboardLayoutProps {
 export function DemoDashboardLayout({
   fallbackRole,
 }: DemoDashboardLayoutProps) {
-  const { state } = useDemoSession()
-  const simulatedRole =
-    state.status === 'success' ? state.data.session.user?.rol : undefined
+  const { user } = useAuth()
+  const simulatedRole = user?.rol
   const role =
     simulatedRole === 'vendedor' || simulatedRole === 'administrador'
       ? simulatedRole

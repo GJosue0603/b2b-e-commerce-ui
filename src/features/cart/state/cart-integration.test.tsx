@@ -6,6 +6,7 @@ import { AppServicesProvider } from '../../../app/services'
 import { DemoSessionProvider } from '../../../app/demoSession'
 import { routeDefinitions } from '../../../app/router/routes'
 import { createMockServices } from '../../../mocks/repositories'
+import { AuthProvider } from '../../auth/state'
 import { CartProvider } from './CartProvider'
 
 function renderProductDetail() {
@@ -15,9 +16,11 @@ function renderProductDetail() {
   render(
     <AppServicesProvider services={createMockServices({ latencyMs: 0 })}>
       <DemoSessionProvider>
-        <CartProvider>
-          <RouterProvider router={router} />
-        </CartProvider>
+        <AuthProvider>
+          <CartProvider>
+            <RouterProvider router={router} />
+          </CartProvider>
+        </AuthProvider>
       </DemoSessionProvider>
     </AppServicesProvider>,
   )
@@ -46,9 +49,11 @@ describe('integración del carrito', () => {
     render(
       <AppServicesProvider services={createMockServices({ latencyMs: 0 })}>
         <DemoSessionProvider>
-          <CartProvider>
-            <RouterProvider router={router} />
-          </CartProvider>
+          <AuthProvider>
+            <CartProvider>
+              <RouterProvider router={router} />
+            </CartProvider>
+          </AuthProvider>
         </DemoSessionProvider>
       </AppServicesProvider>,
     )

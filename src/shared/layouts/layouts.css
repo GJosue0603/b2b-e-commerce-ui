@@ -8,6 +8,12 @@
   width: 100%;
 }
 
+.route-access-state {
+  display: grid;
+  gap: var(--space-2);
+  padding-block: var(--space-4);
+}
+
 .auth-layout {
   display: grid;
   min-height: 100vh;
@@ -38,6 +44,26 @@
 
 .auth-layout__benefits > div {
   max-width: 32rem;
+}
+
+.auth-layout__benefit-list {
+  display: grid;
+  gap: var(--space-1);
+  padding: 0;
+  margin-block: var(--space-3);
+  list-style: none;
+}
+
+.auth-layout__benefit-list li {
+  padding: var(--space-2);
+  border: 1px solid color-mix(in srgb, var(--color-surface) 18%, transparent);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--color-surface) 8%, transparent);
+}
+
+.auth-layout__store-link {
+  color: var(--color-surface);
+  font-weight: 650;
 }
 
 .auth-layout__eyebrow {

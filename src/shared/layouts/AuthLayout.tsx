@@ -14,12 +14,21 @@ export function AuthLayout() {
       </section>
       <aside className="auth-layout__benefits">
         <div>
-          <p className="auth-layout__eyebrow">Una sola tienda</p>
-          <h2>Tecnología para personas y negocios</h2>
+          <p className="auth-layout__eyebrow">Experiencia NexoTech</p>
+          <h2>Tecnología garantizada para tu día a día y tu negocio</h2>
           <p>
             Toda cuenta inicia como Comprador. La acreditación PYME es un
             beneficio sujeto a revisión, no un rol independiente.
           </p>
+          <ul className="auth-layout__benefit-list">
+            <li>Garantía local directa</li>
+            <li>Facturación electrónica demostrativa</li>
+            <li>Seguimiento de pedidos confirmados</li>
+            <li>Acreditación PYME opcional</li>
+          </ul>
+          <Link className="auth-layout__store-link" to={routePatterns.home}>
+            Volver a la tienda
+          </Link>
         </div>
       </aside>
     </main>

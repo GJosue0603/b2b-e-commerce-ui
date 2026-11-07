@@ -4,6 +4,7 @@ import { createMemoryRouter, RouterProvider } from 'react-router-dom'
 import { describe, expect, it } from 'vitest'
 import { createMockServices } from '../../mocks/repositories'
 import { CartProvider } from '../../features/cart/state'
+import { AuthProvider } from '../../features/auth/state'
 import type { DemoScenarioId } from '../../services'
 import { DemoSessionProvider } from '../../app/demoSession'
 import { routeDefinitions } from '../../app/router/routes'
@@ -17,9 +18,11 @@ function renderStore(initialScenarioId: DemoScenarioId = 'visitor') {
   render(
     <AppServicesProvider services={createMockServices({ latencyMs: 0 })}>
       <DemoSessionProvider initialScenarioId={initialScenarioId}>
-        <CartProvider>
-          <RouterProvider router={router} />
-        </CartProvider>
+        <AuthProvider>
+          <CartProvider>
+            <RouterProvider router={router} />
+          </CartProvider>
+        </AuthProvider>
       </DemoSessionProvider>
     </AppServicesProvider>,
   )

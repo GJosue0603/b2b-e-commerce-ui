@@ -13,12 +13,32 @@ import type {
 } from '../../domain'
 import type { RepositoryRequestOptions } from './common'
 
+export interface BuyerProfileInput {
+  readonly apellidos: string
+  readonly correo: string
+  readonly nombre: string
+  readonly telefono: string
+}
+
 export interface UserRepository {
+  createBuyer(
+    input: BuyerProfileInput,
+    options?: RepositoryRequestOptions,
+  ): Promise<Usuario>
+  getByEmail(
+    email: string,
+    options?: RepositoryRequestOptions,
+  ): Promise<Usuario | null>
   getById(
     id: EntityId,
     options?: RepositoryRequestOptions,
   ): Promise<Usuario | null>
   list(options?: RepositoryRequestOptions): Promise<readonly Usuario[]>
+  updateProfile(
+    id: EntityId,
+    input: BuyerProfileInput,
+    options?: RepositoryRequestOptions,
+  ): Promise<Usuario>
 }
 
 export interface CatalogRepository {

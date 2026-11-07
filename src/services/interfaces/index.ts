@@ -12,6 +12,7 @@ export type {
   DemoSessionRepository,
 } from './demo-session'
 export type {
+  BuyerProfileInput,
   CatalogRepository,
   CommerceRepository,
   PymeRepository,

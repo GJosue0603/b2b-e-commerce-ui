@@ -6,8 +6,8 @@ import {
   type ReactNode,
 } from 'react'
 import type { EntityId, ItemCarrito } from '../../../domain'
-import { useDemoSession } from '../../../app/demoSession'
 import { useAppServices } from '../../../app/services'
+import { useAuth } from '../../auth/state'
 import {
   CartContext,
   type CartContextValue,
@@ -44,11 +44,8 @@ function validateQuantity(
 
 export function CartProvider({ children }: CartProviderProps) {
   const { commerce } = useAppServices()
-  const { state: sessionState } = useDemoSession()
-  const ownerKey =
-    sessionState.status === 'success'
-      ? (sessionState.data.session.user?.id ?? 'visitor')
-      : undefined
+  const { status: authStatus, user } = useAuth()
+  const ownerKey = authStatus === 'ready' ? (user?.id ?? 'visitor') : undefined
   const [snapshot, setSnapshot] = useState<CartSnapshot | null>(null)
 
   useEffect(() => {

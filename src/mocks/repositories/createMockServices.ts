@@ -79,9 +79,12 @@ const scenarioUserIds: Record<DemoScenarioId, EntityId | null> = {
   administrator: fixtureIds.users.administrator,
 }
 
-function findUser(userId: EntityId | null): Usuario | null {
+function findUser(
+  userId: EntityId | null,
+  userStore: readonly Usuario[] = usuarios,
+): Usuario | null {
   if (userId === null) return null
-  return usuarios.find((user) => user.id === userId) ?? null
+  return userStore.find((user) => user.id === userId) ?? null
 }
 
 function findAccreditation(userId: EntityId | null): AcreditacionPyme | null {
@@ -93,13 +96,16 @@ function findAccreditation(userId: EntityId | null): AcreditacionPyme | null {
   )
 }
 
-function buildDemoSession(scenarioId: DemoScenarioId): DemoSession {
+function buildDemoSession(
+  scenarioId: DemoScenarioId,
+  userStore: readonly Usuario[] = usuarios,
+): DemoSession {
   const scenario = demoScenarios.find((item) => item.id === scenarioId)
   if (!scenario) {
     throw new RepositoryError('El escenario solicitado no existe.', 'not_found')
   }
 
-  const user = findUser(scenarioUserIds[scenarioId])
+  const user = findUser(scenarioUserIds[scenarioId], userStore)
   if (scenarioUserIds[scenarioId] !== null && user === null) {
     throw new RepositoryError(
       'El usuario del escenario no existe en los datos demostrativos.',
@@ -124,16 +130,80 @@ export function createMockServices(
   config: MockRepositoryConfig = {},
 ): AppServices {
   const request = createMockRequest(config)
+  let userStore: Usuario[] = [...usuarios]
+  let registeredBuyerSequence = 0
 
   return {
     users: {
+      createBuyer: async (input, options) => {
+        await request('users.createBuyer', null, options)
+        const normalizedEmail = input.correo.trim().toLocaleLowerCase('es')
+        if (
+          userStore.some(
+            (user) => user.correo.toLocaleLowerCase('es') === normalizedEmail,
+          )
+        ) {
+          throw new RepositoryError(
+            'Ya existe una cuenta con ese correo electrónico.',
+            'conflict',
+          )
+        }
+        registeredBuyerSequence += 1
+        const buyer: Usuario = {
+          ...input,
+          correo: normalizedEmail,
+          id: `demo-usuario-registrado-${registeredBuyerSequence}`,
+          rol: 'comprador',
+          activo: true,
+          fechaCreacion: '2026-11-07T18:00:00.000Z',
+        }
+        userStore = [...userStore, buyer]
+        return structuredClone(buyer)
+      },
+      getByEmail: (email, options) =>
+        request(
+          'users.getByEmail',
+          userStore.find(
+            (user) =>
+              user.correo.toLocaleLowerCase('es') ===
+              email.trim().toLocaleLowerCase('es'),
+          ) ?? null,
+          options,
+        ),
       getById: (id, options) =>
         request(
           'users.getById',
-          usuarios.find((user) => user.id === id) ?? null,
+          userStore.find((user) => user.id === id) ?? null,
           options,
         ),
-      list: (options) => request('users.list', usuarios, options),
+      list: (options) => request('users.list', userStore, options),
+      updateProfile: async (id, input, options) => {
+        await request('users.updateProfile', null, options)
+        const current = userStore.find((user) => user.id === id)
+        if (!current) {
+          throw new RepositoryError('El usuario no existe.', 'not_found')
+        }
+        const normalizedEmail = input.correo.trim().toLocaleLowerCase('es')
+        if (
+          userStore.some(
+            (user) =>
+              user.id !== id &&
+              user.correo.toLocaleLowerCase('es') === normalizedEmail,
+          )
+        ) {
+          throw new RepositoryError(
+            'Ya existe otra cuenta con ese correo electrónico.',
+            'conflict',
+          )
+        }
+        const updated: Usuario = {
+          ...current,
+          ...input,
+          correo: normalizedEmail,
+        }
+        userStore = userStore.map((user) => (user.id === id ? updated : user))
+        return structuredClone(updated)
+      },
     },
     catalog: {
       getProductById: (id, options) =>
@@ -194,7 +264,7 @@ export function createMockServices(
       getByScenario: async (scenarioId, options) =>
         request(
           'demoSession.getByScenario',
-          buildDemoSession(scenarioId),
+          buildDemoSession(scenarioId, userStore),
           options,
         ),
       listScenarios: (options) =>

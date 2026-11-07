@@ -8,7 +8,11 @@ export type AsyncState<T> =
   | { readonly status: 'success'; readonly data: T }
   | { readonly status: 'error'; readonly error: Error }
 
-export type RepositoryErrorCode = 'aborted' | 'mock_failure' | 'not_found'
+export type RepositoryErrorCode =
+  | 'aborted'
+  | 'conflict'
+  | 'mock_failure'
+  | 'not_found'
 
 export class RepositoryError extends Error {
   constructor(

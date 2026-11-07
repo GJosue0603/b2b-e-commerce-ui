@@ -1,0 +1,82 @@
+.account-page {
+  display: grid;
+  gap: var(--space-3);
+  padding-block: var(--space-4);
+}
+
+.account-page__header {
+  display: flex;
+  gap: var(--space-2);
+  align-items: end;
+  justify-content: space-between;
+}
+
+.account-page__header h1 {
+  margin-block: var(--space-1);
+}
+
+.account-page__header p,
+.account-card p {
+  color: color-mix(in srgb, var(--color-text) 68%, transparent);
+}
+
+.account-page__orders,
+.account-card a {
+  color: var(--color-primary);
+  font-weight: 650;
+}
+
+.account-page__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(17rem, 0.38fr);
+  gap: var(--space-3);
+  align-items: start;
+}
+
+.account-card {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.account-card h2 {
+  margin: 0;
+}
+
+.account-card--pyme {
+  border-inline-start: 0.25rem solid var(--color-accent);
+}
+
+.profile-form {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.profile-form__row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+
+.profile-form .ui-button {
+  justify-self: start;
+}
+
+@media (max-width: 48rem) {
+  .account-page__header,
+  .account-page__layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .profile-form__row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .profile-form .ui-button {
+    width: 100%;
+  }
+}

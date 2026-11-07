@@ -18,7 +18,10 @@ export type MockOperation =
   | 'pyme.listRequests'
   | 'reports.list'
   | 'users.getById'
+  | 'users.getByEmail'
+  | 'users.createBuyer'
   | 'users.list'
+  | 'users.updateProfile'
 
 export interface MockRepositoryConfig {
   readonly failOperations?: readonly MockOperation[]

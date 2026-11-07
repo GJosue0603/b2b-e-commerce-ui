@@ -3,10 +3,12 @@ import { useNavigate } from 'react-router-dom'
 import type { DemoScenarioId } from '../../services'
 import { Alert, Badge, Button, Select, Skeleton } from '../../shared/ui'
 import { useDemoSession } from './useDemoSession'
+import { useAuth } from '../../features/auth/state'
 
 export function DemoScenarioControl() {
   const navigate = useNavigate()
   const { retry, selectScenario, state } = useDemoSession()
+  const { user } = useAuth()
 
   if (!import.meta.env.DEV) return null
 
@@ -58,11 +60,11 @@ export function DemoScenarioControl() {
             </p>
             <div className="demo-scenario__status">
               <span>
-                {state.data.session.user
-                  ? `${state.data.session.user.nombre} · ${state.data.session.user.rol}`
+                {user
+                  ? `${user.nombre} · ${user.rol}`
                   : 'Sin usuario autenticado'}
               </span>
-              {state.data.session.user?.rol === 'comprador' && (
+              {user?.rol === 'comprador' && (
                 <Badge
                   variant={
                     state.data.session.pymePricingEnabled ? 'success' : 'neutral'

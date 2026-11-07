@@ -8,6 +8,7 @@ import { AppServicesProvider } from '../../../app/services'
 import { createMockServices } from '../../../mocks/repositories'
 import type { DemoScenarioId } from '../../../services'
 import { CartProvider } from '../state'
+import { AuthProvider } from '../../auth/state'
 
 function renderBuyerCart(scenarioId: DemoScenarioId = 'buyer-regular') {
   const router = createMemoryRouter(routeDefinitions, {
@@ -16,9 +17,11 @@ function renderBuyerCart(scenarioId: DemoScenarioId = 'buyer-regular') {
   render(
     <AppServicesProvider services={createMockServices({ latencyMs: 0 })}>
       <DemoSessionProvider initialScenarioId={scenarioId}>
-        <CartProvider>
-          <RouterProvider router={router} />
-        </CartProvider>
+        <AuthProvider>
+          <CartProvider>
+            <RouterProvider router={router} />
+          </CartProvider>
+        </AuthProvider>
       </DemoSessionProvider>
     </AppServicesProvider>,
   )

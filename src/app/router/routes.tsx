@@ -1,5 +1,10 @@
 import { Navigate, type RouteObject } from 'react-router-dom'
 import { UiShowcase } from '../UiShowcase'
+import { LoginPage } from '../../features/auth/pages/LoginPage'
+import { RegisterPage } from '../../features/auth/pages/RegisterPage'
+import { ProtectedRoute } from '../../features/auth/components'
+import { AccountPage } from '../../features/account/pages/AccountPage'
+import { MyOrdersPage } from '../../features/orders/pages/MyOrdersPage'
 import {
   DemoAppFrame,
   DemoCartPage,
@@ -49,7 +54,11 @@ const publicStoreRoutes: RouteObject = {
 }
 
 const buyerRoutes: RouteObject = {
-  element: <DemoStoreLayout />,
+  element: (
+    <ProtectedRoute allowedRoles={['comprador']}>
+      <DemoStoreLayout />
+    </ProtectedRoute>
+  ),
   children: [
     {
       path: routePatterns.checkout,
@@ -73,23 +82,11 @@ const buyerRoutes: RouteObject = {
     },
     {
       path: routePatterns.account,
-      element: (
-        <RoutePlaceholder
-          audience="Comprador"
-          description="Consulta y actualización de datos personales."
-          title="Mi cuenta"
-        />
-      ),
+      element: <AccountPage />,
     },
     {
       path: routePatterns.orders,
-      element: (
-        <RoutePlaceholder
-          audience="Comprador"
-          description="Historial personal de pedidos confirmados."
-          title="Mis pedidos"
-        />
-      ),
+      element: <MyOrdersPage />,
     },
     {
       path: routePatterns.accreditationRequest,
@@ -119,30 +116,22 @@ const authRoutes: RouteObject = {
   children: [
     {
       path: routePatterns.signIn,
-      element: (
-        <RoutePlaceholder
-          audience="Público"
-          description="Acceso de usuarios registrados."
-          title="Iniciar sesión"
-        />
-      ),
+      element: <LoginPage />,
     },
     {
       path: routePatterns.signUp,
-      element: (
-        <RoutePlaceholder
-          audience="Público"
-          description="Creación de una cuenta que inicia con rol Comprador."
-          title="Crear cuenta"
-        />
-      ),
+      element: <RegisterPage />,
     },
   ],
 }
 
 const sellerRoutes: RouteObject = {
   path: routePatterns.sellerRoot,
-  element: <DemoDashboardLayout fallbackRole="vendedor" />,
+  element: (
+    <ProtectedRoute allowedRoles={['vendedor']}>
+      <DemoDashboardLayout fallbackRole="vendedor" />
+    </ProtectedRoute>
+  ),
   children: [
     {
       index: true,
@@ -203,7 +192,11 @@ const sellerRoutes: RouteObject = {
 
 const administratorRoutes: RouteObject = {
   path: routePatterns.adminRoot,
-  element: <DemoDashboardLayout fallbackRole="administrador" />,
+  element: (
+    <ProtectedRoute allowedRoles={['administrador']}>
+      <DemoDashboardLayout fallbackRole="administrador" />
+    </ProtectedRoute>
+  ),
   children: [
     {
       index: true,

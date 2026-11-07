@@ -4,6 +4,7 @@ import { createMemoryRouter, RouterProvider } from 'react-router-dom'
 import { describe, expect, it } from 'vitest'
 import { createMockServices } from '../../mocks/repositories'
 import { CartProvider } from '../../features/cart/state'
+import { AuthProvider } from '../../features/auth/state'
 import { routeDefinitions } from '../router/routes'
 import { AppServicesProvider } from '../services'
 import { DemoSessionProvider } from './DemoSessionProvider'
@@ -22,9 +23,11 @@ function renderDemo(fail = false) {
   render(
     <AppServicesProvider services={services}>
       <DemoSessionProvider>
-        <CartProvider>
-          <RouterProvider router={router} />
-        </CartProvider>
+        <AuthProvider>
+          <CartProvider>
+            <RouterProvider router={router} />
+          </CartProvider>
+        </AuthProvider>
       </DemoSessionProvider>
     </AppServicesProvider>,
   )
