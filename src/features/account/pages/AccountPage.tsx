@@ -13,7 +13,6 @@ export function AccountPage() {
     <div className="container account-page">
       <header className="account-page__header">
         <div>
-          <Badge variant="primary">Cuenta Comprador</Badge>
           <h1>Mi cuenta</h1>
           <p>Actualiza tus datos personales para compras y facturación.</p>
         </div>

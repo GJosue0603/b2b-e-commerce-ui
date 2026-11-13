@@ -47,11 +47,6 @@ export function CatalogPage({ accreditation, onAddToCart }: CatalogPageProps) {
   return (
     <div className="container catalog-page">
       <header className="catalog-page__header">
-        <nav aria-label="Migas de pan" className="catalog-breadcrumb">
-          <Link to={paths.home}>Inicio</Link>
-          <span aria-hidden="true">/</span>
-          <span aria-current="page">Catálogo de productos</span>
-        </nav>
         <div className="catalog-page__heading">
           <div>
             <h1>Catálogo de Tecnología</h1>

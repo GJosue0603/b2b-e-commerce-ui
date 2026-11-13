@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import type { AcreditacionPyme, SolicitudPyme } from '../../../domain'
 import { useAppServices } from '../../../app/services'
-import { Alert, Badge, Button, Skeleton } from '../../../shared/ui'
+import { Alert, Button, Skeleton } from '../../../shared/ui'
 import type { AsyncState } from '../../../services'
 import type { DemoScenarioId } from '../../../services'
 import { useAuth } from '../../auth/state'
@@ -95,7 +95,6 @@ export function AccreditationStatusPage() {
   return (
     <div className="container accreditation-page accreditation-status-page">
       <header className="accreditation-page__header">
-        <Badge variant="primary">Área del Comprador</Badge>
         <h1>Mi acreditación PYME o MicroPYME</h1>
         <p>
           Consulta por separado el trámite administrativo y la vigencia del

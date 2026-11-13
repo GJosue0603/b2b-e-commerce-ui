@@ -13,7 +13,6 @@ export function MyOrdersPage() {
   return (
     <div className="container orders-page">
       <header>
-        <span>Historial personal</span>
         <h1>Mis pedidos</h1>
         <p>Solo aparecen compras asociadas a pagos simulados aprobados.</p>
       </header>
