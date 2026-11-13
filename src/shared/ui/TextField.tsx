@@ -1,8 +1,9 @@
-import type { InputHTMLAttributes } from 'react'
+import type { InputHTMLAttributes, ReactNode } from 'react'
 import { FormField } from './FormField'
 
 export interface TextFieldProps
   extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'> {
+  endAdornment?: ReactNode
   error?: string
   hint?: string
   label: string
@@ -12,6 +13,7 @@ export interface TextFieldProps
 export function TextField({
   className,
   disabled = false,
+  endAdornment,
   error,
   hint,
   id,
@@ -30,16 +32,19 @@ export function TextField({
       required={required}
     >
       {({ controlId, describedBy, invalid }) => (
-        <input
-          {...inputProps}
-          aria-busy={loading || undefined}
-          aria-describedby={describedBy}
-          aria-invalid={invalid || undefined}
-          className={['ui-control', className].filter(Boolean).join(' ')}
-          disabled={disabled || loading}
-          id={controlId}
-          required={required}
-        />
+        <>
+          <input
+            {...inputProps}
+            aria-busy={loading || undefined}
+            aria-describedby={describedBy}
+            aria-invalid={invalid || undefined}
+            className={['ui-control', className].filter(Boolean).join(' ')}
+            disabled={disabled || loading}
+            id={controlId}
+            required={required}
+          />
+          {endAdornment}
+        </>
       )}
     </FormField>
   )

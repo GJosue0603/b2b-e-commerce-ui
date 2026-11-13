@@ -52,6 +52,21 @@ describe('autenticación demostrativa', () => {
     expect(router.state.location.pathname).toBe('/')
   })
 
+  it('permite mostrar y ocultar la contraseña al iniciar sesión', async () => {
+    const user = userEvent.setup()
+    renderTestApp('/ingresar')
+    await screen.findByRole('heading', { name: 'Iniciar sesión' })
+
+    const passwordInput = screen.getByLabelText(/^Contraseña/)
+    expect(passwordInput).toHaveAttribute('type', 'password')
+
+    await user.click(screen.getByRole('button', { name: 'Mostrar contraseña' }))
+    expect(passwordInput).toHaveAttribute('type', 'text')
+
+    await user.click(screen.getByRole('button', { name: 'Ocultar contraseña' }))
+    expect(passwordInput).toHaveAttribute('type', 'password')
+  })
+
   it('lleva al comprador a Inicio aunque haya ingresado desde Mi cuenta', async () => {
     const user = userEvent.setup()
     const { router } = renderTestApp('/mi-cuenta')

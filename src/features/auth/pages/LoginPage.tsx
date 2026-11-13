@@ -19,6 +19,7 @@ export function LoginPage() {
   const { actionStatus, signIn } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [passwordVisible, setPasswordVisible] = useState(false)
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({})
   const [message, setMessage] = useState<string>()
 
@@ -74,11 +75,38 @@ export function LoginPage() {
         <TextField
           autoComplete="current-password"
           error={errors.password}
+          endAdornment={
+            <button
+              aria-label={
+                passwordVisible ? 'Ocultar contraseña' : 'Mostrar contraseña'
+              }
+              aria-pressed={passwordVisible}
+              className="auth-form__password-toggle"
+              onClick={() => setPasswordVisible((visible) => !visible)}
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                fill="none"
+                focusable="false"
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+              >
+                <path d="M2.5 12s3.5-7 9.5-7 9.5 7 9.5 7-3.5 7-9.5 7-9.5-7-9.5-7Z" />
+                <circle cx="12" cy="12" r="3" />
+                {passwordVisible && <path d="m3 3 18 18" />}
+              </svg>
+            </button>
+          }
           hint="Usa la contraseña asignada a tu cuenta."
           label="Contraseña"
+          className="auth-form__password-input"
           onChange={(event) => setPassword(event.target.value)}
           required
-          type="password"
+          type={passwordVisible ? 'text' : 'password'}
           value={password}
         />
         <div className="auth-form__options">
