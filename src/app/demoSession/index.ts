@@ -1,5 +1,3 @@
-import './demo-session.css'
-
 export { DemoAppFrame } from './DemoAppFrame'
 export {
   DemoCartPage,

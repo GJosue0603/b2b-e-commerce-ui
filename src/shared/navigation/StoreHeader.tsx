@@ -24,9 +24,6 @@ export function StoreHeader({
   const navigation = authenticated
     ? buyerStoreNavigation
     : publicStoreNavigation
-  const headerNavigation = navigation.filter(
-    (item) => item.to !== routePatterns.home,
-  )
   const accountPath = authenticated
     ? routePatterns.account
     : routePatterns.signIn
@@ -58,7 +55,7 @@ export function StoreHeader({
         </Link>
 
         <nav aria-label="Navegación de la tienda" className="store-header__nav">
-          <NavigationLinks items={headerNavigation} />
+          <NavigationLinks items={navigation} />
         </nav>
 
         <StoreSearchForm className="store-header__search" />
@@ -71,14 +68,6 @@ export function StoreHeader({
             <AccountIcon />
             <span>{accountLabel}</span>
           </Link>
-          {!authenticated && (
-            <Link
-              className="header-action header-action--register"
-              to={routePatterns.signUp}
-            >
-              Registrarse
-            </Link>
-          )}
           <Link
             aria-busy={cartStatus === 'loading' || undefined}
             aria-label={cartLabel}
@@ -102,15 +91,10 @@ export function StoreHeader({
                 aria-label="Navegación móvil de la tienda"
                 onClick={closeMobileMenu}
               >
-                <NavigationLinks items={headerNavigation} />
+                <NavigationLinks items={navigation} />
                 <Link className="navigation-link" to={accountPath}>
                   {accountLabel}
                 </Link>
-                {!authenticated && (
-                  <Link className="navigation-link" to={routePatterns.signUp}>
-                    Registrarse
-                  </Link>
-                )}
               </nav>
             </div>
           </details>

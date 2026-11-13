@@ -31,11 +31,13 @@ function renderStore(initialScenarioId: DemoScenarioId = 'visitor') {
 }
 
 describe('StoreHeader', () => {
-  it('inicia como visitante y ofrece ingreso y registro', async () => {
+  it('inicia como visitante con Inicio, Catálogo e ingreso', async () => {
     renderStore()
 
     expect((await screen.findAllByRole('link', { name: 'Ingresar' })).length).toBeGreaterThan(0)
-    expect(screen.getAllByRole('link', { name: 'Registrarse' }).length).toBeGreaterThan(0)
+    expect(screen.getAllByRole('link', { name: 'Inicio' }).length).toBeGreaterThan(0)
+    expect(screen.getAllByRole('link', { name: 'Catálogo' }).length).toBeGreaterThan(0)
+    expect(screen.queryByRole('link', { name: 'Registrarse' })).toBeNull()
     expect(screen.queryByRole('link', { name: 'Mi cuenta' })).toBeNull()
   })
 
@@ -58,6 +60,29 @@ describe('StoreHeader', () => {
     expect(new URLSearchParams(router.state.location.search).get('q')).toBe(
       'teclado mecánico',
     )
+  })
+
+  it('vuelve del catálogo al landing mediante Inicio sin recargar la página', async () => {
+    const user = userEvent.setup()
+    const router = renderStore()
+    await router.navigate('/catalogo')
+    await screen.findByRole('heading', {
+      level: 1,
+      name: 'Catálogo de Tecnología',
+    })
+
+    const homeLinks = screen.getAllByRole('link', { name: 'Inicio' })
+    const homeLink = homeLinks[0]
+    if (!homeLink) throw new Error('No se encontró el enlace de Inicio.')
+    await user.click(homeLink)
+
+    expect(
+      await screen.findByRole('heading', {
+        level: 1,
+        name: 'Tecnología para tu día a día y tu negocio',
+      }),
+    ).toBeVisible()
+    expect(router.state.location.pathname).toBe('/')
   })
 
   it('muestra la suma de unidades del carrito del comprador simulado', async () => {

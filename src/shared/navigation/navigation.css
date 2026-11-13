@@ -138,16 +138,6 @@
   justify-content: center;
 }
 
-.header-action--register {
-  background: var(--color-primary);
-  color: var(--color-surface);
-}
-
-.header-action--register:hover {
-  background: color-mix(in srgb, var(--color-primary) 86%, var(--color-text));
-  color: var(--color-surface);
-}
-
 .cart-count {
   position: absolute;
   display: inline-grid;
@@ -302,8 +292,7 @@
   }
 
   .store-header__search,
-  .header-action--account,
-  .header-action--register {
+  .header-action--account {
     display: none;
   }
 
