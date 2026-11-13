@@ -4,6 +4,7 @@ import {
   RouterProvider,
   type InitialEntry,
 } from 'react-router-dom'
+import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 import { createMockServices } from '../../mocks/repositories'
 import { CartProvider } from '../../features/cart/state'
@@ -103,6 +104,46 @@ describe('mapa de rutas', () => {
     expect(within(navigation).getByRole('link', { name: 'Pedidos' })).toBeVisible()
     expect(within(navigation).queryByRole('link', { name: 'Categorías' })).toBeNull()
   })
+
+  it.each([
+    [
+      '/vendedor/productos',
+      'seller',
+      'Vendedor',
+      'vendedor@nexotech.demo.test',
+    ],
+    ['/admin/usuarios', 'administrator', 'Administrador', 'admin@nexotech.demo.test'],
+  ] as const)(
+    'usa el navbar compartido y muestra la cuenta de %s',
+    async (path, scenario, roleLabel, email) => {
+      const user = userEvent.setup()
+      const router = renderRoute(path, scenario)
+      const brandLink = await screen.findByRole('link', { name: 'NexoTech' })
+      const header = brandLink.closest('header')
+      if (!header) throw new Error('No se encontró el navbar del dashboard.')
+
+      expect(
+        within(header).getByRole('link', { name: 'NexoTech' }),
+      ).toHaveAttribute('href', '/')
+
+      const accountMenu = await within(header).findByLabelText(
+        `Cuenta de ${roleLabel}`,
+      )
+      const accountDetails = accountMenu.closest('details')
+      if (!accountDetails) throw new Error('No se encontró el menú de cuenta.')
+      await user.click(accountMenu)
+      expect(within(accountDetails).getByText(email)).toBeVisible()
+      expect(within(accountDetails).getByText(roleLabel)).toBeVisible()
+
+      await user.click(
+        within(accountDetails).getByRole('button', { name: 'Cerrar sesión' }),
+      )
+      await screen.findByRole('heading', {
+        name: 'Tecnología para tu día a día y tu negocio',
+      })
+      expect(router.state.location.pathname).toBe('/')
+    },
+  )
 
   it('distingue la navegación pública de la experiencia Comprador', async () => {
     renderRoute('/catalogo')

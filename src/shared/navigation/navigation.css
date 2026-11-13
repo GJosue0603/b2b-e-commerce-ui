@@ -209,6 +209,34 @@
   color: var(--color-primary);
 }
 
+.dashboard-header__actions {
+  margin-inline-start: auto;
+}
+
+.dashboard-header__account-info {
+  display: grid;
+  gap: 0.25rem;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--color-border);
+  font-size: 0.8125rem;
+  overflow-wrap: anywhere;
+}
+
+.dashboard-header__account-info small {
+  color: color-mix(in srgb, var(--color-text) 62%, transparent);
+  font-size: 0.75rem;
+}
+
+.dashboard-header__account-info span {
+  color: var(--color-primary);
+  font-size: 0.75rem;
+  font-weight: 650;
+}
+
+.dashboard-header__mobile-panel .dashboard-header__account-info {
+  margin-block-end: var(--space-1);
+}
+
 .header-action--cart {
   position: relative;
   width: 2.75rem;
@@ -508,6 +536,10 @@
 @media (max-width: 64rem) {
   .store-header__nav {
     display: none;
+  }
+
+  .dashboard-header .store-header__mobile-menu {
+    display: block;
   }
 }
 

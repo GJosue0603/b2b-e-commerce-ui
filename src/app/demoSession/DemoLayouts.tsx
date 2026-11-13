@@ -101,12 +101,23 @@ export interface DemoDashboardLayoutProps {
 export function DemoDashboardLayout({
   fallbackRole,
 }: DemoDashboardLayoutProps) {
-  const { user } = useAuth()
+  const { signOut, user } = useAuth()
   const simulatedRole = user?.rol
   const role =
     simulatedRole === 'vendedor' || simulatedRole === 'administrador'
       ? simulatedRole
       : fallbackRole
 
-  return <DashboardLayout role={role} />
+  const userName = user
+    ? `${user.nombre} ${user.apellidos}`.trim()
+    : undefined
+
+  return (
+    <DashboardLayout
+      onSignOut={signOut}
+      role={role}
+      userEmail={user?.correo}
+      userName={userName}
+    />
+  )
 }

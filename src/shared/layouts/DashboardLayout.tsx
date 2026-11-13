@@ -1,42 +1,40 @@
 import { Outlet } from 'react-router-dom'
-import { Badge } from '../ui'
 import {
   getDashboardNavigation,
-  getRoleLabel,
-  Sidebar,
+  DashboardHeader,
   type DashboardRole,
   type NavigationItem,
 } from '../navigation'
 
 export interface DashboardLayoutProps {
   navigation?: readonly NavigationItem[]
+  onSignOut: () => Promise<void> | void
   role: DashboardRole
+  userEmail?: string
+  userName?: string
 }
 
 export function DashboardLayout({
   navigation,
+  onSignOut,
   role,
+  userEmail,
+  userName,
 }: DashboardLayoutProps) {
   const items = navigation ?? getDashboardNavigation(role)
-  const roleLabel = getRoleLabel(role)
 
   return (
     <div className="dashboard-layout">
-      <Sidebar items={items} role={role} />
-      <div className="dashboard-layout__workspace">
-        <header className="dashboard-topbar">
-          <div>
-            <strong>Panel {roleLabel}</strong>
-            <span>NexoTech Costa Rica</span>
-          </div>
-          <Badge variant={role === 'administrador' ? 'primary' : 'success'}>
-            {roleLabel}
-          </Badge>
-        </header>
-        <main className="dashboard-layout__content">
-          <Outlet />
-        </main>
-      </div>
+      <DashboardHeader
+        items={items}
+        onSignOut={onSignOut}
+        role={role}
+        userEmail={userEmail}
+        userName={userName}
+      />
+      <main className="dashboard-layout__content">
+        <Outlet />
+      </main>
     </div>
   )
 }

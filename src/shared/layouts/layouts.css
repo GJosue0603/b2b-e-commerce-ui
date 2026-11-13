@@ -196,32 +196,7 @@
 .dashboard-layout {
   display: grid;
   min-height: 100vh;
-  grid-template-columns: 16rem minmax(0, 1fr);
-}
-
-.dashboard-layout__workspace {
-  min-width: 0;
-}
-
-.dashboard-topbar {
-  display: flex;
-  min-height: 4.5rem;
-  gap: var(--space-2);
-  align-items: center;
-  justify-content: space-between;
-  padding: var(--space-2) var(--space-3);
-  border-bottom: 1px solid var(--color-border);
-  background: var(--color-surface);
-}
-
-.dashboard-topbar strong,
-.dashboard-topbar span {
-  display: block;
-}
-
-.dashboard-topbar span {
-  color: color-mix(in srgb, var(--color-text) 62%, transparent);
-  font-size: 0.8125rem;
+  grid-template-rows: auto 1fr;
 }
 
 .dashboard-layout__content {
@@ -232,8 +207,7 @@
 }
 
 @media (max-width: 48rem) {
-  .auth-layout,
-  .dashboard-layout {
+  .auth-layout {
     grid-template-columns: minmax(0, 1fr);
   }
 
@@ -250,7 +224,6 @@
     display: none;
   }
 
-  .dashboard-topbar,
   .dashboard-layout__content {
     padding-inline: var(--space-2);
   }

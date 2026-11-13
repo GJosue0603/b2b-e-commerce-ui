@@ -9,6 +9,7 @@ export {
   type NavigationItem,
   type NavigationRole,
 } from './navigation'
+export { DashboardHeader, type DashboardHeaderProps } from './DashboardHeader'
 export { Sidebar, type SidebarProps } from './Sidebar'
 export { canAccessRole, routePermissions } from './permissions'
 export { StoreFooter, type StoreFooterProps } from './StoreFooter'
