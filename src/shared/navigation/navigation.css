@@ -50,6 +50,7 @@
   font-size: 0.875rem;
   font-weight: 600;
   text-decoration: none;
+  white-space: nowrap;
 }
 
 .header-action svg,
@@ -127,8 +128,14 @@
 
 .store-header__actions {
   display: flex;
+  flex: 0 0 auto;
   gap: 0.25rem;
   align-items: center;
+}
+
+.header-action--account {
+  flex: 0 0 auto;
+  min-width: max-content;
 }
 
 .header-action--cart {

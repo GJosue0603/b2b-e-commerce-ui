@@ -84,50 +84,6 @@
   font-weight: 650;
 }
 
-.demo-access-list {
-  padding: var(--space-2);
-  border: 1px dashed var(--color-border);
-  border-radius: var(--radius-md);
-  background: var(--color-background);
-}
-
-.demo-access-list summary {
-  color: var(--color-primary);
-  font-size: 0.875rem;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.demo-access-list > div {
-  display: grid;
-  gap: var(--space-1);
-  margin-block-start: var(--space-1);
-}
-
-.demo-access-list button {
-  display: grid;
-  gap: 0.125rem;
-  padding: var(--space-1);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  background: var(--color-surface);
-  color: var(--color-text);
-  font: inherit;
-  text-align: start;
-  cursor: pointer;
-}
-
-.demo-access-list button:hover {
-  border-color: var(--color-primary);
-}
-
-.demo-access-list button span,
-.demo-access-list button code {
-  overflow-wrap: anywhere;
-  color: color-mix(in srgb, var(--color-text) 68%, transparent);
-  font-size: 0.75rem;
-}
-
 @media (max-width: 32rem) {
   .auth-form__row {
     grid-template-columns: minmax(0, 1fr);

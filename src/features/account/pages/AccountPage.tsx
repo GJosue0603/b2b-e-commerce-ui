@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { routePatterns } from '../../../app/router/paths'
 import { Badge } from '../../../shared/ui'
-import { AccountTabs, ProfileForm } from '../components'
+import { ProfileForm } from '../components'
 import { useAuth } from '../../auth/state'
 import './account-page.css'
 
@@ -11,7 +11,6 @@ export function AccountPage() {
 
   return (
     <div className="container account-page">
-      <AccountTabs />
       <header className="account-page__header">
         <div>
           <Badge variant="primary">Cuenta Comprador</Badge>

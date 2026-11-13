@@ -9,7 +9,6 @@ import {
   type AccreditationRequestValues,
 } from '../components'
 import { useAuth } from '../../auth/state'
-import { AccountTabs } from '../../account/components'
 import './accreditation-page.css'
 
 export function AccreditationRequestPage() {
@@ -52,7 +51,6 @@ export function AccreditationRequestPage() {
 
   return (
     <div className="container accreditation-page">
-      <AccountTabs />
       <ol className="accreditation-steps" aria-label="Progreso de acreditación">
         <li className="accreditation-steps__current"><span>1</span><div><small>Paso actual</small><strong>Completar solicitud</strong></div></li>
         <li><span>2</span><div><small>Siguiente fase</small><strong>Revisión administrativa</strong></div></li>

@@ -44,11 +44,22 @@ describe('autenticación demostrativa', () => {
     await user.clear(screen.getByLabelText(/Contraseña/))
     await user.type(screen.getByLabelText(/Contraseña/), 'Comprador123!')
     await user.click(screen.getByRole('button', { name: 'Ingresar' }))
-    expect(await screen.findByRole('heading', { name: 'Mi cuenta' })).toBeVisible()
-    expect(router.state.location.pathname).toBe('/mi-cuenta')
+    expect(
+      await screen.findByRole('heading', {
+        name: 'Tecnología para tu día a día y tu negocio',
+      }),
+    ).toBeVisible()
+    expect(router.state.location.pathname).toBe('/')
   })
 
   it.each([
+    [
+      'Comprador PYME',
+      'diego.pyme@nexotech.demo.test',
+      'CompradorPyme123!',
+      'Tecnología para tu día a día y tu negocio',
+      '/',
+    ],
     [
       'Vendedor',
       'vendedor@nexotech.demo.test',
@@ -64,7 +75,7 @@ describe('autenticación demostrativa', () => {
       '/admin/acreditaciones',
     ],
   ])(
-    'redirige las credenciales de %s a su dashboard',
+    'redirige las credenciales de %s a su experiencia principal',
     async (_role, email, password, heading, path) => {
       const user = userEvent.setup()
       const { router } = renderTestApp('/ingresar')
@@ -79,15 +90,12 @@ describe('autenticación demostrativa', () => {
     },
   )
 
-  it('permite completar el formulario desde la lista de accesos demo', async () => {
-    const user = userEvent.setup()
+  it('no expone credenciales de demostración en la pantalla de ingreso', async () => {
     renderTestApp('/ingresar')
-    await user.click(await screen.findByText('Ver credenciales de demostración'))
-    await user.click(screen.getByRole('button', { name: /Comprador regular/ }))
+    await screen.findByRole('heading', { name: 'Iniciar sesión' })
 
-    expect(screen.getByLabelText(/Correo electrónico/)).toHaveValue(
-      'camila.regular@nexotech.demo.test',
-    )
-    expect(screen.getByLabelText(/Contraseña/)).toHaveValue('Comprador123!')
+    expect(screen.queryByText('Ver credenciales de demostración')).toBeNull()
+    expect(screen.getByLabelText(/Correo electrónico/)).toHaveValue('')
+    expect(screen.getByLabelText(/Contraseña/)).toHaveValue('')
   })
 })

@@ -26,5 +26,8 @@ describe('AccountPage', () => {
     expect(
       screen.getByRole('link', { name: 'Ver estado de acreditación' }),
     ).toHaveAttribute('href', '/acreditacion/estado')
+    expect(
+      screen.queryByRole('navigation', { name: 'Secciones de mi cuenta' }),
+    ).toBeNull()
   })
 })

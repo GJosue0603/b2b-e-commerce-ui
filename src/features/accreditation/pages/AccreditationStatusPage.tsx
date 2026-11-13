@@ -7,7 +7,6 @@ import type { AsyncState } from '../../../services'
 import type { DemoScenarioId } from '../../../services'
 import { useAuth } from '../../auth/state'
 import { AccreditationHistory, AccreditationStatusCard } from '../components'
-import { AccountTabs } from '../../account/components'
 import {
   resolveAccreditationStatus,
   type AccreditationDisplayStatus,
@@ -95,7 +94,6 @@ export function AccreditationStatusPage() {
 
   return (
     <div className="container accreditation-page accreditation-status-page">
-      <AccountTabs />
       <header className="accreditation-page__header">
         <Badge variant="primary">Área del Comprador</Badge>
         <h1>Mi acreditación PYME o MicroPYME</h1>

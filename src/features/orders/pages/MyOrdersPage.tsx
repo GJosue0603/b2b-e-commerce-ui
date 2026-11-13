@@ -3,7 +3,6 @@ import { routePatterns } from '../../../app/router/paths'
 import { Alert, EmptyState, Skeleton } from '../../../shared/ui'
 import { useAuth } from '../../auth/state'
 import { OrderDetail } from '../components'
-import { AccountTabs } from '../../account/components'
 import { useMyOrders } from '../hooks/useMyOrders'
 import './orders-page.css'
 
@@ -13,7 +12,6 @@ export function MyOrdersPage() {
 
   return (
     <div className="container orders-page">
-      <AccountTabs />
       <header>
         <span>Historial personal</span>
         <h1>Mis pedidos</h1>

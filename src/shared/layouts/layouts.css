@@ -71,6 +71,15 @@
   padding-block: clamp(var(--space-3), 5vw, 4rem);
 }
 
+.auth-shell:not(.auth-shell--register) .auth-layout {
+  padding-block: var(--space-2);
+}
+
+.auth-shell:not(.auth-shell--register) .auth-layout__form,
+.auth-shell:not(.auth-shell--register) .auth-layout__benefits {
+  padding: clamp(var(--space-2), 3vw, var(--space-3));
+}
+
 .auth-shell--register .auth-layout {
   grid-template-columns: minmax(0, 1.15fr) minmax(20rem, 0.85fr);
 }
@@ -113,6 +122,14 @@
   padding: 0;
   margin-block: var(--space-3);
   list-style: none;
+}
+
+.auth-shell:not(.auth-shell--register) .auth-layout__benefit-list {
+  margin-block: var(--space-2);
+}
+
+.auth-shell:not(.auth-shell--register) .auth-layout__benefit-list li {
+  padding: 0.75rem;
 }
 
 .auth-layout__benefit-list li {
@@ -236,5 +253,25 @@
   .dashboard-topbar,
   .dashboard-layout__content {
     padding-inline: var(--space-2);
+  }
+}
+
+@media (min-width: 48.01rem) and (max-height: 48rem) {
+  .auth-shell:not(.auth-shell--register) .auth-shell__header > div,
+  .auth-shell:not(.auth-shell--register) .auth-shell__footer > div {
+    min-height: 3rem;
+  }
+
+  .auth-shell:not(.auth-shell--register) .auth-layout {
+    gap: var(--space-2);
+    padding-block: 0.75rem;
+  }
+
+  .auth-shell:not(.auth-shell--register) .auth-page {
+    gap: var(--space-2);
+  }
+
+  .auth-shell:not(.auth-shell--register) .auth-layout__benefits h2 {
+    font-size: 1.5rem;
   }
 }
