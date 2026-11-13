@@ -151,7 +151,20 @@ describe('mapa de rutas', () => {
       expect(
         await screen.findByRole('heading', { name: 'Mi cuenta' }),
       ).toBeVisible()
-      expect(screen.getByText(email)).toBeVisible()
+      expect(screen.getByLabelText(/Correo electrónico/)).toHaveValue(email)
+      expect(
+        screen.getByRole('heading', { name: 'Datos Personales y de Contacto' }),
+      ).toBeVisible()
+      expect(
+        screen.getByRole('button', { name: 'Guardar cambios' }),
+      ).toBeVisible()
+
+      const profileName = screen.getByLabelText(/Nombre/)
+      await user.clear(profileName)
+      await user.type(profileName, `${roleLabel} Editado`)
+      await user.click(screen.getByRole('button', { name: 'Guardar cambios' }))
+      expect(await screen.findByText('Datos actualizados')).toBeVisible()
+      expect(profileName).toHaveValue(`${roleLabel} Editado`)
       expect(router.state.location.pathname).toBe(accountPath)
 
       const profileMenu = await screen.findByLabelText(`Cuenta de ${roleLabel}`)
