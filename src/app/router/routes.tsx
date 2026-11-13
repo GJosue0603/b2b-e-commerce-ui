@@ -4,6 +4,7 @@ import { LoginPage } from '../../features/auth/pages/LoginPage'
 import { RegisterPage } from '../../features/auth/pages/RegisterPage'
 import { ProtectedRoute } from '../../features/auth/components'
 import { AccountPage } from '../../features/account/pages/AccountPage'
+import { DashboardAccountPage } from '../../features/account/pages/DashboardAccountPage'
 import { MyOrdersPage } from '../../features/orders/pages/MyOrdersPage'
 import { AccreditationRequestPage } from '../../features/accreditation/pages/AccreditationRequestPage'
 import { AccreditationStatusPage } from '../../features/accreditation/pages/AccreditationStatusPage'
@@ -136,6 +137,10 @@ const sellerRoutes: RouteObject = {
       element: <ProductsPage />,
     },
     {
+      path: routePatterns.sellerAccount,
+      element: <DashboardAccountPage />,
+    },
+    {
       path: routePatterns.sellerProductCreate,
       element: <EditProductPage mode="create" />,
     },
@@ -169,6 +174,10 @@ const administratorRoutes: RouteObject = {
     {
       path: routePatterns.adminAccreditations,
       element: <AdminAccreditationsPage />,
+    },
+    {
+      path: routePatterns.adminAccount,
+      element: <DashboardAccountPage />,
     },
     {
       path: routePatterns.adminAccreditationDetail,

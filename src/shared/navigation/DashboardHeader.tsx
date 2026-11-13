@@ -10,23 +10,22 @@ export interface DashboardHeaderProps {
   readonly items: readonly NavigationItem[]
   readonly onSignOut: () => Promise<void> | void
   readonly role: DashboardRole
-  readonly userEmail?: string
-  readonly userName?: string
 }
 
 export function DashboardHeader({
   items,
   onSignOut,
   role,
-  userEmail,
-  userName,
 }: DashboardHeaderProps) {
   const navigate = useNavigate()
   const accountMenu = useRef<HTMLDetailsElement>(null)
   const mobileMenu = useRef<HTMLDetailsElement>(null)
   const [signingOut, setSigningOut] = useState(false)
   const roleLabel = getRoleLabel(role)
-  const accountName = userName ?? roleLabel
+  const accountPath =
+    role === 'vendedor'
+      ? routePatterns.sellerAccount
+      : routePatterns.adminAccount
   const navigationLabel = `Navegación de ${roleLabel}`
 
   const closeMobileMenu = () => mobileMenu.current?.removeAttribute('open')
@@ -93,11 +92,9 @@ export function DashboardHeader({
               <AccountIcon />
             </summary>
             <div className="account-menu__panel">
-              <div className="dashboard-header__account-info">
-                <strong>{accountName}</strong>
-                {userEmail && <small>{userEmail}</small>}
-                <span>{roleLabel}</span>
-              </div>
+              <Link onClick={closeAccountMenu} to={accountPath}>
+                Ver cuenta
+              </Link>
               <button
                 disabled={signingOut}
                 onClick={() => void handleSignOut()}
@@ -113,16 +110,14 @@ export function DashboardHeader({
               <MenuIcon />
             </summary>
             <div className="store-header__mobile-panel dashboard-header__mobile-panel">
-              <div className="dashboard-header__account-info">
-                <strong>{accountName}</strong>
-                {userEmail && <small>{userEmail}</small>}
-                <span>{roleLabel}</span>
-              </div>
               <nav
                 aria-label={`${navigationLabel} móvil`}
                 onClick={closeMobileMenu}
               >
                 <NavigationLinks items={items} />
+                <Link className="navigation-link" to={accountPath}>
+                  Ver cuenta
+                </Link>
                 <button
                   className="navigation-link account-menu__signout"
                   disabled={signingOut}

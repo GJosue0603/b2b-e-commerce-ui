@@ -111,11 +111,18 @@ describe('mapa de rutas', () => {
       'seller',
       'Vendedor',
       'vendedor@nexotech.demo.test',
+      '/vendedor/cuenta',
     ],
-    ['/admin/usuarios', 'administrator', 'Administrador', 'admin@nexotech.demo.test'],
+    [
+      '/admin/usuarios',
+      'administrator',
+      'Administrador',
+      'admin@nexotech.demo.test',
+      '/admin/cuenta',
+    ],
   ] as const)(
     'usa el navbar compartido y muestra la cuenta de %s',
-    async (path, scenario, roleLabel, email) => {
+    async (path, scenario, roleLabel, email, accountPath) => {
       const user = userEvent.setup()
       const router = renderRoute(path, scenario)
       const brandLink = await screen.findByRole('link', { name: 'NexoTech' })
@@ -134,11 +141,24 @@ describe('mapa de rutas', () => {
       const accountDetails = accountMenu.closest('details')
       if (!accountDetails) throw new Error('No se encontró el menú de cuenta.')
       await user.click(accountMenu)
-      expect(within(accountDetails).getByText(email)).toBeVisible()
-      expect(within(accountDetails).getByText(roleLabel)).toBeVisible()
+      const viewAccountLink = within(accountDetails).getByRole('link', {
+        name: 'Ver cuenta',
+      })
+      expect(viewAccountLink).toHaveAttribute('href', accountPath)
+      expect(within(accountDetails).queryByText(email)).toBeNull()
+      await user.click(viewAccountLink)
 
+      expect(
+        await screen.findByRole('heading', { name: 'Mi cuenta' }),
+      ).toBeVisible()
+      expect(screen.getByText(email)).toBeVisible()
+      expect(router.state.location.pathname).toBe(accountPath)
+
+      const profileMenu = await screen.findByLabelText(`Cuenta de ${roleLabel}`)
+      const profileDetails = profileMenu.closest('details')
+      if (!profileDetails) throw new Error('No se encontró el menú de cuenta.')
       await user.click(
-        within(accountDetails).getByRole('button', { name: 'Cerrar sesión' }),
+        within(profileDetails).getByRole('button', { name: 'Cerrar sesión' }),
       )
       await screen.findByRole('heading', {
         name: 'Tecnología para tu día a día y tu negocio',

@@ -108,16 +108,5 @@ export function DemoDashboardLayout({
       ? simulatedRole
       : fallbackRole
 
-  const userName = user
-    ? `${user.nombre} ${user.apellidos}`.trim()
-    : undefined
-
-  return (
-    <DashboardLayout
-      onSignOut={signOut}
-      role={role}
-      userEmail={user?.correo}
-      userName={userName}
-    />
-  )
+  return <DashboardLayout onSignOut={signOut} role={role} />
 }
