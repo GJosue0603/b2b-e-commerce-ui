@@ -157,7 +157,7 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   gap: var(--space-2);
-  align-items: end;
+  align-items: center;
   padding: var(--space-2);
   margin-block-end: var(--space-2);
   border: 1px solid var(--color-border);
@@ -171,7 +171,7 @@
 }
 
 .catalog-toolbar h2 {
-  font-size: 0.9375rem;
+  font-size: 1rem;
 }
 
 .catalog-active-filters {
@@ -192,6 +192,7 @@
 
 .catalog-sort {
   min-width: 13rem;
+  width: min(15rem, 100%);
 }
 
 .catalog-grid {
@@ -249,6 +250,10 @@
 
   .catalog-toolbar .ui-field {
     grid-column: 1 / -1;
+  }
+
+  .catalog-toolbar .catalog-sort {
+    width: 100%;
   }
 
   .catalog-mobile-filter-button {
