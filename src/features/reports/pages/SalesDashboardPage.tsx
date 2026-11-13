@@ -78,7 +78,7 @@ export function SalesDashboardPage() {
     <section className="sales-dashboard">
       <header className="sales-dashboard__header">
         <div>
-          <h1>Análisis de ventas</h1>
+          <h1 className="dashboard-page-title">Análisis de ventas</h1>
           <p>Indicadores ficticios para evaluar el dashboard; no corresponden a transacciones financieras reales.</p>
         </div>
       </header>

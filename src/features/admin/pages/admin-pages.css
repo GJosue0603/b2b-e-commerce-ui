@@ -19,7 +19,6 @@
 
 .admin-page__header h1 {
   margin-block: 0;
-  font-size: clamp(1.6rem, 3vw, 2.2rem);
 }
 
 .admin-page__header p,

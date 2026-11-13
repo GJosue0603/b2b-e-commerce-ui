@@ -100,7 +100,7 @@ export function CategoriesPage() {
     <section className="vendor-page">
       <header className="vendor-page__header">
         <div>
-          <h1>Categorías de productos</h1>
+          <h1 className="dashboard-page-title">Categorías de productos</h1>
           <p>Organiza la taxonomía del catálogo propio de NexoTech.</p>
         </div>
         <Button onClick={openCreate}>Nueva categoría</Button>

@@ -44,7 +44,7 @@ export function AdminUsersPage() {
   return (
     <section className="admin-page">
       <header className="admin-page__header">
-        <div><h1 aria-label="Usuarios">Gestión de Usuarios del Sistema</h1><p>Administración centralizada de compradores, vendedores y administradores.</p></div>
+        <div><h1 aria-label="Usuarios" className="dashboard-page-title">Gestión de Usuarios del Sistema</h1><p>Administración centralizada de compradores, vendedores y administradores.</p></div>
       </header>
       <Alert title="Aclaración del modelo de identidad">PYME es una condición comercial asociada a una cuenta Comprador, no un rol independiente.</Alert>
       <div className="admin-kpis">

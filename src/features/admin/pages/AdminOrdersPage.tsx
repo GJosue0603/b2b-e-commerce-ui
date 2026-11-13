@@ -38,7 +38,7 @@ export function AdminOrdersPage() {
 
   return (
     <section className="admin-page">
-      <header className="admin-page__header"><div><h1 aria-label="Pedidos">Supervisión de Pedidos Confirmados</h1><p>Auditoría centralizada de transacciones completadas y órdenes generadas.</p></div></header>
+      <header className="admin-page__header"><div><h1 aria-label="Pedidos" className="dashboard-page-title">Supervisión de Pedidos Confirmados</h1><p>Auditoría centralizada de transacciones completadas y órdenes generadas.</p></div></header>
       <Alert title="Regla transaccional NexoTech">Los pedidos se generan únicamente tras una aprobación definitiva de pago; esta vista es de consulta y supervisión.</Alert>
       <div className="admin-kpis"><KpiCard label="Confirmados" value={rows.length} /><KpiCard label="Facturado bruto" value={formatCRC(total)} /><KpiCard label="Volumen PYME" tone="success" value={rows.filter(({ order }) => order.descuento > 0).length} /><KpiCard label="Ahorro PYME" value={formatCRC(discounts)} /></div>
       <div className="admin-toolbar"><TextField label="Buscar pedido" onChange={(event) => setQuery(event.target.value)} placeholder="Orden, comprador o referencia" type="search" value={query} /><span>{filtered.length} registros visibles</span></div>

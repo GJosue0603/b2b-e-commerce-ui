@@ -48,7 +48,9 @@ export function AdminAccreditationsPage() {
     <section className="admin-page">
       <header className="admin-page__header">
         <div>
-          <h1 aria-label="Solicitudes PYME">Solicitudes de acreditación PYME</h1>
+          <h1 aria-label="Solicitudes PYME" className="dashboard-page-title">
+            Solicitudes de acreditación PYME
+          </h1>
           <p>Revisión y dictamen manual de documentación legal para habilitación de tarifas B2B.</p>
         </div>
       </header>

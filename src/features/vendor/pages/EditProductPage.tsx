@@ -58,7 +58,10 @@ export function EditProductPage({ mode }: EditProductPageProps) {
     <section className="vendor-page">
       <header className="vendor-page__header">
         <div>
-          <h1 aria-label={mode === 'create' ? undefined : `Editar: ${product?.nombre ?? ''}`}>
+          <h1
+            aria-label={mode === 'create' ? undefined : `Editar: ${product?.nombre ?? ''}`}
+            className="dashboard-page-title"
+          >
             {mode === 'create' ? 'Nuevo producto' : `Editar producto: ${product?.nombre ?? ''}`}
           </h1>
           <p>Configura datos, precios, inventario, imagen y visibilidad en catálogo.</p>

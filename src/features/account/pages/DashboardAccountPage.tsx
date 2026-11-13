@@ -13,7 +13,7 @@ export function DashboardAccountPage() {
     <div className="container account-page dashboard-account-page">
       <header className="account-page__header">
         <div>
-          <h1>Mi cuenta</h1>
+          <h1 className="dashboard-page-title">Mi cuenta</h1>
           <p>Consulta tus datos personales y el acceso de tu cuenta.</p>
         </div>
         <Badge variant={user.rol === 'administrador' ? 'primary' : 'success'}>

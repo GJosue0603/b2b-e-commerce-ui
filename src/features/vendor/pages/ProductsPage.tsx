@@ -115,7 +115,9 @@ export function ProductsPage({ supervision = false }: ProductsPageProps) {
     <section className="vendor-page">
       <header className="vendor-page__header">
         <div>
-          <h1>{supervision ? 'Supervisión de productos' : 'Productos e inventario'}</h1>
+          <h1 className="dashboard-page-title">
+            {supervision ? 'Supervisión de productos' : 'Productos e inventario'}
+          </h1>
           <p>Catálogo compartido de NexoTech con precios regulares, PYME y existencias.</p>
         </div>
         {!supervision && <Button onClick={() => navigate(paths.sellerProductCreate)}>Nuevo producto</Button>}

@@ -34,7 +34,12 @@ export function AdminAccreditationDetailPage() {
     <section className="admin-page">
       <header className="admin-page__header admin-page__header--detail">
         <div>
-          <h1 aria-label="Revisar solicitud PYME">Expediente #{request.id}</h1>
+          <h1
+            aria-label="Revisar solicitud PYME"
+            className="dashboard-page-title"
+          >
+            Expediente #{request.id}
+          </h1>
           <p>Solicitante: {buyer ? `${buyer.nombre} ${buyer.apellidos}` : 'Comprador'} · Radicado: {formatAdminDate(request.fechaSolicitud)}</p>
         </div>
         <Badge variant={request.estado === 'aprobada' ? 'success' : request.estado === 'rechazada' ? 'danger' : 'warning'}>{request.estado}</Badge>
