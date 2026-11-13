@@ -110,8 +110,14 @@
   background: var(--color-surface);
 }
 
-.vendor-product-form .vendor-panel:first-of-type {
-  grid-row: span 2;
+.vendor-product-form__main,
+.vendor-product-form__aside {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.vendor-product-form__aside {
+  align-content: start;
 }
 
 .vendor-form-grid,
@@ -165,9 +171,6 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .vendor-product-form .vendor-panel:first-of-type {
-    grid-row: auto;
-  }
 }
 
 @media (max-width: 42rem) {

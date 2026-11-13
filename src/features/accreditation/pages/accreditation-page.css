@@ -26,6 +26,49 @@
   align-items: start;
 }
 
+.accreditation-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-1);
+  padding: var(--space-2);
+  margin: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  list-style: none;
+}
+
+.accreditation-steps li {
+  display: flex;
+  gap: var(--space-1);
+  align-items: center;
+}
+
+.accreditation-steps li > span {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--color-surface-container);
+  place-items: center;
+}
+
+.accreditation-steps__current > span {
+  background: var(--color-primary) !important;
+  color: var(--color-surface);
+}
+
+.accreditation-steps li > div {
+  display: grid;
+}
+
+.accreditation-steps small {
+  color: color-mix(in srgb, var(--color-text) 58%, transparent);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+}
+
 .accreditation-card {
   display: grid;
   gap: var(--space-2);
@@ -47,6 +90,13 @@
   display: grid;
   gap: var(--space-2);
   padding-inline-start: var(--space-3);
+}
+
+.accreditation-privacy {
+  padding: var(--space-2);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-low);
+  font-size: 0.75rem;
 }
 
 .accreditation-card a {
@@ -84,7 +134,7 @@
 }
 
 .accreditation-status-page {
-  max-width: 62rem;
+  max-width: var(--container-max-width);
 }
 
 .accreditation-preview {
@@ -139,6 +189,20 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   background: var(--color-surface);
+}
+
+.accreditation-status-summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(17rem, 0.34fr);
+  gap: var(--space-3);
+  align-items: start;
+}
+
+.accreditation-benefits ul {
+  display: grid;
+  gap: var(--space-1);
+  padding-inline-start: var(--space-3);
+  margin: 0;
 }
 
 .accreditation-status-card {
@@ -235,6 +299,8 @@
 
 @media (max-width: 48rem) {
   .accreditation-page__layout,
+  .accreditation-steps,
+  .accreditation-status-summary,
   .accreditation-request-form__row,
   .accreditation-status-card__details {
     grid-template-columns: minmax(0, 1fr);

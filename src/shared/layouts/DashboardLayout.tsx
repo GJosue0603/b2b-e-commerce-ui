@@ -26,8 +26,8 @@ export function DashboardLayout({
       <div className="dashboard-layout__workspace">
         <header className="dashboard-topbar">
           <div>
-            <strong>Panel interno</strong>
-            <span>Sesión demostrativa</span>
+            <strong>Panel {roleLabel}</strong>
+            <span>NexoTech Costa Rica</span>
           </div>
           <Badge variant={role === 'administrador' ? 'primary' : 'success'}>
             {roleLabel}

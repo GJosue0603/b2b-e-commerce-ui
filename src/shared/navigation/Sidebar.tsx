@@ -14,10 +14,18 @@ export function Sidebar({ items, role }: SidebarProps) {
   return (
     <>
       <aside className="dashboard-sidebar">
-        <div className="dashboard-sidebar__brand">NexoTech</div>
+        <div className="dashboard-sidebar__brand">
+          <span aria-hidden="true">N</span>
+          <div><strong>NexoTech</strong><small>{roleLabel} Studio</small></div>
+        </div>
+        <span className="dashboard-sidebar__label">Gestión comercial</span>
         <nav aria-label={navigationLabel}>
           <NavigationLinks items={items} />
         </nav>
+        <div className="dashboard-sidebar__profile">
+          <span aria-hidden="true">●</span>
+          <div><strong>Cuenta {roleLabel}</strong><small>Sesión autorizada</small></div>
+        </div>
       </aside>
 
       <details className="dashboard-mobile-navigation">

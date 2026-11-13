@@ -54,7 +54,7 @@ const routeCases = [
   ['/vendedor/categorias', 'Categorías de productos', 'seller'],
   ['/vendedor/reportes', 'Análisis de ventas', 'seller'],
   ['/admin/acreditaciones', 'Solicitudes PYME', 'administrator'],
-  ['/admin/acreditaciones/solicitud-demo', 'Revisar solicitud PYME', 'administrator'],
+  ['/admin/acreditaciones/demo-solicitud-pyme-pendiente', 'Revisar solicitud PYME', 'administrator'],
   ['/admin/usuarios', 'Usuarios', 'administrator'],
   ['/admin/productos', 'Supervisión de productos', 'administrator'],
   ['/admin/pedidos', 'Pedidos', 'administrator'],

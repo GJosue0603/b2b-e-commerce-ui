@@ -59,8 +59,10 @@ export function EditProductPage({ mode }: EditProductPageProps) {
       <header className="vendor-page__header">
         <div>
           <span className="vendor-eyebrow">Catálogo compartido</span>
-          <h1>{mode === 'create' ? 'Nuevo producto' : `Editar: ${product?.nombre ?? ''}`}</h1>
-          <p>Los cambios se conservan en memoria durante la sesión demostrativa.</p>
+          <h1 aria-label={mode === 'create' ? undefined : `Editar: ${product?.nombre ?? ''}`}>
+            {mode === 'create' ? 'Nuevo producto' : `Editar producto: ${product?.nombre ?? ''}`}
+          </h1>
+          <p>Configura datos, precios, inventario, imagen y visibilidad en catálogo.</p>
         </div>
       </header>
       <ProductForm

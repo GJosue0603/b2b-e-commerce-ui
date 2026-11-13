@@ -72,41 +72,42 @@ export function ProductForm({
   return (
     <form className="vendor-product-form" noValidate onSubmit={handleSubmit}>
       {submitError && <Alert variant="danger">{submitError}</Alert>}
-      <section className="vendor-panel">
-        <h2>Información general</h2>
-        <TextField error={errors.nombre} label="Nombre" onChange={(event) => setNombre(event.target.value)} required value={nombre} />
-        <Select error={errors.categoriaId} label="Categoría" onChange={(event) => setCategoriaId(event.target.value)} required value={categoriaId}>
-          <option value="">Selecciona una categoría</option>
-          {categories.filter((category) => category.activo || category.id === categoriaId).map((category) => (
-            <option key={category.id} value={category.id}>{category.nombre}</option>
-          ))}
-        </Select>
-        <Textarea error={errors.descripcion} label="Descripción" onChange={(event) => setDescripcion(event.target.value)} required value={descripcion} />
-      </section>
+      <div className="vendor-product-form__main">
+        <section className="vendor-panel">
+          <h2>Información general</h2>
+          <TextField error={errors.nombre} label="Nombre" onChange={(event) => setNombre(event.target.value)} required value={nombre} />
+          <Select error={errors.categoriaId} label="Categoría" onChange={(event) => setCategoriaId(event.target.value)} required value={categoriaId}>
+            <option value="">Selecciona una categoría</option>
+            {categories.filter((category) => category.activo || category.id === categoriaId).map((category) => (
+              <option key={category.id} value={category.id}>{category.nombre}</option>
+            ))}
+          </Select>
+          <Textarea error={errors.descripcion} label="Descripción" onChange={(event) => setDescripcion(event.target.value)} required value={descripcion} />
+        </section>
+        <section className="vendor-panel">
+          <h2>Imagen principal del producto</h2>
+          <TextField error={errors.imagenUrl} label="URL o recurso local" onChange={(event) => setImagenUrl(event.target.value)} required value={imagenUrl} />
+          <label className="vendor-image-picker">Seleccionar imagen local<input accept="image/*" onChange={readImage} type="file" /></label>
+          <p className="vendor-help">La previsualización vive solo durante esta sesión.</p>
+          {imagenUrl && <img alt="Previsualización del producto" className="vendor-image-preview" src={imagenUrl} />}
+        </section>
+      </div>
 
-      <section className="vendor-panel">
-        <h2>Precios e inventario</h2>
-        <div className="vendor-form-grid">
-          <TextField error={errors.precioRegular} inputMode="numeric" label="Precio regular (₡)" min="0" onChange={(event) => setPrecioRegular(event.target.value)} required type="number" value={precioRegular} />
-          <TextField error={errors.precioPyme} inputMode="numeric" label="Precio PYME (₡)" min="0" onChange={(event) => setPrecioPyme(event.target.value)} required type="number" value={precioPyme} />
-          <TextField error={errors.existencias} inputMode="numeric" label="Existencias" min="0" onChange={(event) => setExistencias(event.target.value)} required step="1" type="number" value={existencias} />
-        </div>
-        <label className="vendor-checkbox">
-          <input checked={activo} onChange={(event) => setActivo(event.target.checked)} type="checkbox" />
-          Producto activo en catálogo
-        </label>
-      </section>
-
-      <section className="vendor-panel">
-        <h2>Imagen principal simulada</h2>
-        <TextField error={errors.imagenUrl} label="URL o recurso local" onChange={(event) => setImagenUrl(event.target.value)} required value={imagenUrl} />
-        <label className="vendor-image-picker">
-          Seleccionar imagen local
-          <input accept="image/*" onChange={readImage} type="file" />
-        </label>
-        <p className="vendor-help">La previsualización vive solo en esta sesión demo; no se envía a AWS ni a un servidor.</p>
-        {imagenUrl && <img alt="Previsualización del producto" className="vendor-image-preview" src={imagenUrl} />}
-      </section>
+      <div className="vendor-product-form__aside">
+        <section className="vendor-panel">
+          <h2>Estructura de precios</h2>
+          <div className="vendor-form-grid">
+            <TextField error={errors.precioRegular} inputMode="numeric" label="Precio regular (₡)" min="0" onChange={(event) => setPrecioRegular(event.target.value)} required type="number" value={precioRegular} />
+            <TextField error={errors.precioPyme} inputMode="numeric" label="Precio PYME (₡)" min="0" onChange={(event) => setPrecioPyme(event.target.value)} required type="number" value={precioPyme} />
+            <TextField error={errors.existencias} inputMode="numeric" label="Existencias" min="0" onChange={(event) => setExistencias(event.target.value)} required step="1" type="number" value={existencias} />
+          </div>
+        </section>
+        <section className="vendor-panel">
+          <h2>Visibilidad y catálogo</h2>
+          <label className="vendor-checkbox"><input checked={activo} onChange={(event) => setActivo(event.target.checked)} type="checkbox" />Producto activo en catálogo</label>
+          <p className="vendor-help">Al desactivarlo se oculta de búsquedas, categorías y detalle público.</p>
+        </section>
+      </div>
 
       <div className="vendor-form-actions">
         <Button disabled={submitting} onClick={onCancel} variant="ghost">Cancelar</Button>

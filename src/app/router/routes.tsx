@@ -23,7 +23,6 @@ import {
 } from '../../shared/layouts'
 import {
   NotFoundPage,
-  RoutePlaceholder,
 } from '../../routes/RoutePlaceholder'
 import { routePatterns } from './paths'
 import { routePermissions } from '../../shared/navigation'
@@ -31,6 +30,12 @@ import { CategoriesPage } from '../../features/vendor/pages/CategoriesPage'
 import { EditProductPage } from '../../features/vendor/pages/EditProductPage'
 import { ProductsPage } from '../../features/vendor/pages/ProductsPage'
 import { SalesDashboardPage } from '../../features/reports/pages/SalesDashboardPage'
+import {
+  AdminAccreditationDetailPage,
+  AdminAccreditationsPage,
+  AdminOrdersPage,
+  AdminUsersPage,
+} from '../../features/admin/pages'
 
 const publicStoreRoutes: RouteObject = {
   element: <DemoStoreLayout />,
@@ -159,33 +164,15 @@ const administratorRoutes: RouteObject = {
     },
     {
       path: routePatterns.adminAccreditations,
-      element: (
-        <RoutePlaceholder
-          audience="Administrador"
-          description="Listado de solicitudes pendientes, aprobadas y rechazadas."
-          title="Solicitudes PYME"
-        />
-      ),
+      element: <AdminAccreditationsPage />,
     },
     {
       path: routePatterns.adminAccreditationDetail,
-      element: (
-        <RoutePlaceholder
-          audience="Administrador"
-          description="Revisión manual y decisión administrativa."
-          title="Revisar solicitud PYME"
-        />
-      ),
+      element: <AdminAccreditationDetailPage />,
     },
     {
       path: routePatterns.adminUsers,
-      element: (
-        <RoutePlaceholder
-          audience="Administrador"
-          description="Gestión de compradores, vendedores y administradores."
-          title="Usuarios"
-        />
-      ),
+      element: <AdminUsersPage />,
     },
     {
       path: routePatterns.adminProducts,
@@ -193,13 +180,7 @@ const administratorRoutes: RouteObject = {
     },
     {
       path: routePatterns.adminOrders,
-      element: (
-        <RoutePlaceholder
-          audience="Administrador"
-          description="Consulta de pedidos originados por pagos aprobados."
-          title="Pedidos"
-        />
-      ),
+      element: <AdminOrdersPage />,
     },
     {
       path: routePatterns.adminReports,

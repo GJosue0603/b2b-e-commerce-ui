@@ -9,6 +9,7 @@ import {
   type AccreditationRequestValues,
 } from '../components'
 import { useAuth } from '../../auth/state'
+import { AccountTabs } from '../../account/components'
 import './accreditation-page.css'
 
 export function AccreditationRequestPage() {
@@ -51,12 +52,18 @@ export function AccreditationRequestPage() {
 
   return (
     <div className="container accreditation-page">
+      <AccountTabs />
+      <ol className="accreditation-steps" aria-label="Progreso de acreditación">
+        <li className="accreditation-steps__current"><span>1</span><div><small>Paso actual</small><strong>Completar solicitud</strong></div></li>
+        <li><span>2</span><div><small>Siguiente fase</small><strong>Revisión administrativa</strong></div></li>
+        <li><span>3</span><div><small>Fase final</small><strong>Resultado y dictamen</strong></div></li>
+      </ol>
       <header className="accreditation-page__header">
-        <Badge variant="success">Solicitud demostrativa</Badge>
+        <Badge variant="success">Canal de calificación comercial corporativa</Badge>
         <h1>Solicitar acreditación PYME o MicroPYME</h1>
         <p>
-          Completa la información del negocio. La acreditación requiere revisión
-          administrativa y no cambia tu rol Comprador.
+          Accede a tarifas y condiciones comerciales preferenciales para tu negocio.
+          La solicitud requiere revisión administrativa.
         </p>
       </header>
       <Alert title="Importante" variant="info">
@@ -65,7 +72,7 @@ export function AccreditationRequestPage() {
       </Alert>
       <div className="accreditation-page__layout">
         <section className="accreditation-card" aria-labelledby="request-form-title">
-          <h2 id="request-form-title">Datos del negocio</h2>
+          <h2 id="request-form-title">Datos de la Razón Social y Operación</h2>
           <AccreditationRequestForm
             loading={loading}
             onSubmit={submitRequest}
@@ -73,12 +80,14 @@ export function AccreditationRequestPage() {
           />
         </section>
         <aside className="accreditation-card accreditation-card--aside">
+          <Badge variant="neutral">Estado de cuenta: Regular</Badge>
           <h2>¿Cómo funciona?</h2>
           <ol>
             <li>Envías información y referencias locales de documentos.</li>
             <li>Un Administrador realizará la revisión en una etapa posterior.</li>
             <li>Solo una aprobación genera acreditación temporal.</li>
           </ol>
+          <p className="accreditation-privacy">Los documentos se procesan únicamente para validar la solicitud y no se comparten con terceros.</p>
           <Link to={routePatterns.account}>Cancelar y volver a Mi cuenta</Link>
         </aside>
       </div>

@@ -1,0 +1,271 @@
+.admin-page {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.admin-page__header {
+  display: flex;
+  gap: var(--space-2);
+  align-items: start;
+  justify-content: space-between;
+}
+
+.admin-page__header span:first-child {
+  color: var(--color-primary);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.admin-page__header h1,
+.admin-page__header p,
+.admin-panel h2,
+.admin-panel p {
+  margin-block: 0;
+}
+
+.admin-page__header h1 {
+  margin-block: 0.25rem;
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+}
+
+.admin-page__header p,
+.admin-panel p {
+  color: color-mix(in srgb, var(--color-text) 66%, transparent);
+}
+
+.admin-kpis {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+
+.admin-toolbar {
+  display: flex;
+  gap: var(--space-2);
+  align-items: end;
+  justify-content: space-between;
+  padding: var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.admin-toolbar .ui-field {
+  width: min(100%, 34rem);
+}
+
+.admin-toolbar > span {
+  color: color-mix(in srgb, var(--color-text) 60%, transparent);
+  font-size: 0.75rem;
+}
+
+.admin-toolbar--filters {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(12rem, 0.3fr);
+}
+
+.admin-toolbar--filters label {
+  display: grid;
+  gap: 0.375rem;
+  font-size: 0.8125rem;
+  font-weight: 650;
+}
+
+.admin-toolbar--filters select,
+.admin-decision-panel input,
+.admin-decision-panel select {
+  min-height: 2.75rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.admin-table-scroll {
+  overflow-x: auto;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.admin-table {
+  width: 100%;
+  min-width: 52rem;
+  border-collapse: collapse;
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 0.8rem var(--space-2);
+  border-bottom: 1px solid var(--color-border);
+  text-align: start;
+  vertical-align: middle;
+}
+
+.admin-table th {
+  background: var(--color-surface-low);
+  color: color-mix(in srgb, var(--color-text) 67%, transparent);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.admin-table td {
+  font-size: 0.8125rem;
+}
+
+.admin-table td small,
+.admin-table td strong {
+  display: block;
+}
+
+.admin-table td small {
+  margin-block-start: 0.2rem;
+  color: color-mix(in srgb, var(--color-text) 58%, transparent);
+}
+
+.admin-table__action {
+  display: inline-flex;
+  padding: 0.45rem 0.75rem;
+  border-radius: var(--radius-md);
+  background: var(--color-primary);
+  color: var(--color-surface);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.admin-pyme-label {
+  color: var(--color-accent) !important;
+  font-weight: 650;
+}
+
+.admin-detail-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.38fr);
+  gap: var(--space-3);
+  align-items: start;
+}
+
+.admin-detail-main {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.admin-panel {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.admin-panel > header {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+  justify-content: space-between;
+}
+
+.admin-description-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-2);
+  margin: 0;
+}
+
+.admin-description-list > div {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.admin-description-list dt {
+  color: color-mix(in srgb, var(--color-text) 60%, transparent);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+}
+
+.admin-description-list dd {
+  margin: 0;
+  font-weight: 650;
+}
+
+.admin-documents {
+  display: grid;
+  gap: var(--space-1);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.admin-documents li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: var(--space-1);
+  align-items: center;
+  padding: var(--space-2);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-low);
+}
+
+.admin-documents li > span {
+  color: var(--color-danger);
+}
+
+.admin-documents li > div {
+  display: grid;
+}
+
+.admin-documents small {
+  color: color-mix(in srgb, var(--color-text) 58%, transparent);
+}
+
+.admin-decision-panel {
+  position: sticky;
+  inset-block-start: 6rem;
+}
+
+.admin-decision-panel label {
+  display: grid;
+  gap: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 650;
+}
+
+@media (max-width: 64rem) {
+  .admin-kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .admin-detail-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .admin-decision-panel {
+    position: static;
+  }
+}
+
+@media (max-width: 40rem) {
+  .admin-page__header,
+  .admin-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .admin-kpis,
+  .admin-toolbar--filters,
+  .admin-description-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .admin-documents li {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .admin-documents .ui-button {
+    grid-column: 1 / -1;
+  }
+}

@@ -7,6 +7,7 @@ import type { AsyncState } from '../../../services'
 import type { DemoScenarioId } from '../../../services'
 import { useAuth } from '../../auth/state'
 import { AccreditationHistory, AccreditationStatusCard } from '../components'
+import { AccountTabs } from '../../account/components'
 import {
   resolveAccreditationStatus,
   type AccreditationDisplayStatus,
@@ -94,6 +95,7 @@ export function AccreditationStatusPage() {
 
   return (
     <div className="container accreditation-page accreditation-status-page">
+      <AccountTabs />
       <header className="accreditation-page__header">
         <Badge variant="primary">Área del Comprador</Badge>
         <h1>Mi acreditación PYME o MicroPYME</h1>
@@ -162,7 +164,18 @@ function AccreditationContent({
           </div>
         </section>
       )}
-      <AccreditationStatusCard model={model} />
+      <div className="accreditation-status-summary">
+        <AccreditationStatusCard model={model} />
+        <aside className="accreditation-card accreditation-benefits">
+          <h2>Beneficios del Programa PYME</h2>
+          <ul>
+            <li>Precios preferenciales aplicados automáticamente.</li>
+            <li>Facturación electrónica para efectos fiscales.</li>
+            <li>Línea de soporte técnico dedicada.</li>
+          </ul>
+          <Alert title="Requisitos de vigencia">Mantén actualizada la documentación legal para conservar el beneficio.</Alert>
+        </aside>
+      </div>
       <AccreditationHistory requests={data.requests} />
     </>
   )
