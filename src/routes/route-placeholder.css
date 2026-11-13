@@ -1,0 +1,57 @@
+.route-placeholder {
+  width: min(100%, 52rem);
+  margin-inline: auto;
+  padding: clamp(var(--space-3), 6vw, 5rem) var(--space-2);
+}
+
+.store-layout .route-placeholder {
+  min-height: 28rem;
+}
+
+.route-placeholder__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  align-items: center;
+  margin-block-end: var(--space-2);
+}
+
+.route-placeholder__meta code {
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--color-border) 55%, var(--color-surface));
+  color: color-mix(in srgb, var(--color-text) 72%, transparent);
+  font-size: 0.8125rem;
+  overflow-wrap: anywhere;
+}
+
+.route-placeholder h1 {
+  margin-block-end: var(--space-1);
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+}
+
+.route-placeholder > p {
+  max-width: 42rem;
+  color: color-mix(in srgb, var(--color-text) 70%, transparent);
+}
+
+.route-placeholder__notice {
+  margin-block-start: var(--space-3);
+  padding: var(--space-2);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.route-placeholder--centered {
+  display: grid;
+  min-height: 100vh;
+  align-content: center;
+  justify-items: start;
+}
+
+.route-placeholder__link {
+  display: inline-flex;
+  margin-block-start: var(--space-2);
+  font-weight: 700;
+}

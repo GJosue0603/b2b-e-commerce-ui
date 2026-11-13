@@ -1,0 +1,114 @@
+.orders-page {
+  display: grid;
+  gap: var(--space-3);
+  padding-block: var(--space-4);
+}
+
+.orders-page > header > span {
+  color: var(--color-primary);
+  font-size: 0.75rem;
+  font-weight: 750;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.orders-page > header h1 {
+  margin-block: var(--space-1);
+}
+
+.orders-page > header p,
+.order-card small {
+  color: color-mix(in srgb, var(--color-text) 65%, transparent);
+}
+
+.orders-page__list {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.order-card {
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.order-card > summary {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3);
+  cursor: pointer;
+}
+
+.order-card > summary > span,
+.order-card__items li > span {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.order-card__detail {
+  display: grid;
+  gap: var(--space-2);
+  padding: 0 var(--space-3) var(--space-3);
+  border-top: 1px solid var(--color-border);
+}
+
+.order-card__detail h2 {
+  margin-block: var(--space-2) 0;
+  font-size: 1rem;
+}
+
+.order-card__items {
+  display: grid;
+  gap: var(--space-1);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.order-card__items li,
+.order-card__totals > div,
+.order-card__payment {
+  display: flex;
+  gap: var(--space-2);
+  justify-content: space-between;
+}
+
+.order-card__items li {
+  padding-block: var(--space-1);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.order-card__totals {
+  display: grid;
+  gap: var(--space-1);
+  justify-self: end;
+  width: min(100%, 22rem);
+  margin: 0;
+}
+
+.order-card__totals dd {
+  margin: 0;
+  font-weight: 700;
+}
+
+.order-card__discount {
+  color: var(--color-accent);
+}
+
+.order-card__payment {
+  padding: var(--space-2);
+  border-radius: var(--radius-md);
+  background: var(--color-background);
+}
+
+@media (max-width: 32rem) {
+  .order-card > summary,
+  .order-card__items li,
+  .order-card__payment {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

@@ -1,0 +1,31 @@
+import { Outlet } from 'react-router-dom'
+import { StoreFooter, StoreHeader } from '../navigation'
+
+export interface StoreLayoutProps {
+  readonly authenticated?: boolean
+  readonly cartItemCount?: number
+  readonly cartStatus?: 'loading' | 'success' | 'error'
+  readonly onSignOut?: () => Promise<void> | void
+}
+
+export function StoreLayout({
+  authenticated = false,
+  cartItemCount = 0,
+  cartStatus = 'success',
+  onSignOut,
+}: StoreLayoutProps) {
+  return (
+    <div className="store-layout">
+      <StoreHeader
+        authenticated={authenticated}
+        cartItemCount={cartItemCount}
+        cartStatus={cartStatus}
+        onSignOut={onSignOut}
+      />
+      <main className="store-layout__content">
+        <Outlet />
+      </main>
+      <StoreFooter authenticated={authenticated} />
+    </div>
+  )
+}
