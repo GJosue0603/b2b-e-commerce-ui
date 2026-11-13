@@ -98,9 +98,12 @@ export function StoreHeader({
         <div className="store-header__actions">
           {authenticated ? (
             <details className="account-menu" ref={accountMenu}>
-              <summary className="header-action header-action--account">
+              <summary
+                aria-label={accountLabel}
+                className="header-action header-action--account header-action--icon-only"
+                title={accountLabel}
+              >
                 <AccountIcon />
-                <span>{accountLabel}</span>
               </summary>
               <div className="account-menu__panel">
                 <Link onClick={closeAccountMenu} to={routePatterns.account}>

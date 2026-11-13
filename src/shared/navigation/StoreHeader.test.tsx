@@ -91,17 +91,18 @@ describe('StoreHeader', () => {
     expect(
       await screen.findByRole('link', { name: 'Carrito, 2 productos' }),
     ).toBeVisible()
-    expect(screen.getAllByText('Mi cuenta').length).toBeGreaterThan(0)
+    expect(await screen.findByLabelText('Mi cuenta')).toBeVisible()
+    expect(screen.queryByText('Mi cuenta')).toBeNull()
   })
 
   it('abre el menú de cuenta y permite cerrar la sesión', async () => {
     const user = userEvent.setup()
     const router = renderStore('buyer-regular')
 
-    const accountLabel = await screen.findByText('Mi cuenta')
-    const accountMenu = accountLabel.closest('details')
+    const accountButton = await screen.findByLabelText('Mi cuenta')
+    const accountMenu = accountButton.closest('details')
     if (!accountMenu) throw new Error('No se encontró el menú de cuenta.')
-    await user.click(accountLabel)
+    await user.click(accountButton)
     expect(within(accountMenu).getByRole('link', { name: 'Ver cuenta' })).toHaveAttribute(
       'href',
       '/mi-cuenta',
