@@ -117,11 +117,12 @@ export function StoreHeader({
             </details>
           ) : (
             <Link
-              className="header-action header-action--account"
+              aria-label="Ingresar"
+              className="header-action header-action--account header-action--icon-only"
+              title="Ingresar"
               to={accountPath}
             >
               <AccountIcon />
-              <span>{accountLabel}</span>
             </Link>
           )}
           <Link

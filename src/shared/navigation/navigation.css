@@ -138,6 +138,18 @@
   min-width: max-content;
 }
 
+.header-action--icon-only {
+  width: 2.75rem;
+  min-width: 2.75rem;
+  padding-inline: 0;
+  justify-content: center;
+}
+
+.header-action--icon-only svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
 .account-menu {
   position: relative;
   flex: 0 0 auto;
