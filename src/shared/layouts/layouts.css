@@ -208,10 +208,21 @@
 
 .dashboard-layout__content .dashboard-page-title {
   margin: 0;
-  font-size: clamp(1.5rem, 2.4vw, 1.875rem);
+  font-size: 1.5rem;
   font-weight: 750;
   line-height: 1.2;
   letter-spacing: -0.035em;
+}
+
+.dashboard-layout__content h2 {
+  font-size: 1.125rem;
+  line-height: 1.35;
+}
+
+.dashboard-layout__content > .dashboard-account-page {
+  max-width: none;
+  margin: 0;
+  padding: 0;
 }
 
 @media (max-width: 48rem) {

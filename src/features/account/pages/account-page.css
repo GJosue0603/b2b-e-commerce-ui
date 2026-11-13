@@ -20,6 +20,12 @@
   color: color-mix(in srgb, var(--color-text) 68%, transparent);
 }
 
+.dashboard-account-page .account-page__header p {
+  margin: 0.5rem 0 0;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
 .account-page__orders,
 .account-card a {
   color: var(--color-primary);

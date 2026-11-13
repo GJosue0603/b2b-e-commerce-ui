@@ -17,8 +17,10 @@
 
 .vendor-page__header p,
 .vendor-help {
-  margin: 0.35rem 0 0;
+  margin: 0.5rem 0 0;
   color: color-mix(in srgb, var(--color-text) 65%, transparent);
+  font-size: 0.9375rem;
+  line-height: 1.5;
 }
 
 .vendor-kpis {
