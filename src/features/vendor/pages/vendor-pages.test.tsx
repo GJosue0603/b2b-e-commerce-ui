@@ -4,6 +4,21 @@ import { describe, expect, it } from 'vitest'
 import { renderTestApp } from '../../../test/renderApp'
 
 describe('gestión de catálogo del Vendedor', () => {
+  it.each([
+    ['/vendedor/productos', 'seller', 'Productos e inventario', 'Gestión comercial'],
+    ['/vendedor/categorias', 'seller', 'Categorías de productos', 'Sincronizado con catálogo público'],
+    ['/vendedor/productos/nuevo', 'seller', 'Nuevo producto', 'Catálogo compartido'],
+    ['/admin/productos', 'administrator', 'Supervisión de productos', 'Supervisión administrativa'],
+  ] as const)(
+    'muestra %s sin rótulos sobre el título',
+    async (path, scenario, heading, removedLabel) => {
+      renderTestApp(path, scenario)
+
+      expect(await screen.findByRole('heading', { name: heading })).toBeVisible()
+      expect(screen.queryByText(removedLabel)).toBeNull()
+    },
+  )
+
   it('crea un producto y lo refleja en listado y catálogo público sin recargar', async () => {
     const user = userEvent.setup()
     const { router } = renderTestApp('/vendedor/productos/nuevo', 'seller')

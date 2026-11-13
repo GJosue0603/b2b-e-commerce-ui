@@ -48,11 +48,9 @@ export function AdminAccreditationsPage() {
     <section className="admin-page">
       <header className="admin-page__header">
         <div>
-          <span>Cumplimiento normativo</span>
           <h1 aria-label="Solicitudes PYME">Solicitudes de acreditación PYME</h1>
           <p>Revisión y dictamen manual de documentación legal para habilitación de tarifas B2B.</p>
         </div>
-        <Badge variant="primary">Auditoría legal</Badge>
       </header>
 
       <div className="admin-kpis">

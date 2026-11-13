@@ -100,7 +100,6 @@ export function CategoriesPage() {
     <section className="vendor-page">
       <header className="vendor-page__header">
         <div>
-          <span className="vendor-eyebrow">Sincronizado con catálogo público</span>
           <h1>Categorías de productos</h1>
           <p>Organiza la taxonomía del catálogo propio de NexoTech.</p>
         </div>

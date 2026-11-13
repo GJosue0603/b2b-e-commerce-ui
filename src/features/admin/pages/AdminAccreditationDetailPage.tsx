@@ -34,7 +34,6 @@ export function AdminAccreditationDetailPage() {
     <section className="admin-page">
       <header className="admin-page__header admin-page__header--detail">
         <div>
-          <span>Solicitud PYME · {request.estado}</span>
           <h1 aria-label="Revisar solicitud PYME">Expediente #{request.id}</h1>
           <p>Solicitante: {buyer ? `${buyer.nombre} ${buyer.apellidos}` : 'Comprador'} · Radicado: {formatAdminDate(request.fechaSolicitud)}</p>
         </div>

@@ -4,6 +4,24 @@ import { describe, expect, it } from 'vitest'
 import { renderTestApp } from '../../../test/renderApp'
 
 describe('panel administrativo', () => {
+  it.each([
+    ['/admin/acreditaciones', 'administrator', 'Solicitudes PYME', ['Cumplimiento normativo', 'Auditoría legal']],
+    ['/admin/usuarios', 'administrator', 'Usuarios', ['Centro de control', 'Directorio interno']],
+    ['/admin/pedidos', 'administrator', 'Pedidos', ['Módulo de supervisión exclusiva', 'Trazabilidad activa']],
+    ['/admin/reportes', 'administrator', 'Análisis de ventas', ['Entorno de demostración']],
+    ['/admin/acreditaciones/demo-solicitud-pyme-pendiente', 'administrator', 'Revisar solicitud PYME', ['Solicitud PYME · pendiente']],
+  ] as const)(
+    'muestra %s sin etiquetas sobre el título',
+    async (path, scenario, heading, removedLabels) => {
+      renderTestApp(path, scenario)
+
+      expect(await screen.findByRole('heading', { name: heading })).toBeVisible()
+      for (const label of removedLabels) {
+        expect(screen.queryByText(label)).toBeNull()
+      }
+    },
+  )
+
   it('lista solicitudes y abre un expediente sin recargar', async () => {
     const user = userEvent.setup()
     const { router } = renderTestApp('/admin/acreditaciones', 'administrator')

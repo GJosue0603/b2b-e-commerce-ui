@@ -58,7 +58,6 @@ export function EditProductPage({ mode }: EditProductPageProps) {
     <section className="vendor-page">
       <header className="vendor-page__header">
         <div>
-          <span className="vendor-eyebrow">Catálogo compartido</span>
           <h1 aria-label={mode === 'create' ? undefined : `Editar: ${product?.nombre ?? ''}`}>
             {mode === 'create' ? 'Nuevo producto' : `Editar producto: ${product?.nombre ?? ''}`}
           </h1>

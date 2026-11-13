@@ -21,14 +21,6 @@
   color: color-mix(in srgb, var(--color-text) 65%, transparent);
 }
 
-.vendor-eyebrow {
-  color: var(--color-accent);
-  font-size: 0.75rem;
-  font-weight: 750;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
 .vendor-kpis {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));

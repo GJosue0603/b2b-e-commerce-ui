@@ -115,7 +115,6 @@ export function ProductsPage({ supervision = false }: ProductsPageProps) {
     <section className="vendor-page">
       <header className="vendor-page__header">
         <div>
-          <span className="vendor-eyebrow">{supervision ? 'Supervisión administrativa' : 'Gestión comercial'}</span>
           <h1>{supervision ? 'Supervisión de productos' : 'Productos e inventario'}</h1>
           <p>Catálogo compartido de NexoTech con precios regulares, PYME y existencias.</p>
         </div>
