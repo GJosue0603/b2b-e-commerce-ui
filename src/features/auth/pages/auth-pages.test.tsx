@@ -52,6 +52,29 @@ describe('autenticación demostrativa', () => {
     expect(router.state.location.pathname).toBe('/')
   })
 
+  it('lleva al comprador a Inicio aunque haya ingresado desde Mi cuenta', async () => {
+    const user = userEvent.setup()
+    const { router } = renderTestApp('/mi-cuenta')
+    await screen.findByRole('heading', { name: 'Iniciar sesión' })
+
+    await user.type(
+      screen.getByLabelText(/Correo electrónico/),
+      'camila.regular@nexotech.demo.test',
+    )
+    await user.type(
+      screen.getByLabelText(/Contraseña/),
+      'Comprador123!',
+    )
+    await user.click(screen.getByRole('button', { name: 'Ingresar' }))
+
+    expect(
+      await screen.findByRole('heading', {
+        name: 'Tecnología para tu día a día y tu negocio',
+      }),
+    ).toBeVisible()
+    expect(router.state.location.pathname).toBe('/')
+  })
+
   it.each([
     [
       'Comprador PYME',

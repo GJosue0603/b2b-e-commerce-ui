@@ -37,8 +37,13 @@ export function LoginPage() {
       setMessage(result.message)
       return
     }
+    const role = result.user?.rol ?? 'comprador'
     const requestedPath = (location.state as { from?: string } | null)?.from
-    navigate(requestedPath ?? landingPath(result.user?.rol ?? 'comprador'), {
+    const destination =
+      role === 'comprador'
+        ? routePatterns.home
+        : requestedPath ?? landingPath(role)
+    navigate(destination, {
       replace: true,
     })
   }
