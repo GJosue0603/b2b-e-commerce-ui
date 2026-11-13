@@ -11,7 +11,7 @@ import { useAuth } from '../../features/auth/state'
 import { useDemoSession } from './useDemoSession'
 
 export function DemoStoreLayout() {
-  const { user } = useAuth()
+  const { signOut, user } = useAuth()
   const cart = useCart()
   const authenticated = user?.rol === 'comprador'
 
@@ -20,6 +20,7 @@ export function DemoStoreLayout() {
       authenticated={authenticated}
       cartItemCount={cart.itemCount}
       cartStatus={cart.status}
+      onSignOut={signOut}
     />
   )
 }

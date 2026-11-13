@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { createMemoryRouter, RouterProvider } from 'react-router-dom'
 import { describe, expect, it } from 'vitest'
@@ -92,6 +92,30 @@ describe('StoreHeader', () => {
       await screen.findByRole('link', { name: 'Carrito, 2 productos' }),
     ).toBeVisible()
     expect(screen.getAllByText('Mi cuenta').length).toBeGreaterThan(0)
+  })
+
+  it('abre el menú de cuenta y permite cerrar la sesión', async () => {
+    const user = userEvent.setup()
+    const router = renderStore('buyer-regular')
+
+    const accountLabel = await screen.findByText('Mi cuenta')
+    const accountMenu = accountLabel.closest('details')
+    if (!accountMenu) throw new Error('No se encontró el menú de cuenta.')
+    await user.click(accountLabel)
+    expect(within(accountMenu).getByRole('link', { name: 'Ver cuenta' })).toHaveAttribute(
+      'href',
+      '/mi-cuenta',
+    )
+
+    await user.click(
+      within(accountMenu).getByRole('button', { name: 'Cerrar sesión' }),
+    )
+
+    expect(
+      (await screen.findAllByRole('link', { name: 'Ingresar' })).length,
+    ).toBeGreaterThan(0)
+    expect(screen.queryByText('Mi cuenta')).toBeNull()
+    expect(router.state.location.pathname).toBe('/')
   })
 
   it('permite abrir el menú móvil utilizando el teclado', async () => {

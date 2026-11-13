@@ -5,12 +5,14 @@ export interface StoreLayoutProps {
   readonly authenticated?: boolean
   readonly cartItemCount?: number
   readonly cartStatus?: 'loading' | 'success' | 'error'
+  readonly onSignOut?: () => Promise<void> | void
 }
 
 export function StoreLayout({
   authenticated = false,
   cartItemCount = 0,
   cartStatus = 'success',
+  onSignOut,
 }: StoreLayoutProps) {
   return (
     <div className="store-layout">
@@ -18,6 +20,7 @@ export function StoreLayout({
         authenticated={authenticated}
         cartItemCount={cartItemCount}
         cartStatus={cartStatus}
+        onSignOut={onSignOut}
       />
       <main className="store-layout__content">
         <Outlet />

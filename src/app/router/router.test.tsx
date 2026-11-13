@@ -114,7 +114,7 @@ describe('mapa de rutas', () => {
     cleanup()
     renderRoute('/mi-cuenta', 'buyer-regular')
     expect(
-      (await screen.findAllByRole('link', { name: 'Mi cuenta' })).length,
+      (await screen.findAllByText('Mi cuenta')).length,
     ).toBeGreaterThan(0)
     expect(screen.getAllByRole('link', { name: 'Mis pedidos' }).length).toBeGreaterThan(0)
   })

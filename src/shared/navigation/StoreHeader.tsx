@@ -1,5 +1,5 @@
-import { useRef, type KeyboardEvent } from 'react'
-import { Link } from 'react-router-dom'
+import { useEffect, useRef, useState, type KeyboardEvent } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { routePatterns } from '../../app/router/paths'
 import { NavigationLinks } from './NavigationLinks'
 import { AccountIcon, CartIcon, MenuIcon } from './StoreIcons'
@@ -13,14 +13,19 @@ export interface StoreHeaderProps {
   readonly authenticated?: boolean
   readonly cartItemCount?: number
   readonly cartStatus?: 'loading' | 'success' | 'error'
+  readonly onSignOut?: () => Promise<void> | void
 }
 
 export function StoreHeader({
   authenticated = false,
   cartItemCount = 0,
   cartStatus = 'success',
+  onSignOut,
 }: StoreHeaderProps) {
+  const navigate = useNavigate()
+  const accountMenu = useRef<HTMLDetailsElement>(null)
   const mobileMenu = useRef<HTMLDetailsElement>(null)
+  const [signingOut, setSigningOut] = useState(false)
   const navigation = authenticated
     ? buyerStoreNavigation
     : publicStoreNavigation
@@ -34,6 +39,19 @@ export function StoreHeader({
       : `Carrito, ${cartItemCount} ${cartItemCount === 1 ? 'producto' : 'productos'}`
 
   const closeMobileMenu = () => mobileMenu.current?.removeAttribute('open')
+  const closeAccountMenu = () => accountMenu.current?.removeAttribute('open')
+  const handleSignOut = async () => {
+    if (!onSignOut || signingOut) return
+    setSigningOut(true)
+    closeAccountMenu()
+    closeMobileMenu()
+    try {
+      await onSignOut()
+      navigate(routePatterns.home, { replace: true })
+    } finally {
+      setSigningOut(false)
+    }
+  }
   const handleMenuKeyDown = (event: KeyboardEvent<HTMLElement>) => {
     if (event.key !== 'Enter' && event.key !== ' ') return
     event.preventDefault()
@@ -41,6 +59,23 @@ export function StoreHeader({
       mobileMenu.current.open = !mobileMenu.current.open
     }
   }
+
+  useEffect(() => {
+    const closeOnOutsideInteraction = (event: PointerEvent) => {
+      if (!accountMenu.current?.contains(event.target as Node)) {
+        closeAccountMenu()
+      }
+    }
+    const closeOnEscape = (event: globalThis.KeyboardEvent) => {
+      if (event.key === 'Escape') closeAccountMenu()
+    }
+    document.addEventListener('pointerdown', closeOnOutsideInteraction)
+    document.addEventListener('keydown', closeOnEscape)
+    return () => {
+      document.removeEventListener('pointerdown', closeOnOutsideInteraction)
+      document.removeEventListener('keydown', closeOnEscape)
+    }
+  }, [])
 
   return (
     <header className="store-header">
@@ -61,13 +96,34 @@ export function StoreHeader({
         <StoreSearchForm className="store-header__search" />
 
         <div className="store-header__actions">
-          <Link
-            className="header-action header-action--account"
-            to={accountPath}
-          >
-            <AccountIcon />
-            <span>{accountLabel}</span>
-          </Link>
+          {authenticated ? (
+            <details className="account-menu" ref={accountMenu}>
+              <summary className="header-action header-action--account">
+                <AccountIcon />
+                <span>{accountLabel}</span>
+              </summary>
+              <div className="account-menu__panel">
+                <Link onClick={closeAccountMenu} to={routePatterns.account}>
+                  Ver cuenta
+                </Link>
+                <button
+                  disabled={signingOut}
+                  onClick={() => void handleSignOut()}
+                  type="button"
+                >
+                  {signingOut ? 'Cerrando sesión…' : 'Cerrar sesión'}
+                </button>
+              </div>
+            </details>
+          ) : (
+            <Link
+              className="header-action header-action--account"
+              to={accountPath}
+            >
+              <AccountIcon />
+              <span>{accountLabel}</span>
+            </Link>
+          )}
           <Link
             aria-busy={cartStatus === 'loading' || undefined}
             aria-label={cartLabel}
@@ -92,9 +148,25 @@ export function StoreHeader({
                 onClick={closeMobileMenu}
               >
                 <NavigationLinks items={navigation} />
-                <Link className="navigation-link" to={accountPath}>
-                  {accountLabel}
-                </Link>
+                {authenticated ? (
+                  <>
+                    <Link className="navigation-link" to={routePatterns.account}>
+                      Ver cuenta
+                    </Link>
+                    <button
+                      className="navigation-link account-menu__signout"
+                      disabled={signingOut}
+                      onClick={() => void handleSignOut()}
+                      type="button"
+                    >
+                      {signingOut ? 'Cerrando sesión…' : 'Cerrar sesión'}
+                    </button>
+                  </>
+                ) : (
+                  <Link className="navigation-link" to={accountPath}>
+                    {accountLabel}
+                  </Link>
+                )}
               </nav>
             </div>
           </details>
