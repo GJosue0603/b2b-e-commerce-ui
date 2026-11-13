@@ -156,6 +156,77 @@
   padding-block-start: var(--space-1);
 }
 
+.product-assurances {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-1);
+}
+
+.product-assurances > span {
+  display: grid;
+  padding: var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+
+.product-assurances small,
+.product-specifications small {
+  color: color-mix(in srgb, var(--color-text) 62%, transparent);
+}
+
+.product-specifications {
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.product-specifications > header {
+  display: flex;
+  gap: var(--space-2);
+  align-items: end;
+  justify-content: space-between;
+  padding: var(--space-3);
+}
+
+.product-specifications header > div > span {
+  color: var(--color-primary);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.product-specifications h2 {
+  margin: 0.25rem 0 0;
+  font-size: 1.125rem;
+}
+
+.product-specifications dl {
+  display: grid;
+  margin: 0;
+}
+
+.product-specifications dl > div {
+  display: grid;
+  grid-template-columns: minmax(10rem, 0.35fr) minmax(0, 1fr);
+  gap: var(--space-2);
+  padding: 0.75rem var(--space-3);
+}
+
+.product-specifications dl > div:nth-child(odd) {
+  background: var(--color-surface-low);
+}
+
+.product-specifications dt {
+  font-weight: 650;
+}
+
+.product-specifications dd {
+  margin: 0;
+  color: color-mix(in srgb, var(--color-text) 74%, transparent);
+}
+
 @media (max-width: 48rem) {
   .product-detail {
     grid-template-columns: minmax(0, 1fr);
@@ -166,6 +237,15 @@
   }
 
   .product-detail__purchase {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .product-assurances {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .product-specifications > header,
+  .product-specifications dl > div {
     grid-template-columns: minmax(0, 1fr);
   }
 }

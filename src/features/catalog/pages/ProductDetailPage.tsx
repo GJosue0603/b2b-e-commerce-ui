@@ -129,6 +129,28 @@ export function ProductDetailPage({
           )}
         </section>
       </div>
+      <section className="product-assurances" aria-label="Beneficios del producto">
+        <span><strong>Despacho 24h</strong><small>Entrega ágil en Costa Rica</small></span>
+        <span><strong>Garantía local</strong><small>Respaldo directo NexoTech</small></span>
+        <span><strong>Facturación DGT</strong><small>Comprobante electrónico</small></span>
+      </section>
+      <section className="product-specifications" aria-labelledby="specifications-title">
+        <header>
+          <div>
+            <span>Especificaciones técnicas</span>
+            <h2 id="specifications-title">Ficha Técnica Detallada</h2>
+          </div>
+          <small>Información del catálogo NexoTech</small>
+        </header>
+        <dl>
+          <div><dt>Conectividad</dt><dd>Bluetooth y conexión USB</dd></div>
+          <div><dt>Compatibilidad</dt><dd>Windows, macOS y dispositivos móviles</dd></div>
+          <div><dt>Materiales</dt><dd>Construcción durable para uso profesional</dd></div>
+          <div><dt>Garantía</dt><dd>12 meses con soporte técnico local</dd></div>
+          <div><dt>Disponibilidad</dt><dd>{product.existencias} unidades en inventario</dd></div>
+          <div><dt>Categoría</dt><dd>{category?.nombre ?? 'Tecnología'}</dd></div>
+        </dl>
+      </section>
     </div>
   )
 }

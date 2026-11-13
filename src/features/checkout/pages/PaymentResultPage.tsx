@@ -204,6 +204,11 @@ function ResolvedPayment({
 
   return (
     <main className="container payment-result-page">
+      <ol aria-label="Progreso del pago" className="payment-result-progress">
+        <li>✓ Carrito actualizado</li>
+        <li>✓ Revisión completada</li>
+        <li>✓ Confirmación registrada</li>
+      </ol>
       <section
         className={`payment-result-card payment-result-card--${state.status}`}
       >
@@ -220,6 +225,22 @@ function ResolvedPayment({
             <div><dt>ID de pedido demo</dt><dd>{state.order.id}</dd></div>
           )}
         </dl>
+        {isApproved && (
+          <section className="payment-result-order" aria-labelledby="purchased-items-title">
+            <h2 id="purchased-items-title">Artículos adquiridos ({state.order.items.length})</h2>
+            <ul>
+              {state.order.items.map((item) => (
+                <li key={item.productoId}>
+                  <span>
+                    <strong>{item.nombreProducto}</strong>
+                    <small>Cantidad: {item.cantidad}</small>
+                  </span>
+                  <strong>{formatCRC(item.subtotal)}</strong>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
         <div className="payment-result-actions">
           {isApproved ? (
             <>

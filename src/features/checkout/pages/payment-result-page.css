@@ -5,6 +5,26 @@
   padding-block: var(--space-4);
 }
 
+.payment-result-progress {
+  display: grid;
+  width: min(100%, 42rem);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-1);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.payment-result-progress li {
+  padding: var(--space-1);
+  border-radius: 999px;
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+  font-size: 0.75rem;
+  font-weight: 650;
+  text-align: center;
+}
+
 .payment-result-card {
   display: grid;
   width: min(100%, 42rem);
@@ -78,6 +98,41 @@
   text-align: end;
 }
 
+.payment-result-order {
+  width: 100%;
+  text-align: start;
+}
+
+.payment-result-order h2 {
+  font-size: 1rem;
+}
+
+.payment-result-order ul {
+  display: grid;
+  gap: var(--space-1);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.payment-result-order li {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-low);
+}
+
+.payment-result-order li > span {
+  display: grid;
+}
+
+.payment-result-order small {
+  color: color-mix(in srgb, var(--color-text) 62%, transparent);
+}
+
 .payment-result-actions {
   display: flex;
   flex-wrap: wrap;
@@ -102,6 +157,10 @@
 }
 
 @media (max-width: 30rem) {
+  .payment-result-progress {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .payment-result-card {
     padding: var(--space-3) var(--space-2);
   }

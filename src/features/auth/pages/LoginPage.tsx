@@ -78,6 +78,13 @@ export function LoginPage() {
           type="password"
           value={password}
         />
+        <div className="auth-form__options">
+          <label className="auth-form__checkbox">
+            <input type="checkbox" />
+            <span>Recordar mis datos en este dispositivo</span>
+          </label>
+          <span>Acceso seguro</span>
+        </div>
         <Button
           fullWidth
           loading={actionStatus === 'loading'}
@@ -113,6 +120,7 @@ export function LoginPage() {
       <p className="auth-page__switch">
         ¿Aún no tienes una cuenta? <Link to={routePatterns.signUp}>Crear cuenta</Link>
       </p>
+      <p className="auth-page__security">♢ Acceso seguro con cifrado TLS. NexoTech no comparte tus credenciales.</p>
     </div>
   )
 }

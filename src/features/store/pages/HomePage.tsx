@@ -30,6 +30,7 @@ export function HomePage({ accreditation }: HomePageProps) {
           />
         )}
         <PymeInvitation />
+        <StoreBenefits />
       </div>
     </div>
   )
@@ -67,15 +68,13 @@ function HomeHero() {
             </div>
           </dl>
         </div>
-        <div aria-hidden="true" className="home-hero__artwork">
-          <div className="home-hero__screen">
-            <span />
-            <span />
-            <span />
-          </div>
-          <div className="home-hero__laptop" />
+        <div className="home-hero__artwork">
+          <img
+            alt="Estación de trabajo moderna con monitor y computadora portátil"
+            src="/images/demo/hero-workspace.jpg"
+          />
           <div className="home-hero__artwork-label">
-            <span>Configuraciones de alto rendimiento</span>
+            <span>◉ Configuraciones de alto rendimiento</span>
             <strong>NexoTech Curated</strong>
           </div>
         </div>
@@ -202,6 +201,28 @@ function PymeInvitation() {
         </Link>
         <small>La validación de esta demo es simulada.</small>
       </div>
+    </section>
+  )
+}
+
+function StoreBenefits() {
+  const benefits = [
+    ['♢', 'Garantía directa', 'Respaldo del fabricante y soporte técnico local.'],
+    ['▤', 'Facturación electrónica', 'Comprobantes válidos para empresas y profesionales.'],
+    ['⌁', 'Asistencia especializada', 'Acompañamiento para elegir tecnología compatible.'],
+  ] as const
+
+  return (
+    <section aria-label="Beneficios de comprar en NexoTech" className="home-benefits">
+      {benefits.map(([icon, title, description]) => (
+        <div className="home-benefits__item" key={title}>
+          <span aria-hidden="true">{icon}</span>
+          <div>
+            <h2>{title}</h2>
+            <p>{description}</p>
+          </div>
+        </div>
+      ))}
     </section>
   )
 }

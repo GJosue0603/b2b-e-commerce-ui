@@ -58,11 +58,12 @@ export function RegisterPage() {
   return (
     <div className="auth-page auth-page--register">
       <Alert title="Cuenta Comprador" variant="info">
-        El beneficio PYME se solicita después del registro y no es un rol de usuario.
+        Toda cuenta inicia como Comprador. Podrás solicitar el beneficio de
+        Acreditación PYME posteriormente desde tu perfil.
       </Alert>
       <header className="auth-page__header">
         <h1>Crear cuenta</h1>
-        <p>Toda cuenta nueva inicia como Comprador.</p>
+        <p>Acceso completo al catálogo, compras, pedidos y facturación.</p>
       </header>
       {result && (
         <Alert
