@@ -13,6 +13,7 @@ export interface StoreHeaderProps {
   readonly authenticated?: boolean
   readonly cartItemCount?: number
   readonly cartStatus?: 'loading' | 'success' | 'error'
+  readonly showAccreditationNavigation?: boolean
   readonly onSignOut?: () => Promise<void> | void
 }
 
@@ -20,15 +21,20 @@ export function StoreHeader({
   authenticated = false,
   cartItemCount = 0,
   cartStatus = 'success',
+  showAccreditationNavigation = true,
   onSignOut,
 }: StoreHeaderProps) {
   const navigate = useNavigate()
   const accountMenu = useRef<HTMLDetailsElement>(null)
   const mobileMenu = useRef<HTMLDetailsElement>(null)
   const [signingOut, setSigningOut] = useState(false)
-  const navigation = authenticated
-    ? buyerStoreNavigation
-    : publicStoreNavigation
+  const navigation = !authenticated
+    ? publicStoreNavigation
+    : showAccreditationNavigation
+      ? buyerStoreNavigation
+      : buyerStoreNavigation.filter(
+          ({ to }) => to !== routePatterns.accreditationStatus,
+        )
   const accountPath = authenticated
     ? routePatterns.account
     : routePatterns.signIn

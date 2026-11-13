@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react'
+import { cleanup, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { createMemoryRouter, RouterProvider } from 'react-router-dom'
 import { describe, expect, it } from 'vitest'
@@ -93,6 +93,29 @@ describe('StoreHeader', () => {
     ).toBeVisible()
     expect(await screen.findByLabelText('Mi cuenta')).toBeVisible()
     expect(screen.queryByText('Mi cuenta')).toBeNull()
+  })
+
+  it('oculta la acreditación al comprador regular y la muestra al comprador PYME', async () => {
+    renderStore('buyer-regular')
+    const regularNavigation = await screen.findByRole('navigation', {
+      name: 'Navegación de la tienda',
+    })
+    expect(
+      within(regularNavigation).queryByRole('link', {
+        name: 'Acreditación PYME',
+      }),
+    ).toBeNull()
+
+    cleanup()
+    renderStore('buyer-pyme-active')
+    const pymeNavigation = await screen.findByRole('navigation', {
+      name: 'Navegación de la tienda',
+    })
+    expect(
+      await within(pymeNavigation).findByRole('link', {
+        name: 'Acreditación PYME',
+      }),
+    ).toBeVisible()
   })
 
   it('abre el menú de cuenta y permite cerrar la sesión', async () => {

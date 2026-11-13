@@ -12,14 +12,19 @@ import { useDemoSession } from './useDemoSession'
 
 export function DemoStoreLayout() {
   const { signOut, user } = useAuth()
+  const { state } = useDemoSession()
   const cart = useCart()
   const authenticated = user?.rol === 'comprador'
+  const showAccreditationNavigation =
+    state.status === 'success' &&
+    state.data.session.scenario.id !== 'buyer-regular'
 
   return (
     <StoreLayout
       authenticated={authenticated}
       cartItemCount={cart.itemCount}
       cartStatus={cart.status}
+      showAccreditationNavigation={showAccreditationNavigation}
       onSignOut={signOut}
     />
   )
