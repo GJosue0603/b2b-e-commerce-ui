@@ -129,6 +129,8 @@ describe('mapa de rutas', () => {
       const accountMenu = await within(header).findByLabelText(
         `Cuenta de ${roleLabel}`,
       )
+      expect(accountMenu).toHaveClass('header-action--icon-only')
+      expect(accountMenu).not.toHaveTextContent(roleLabel)
       const accountDetails = accountMenu.closest('details')
       if (!accountDetails) throw new Error('No se encontró el menú de cuenta.')
       await user.click(accountMenu)

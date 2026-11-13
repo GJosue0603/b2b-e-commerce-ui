@@ -87,11 +87,10 @@ export function DashboardHeader({
           <details className="account-menu" ref={accountMenu}>
             <summary
               aria-label={`Cuenta de ${roleLabel}`}
-              className="header-action header-action--account"
-              title={accountName}
+              className="header-action header-action--account header-action--icon-only"
+              title={`Cuenta de ${roleLabel}`}
             >
               <AccountIcon />
-              <span>{accountName}</span>
             </summary>
             <div className="account-menu__panel">
               <div className="dashboard-header__account-info">
