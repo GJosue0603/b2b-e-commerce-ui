@@ -56,6 +56,10 @@ const publicStoreRoutes: RouteObject = {
       path: routePatterns.cart,
       element: <DemoCartPage />,
     },
+    {
+      path: '*',
+      element: <NotFoundPage />,
+    },
     ...(import.meta.env.DEV
       ? [
           {
@@ -198,7 +202,6 @@ export const routeDefinitions: RouteObject[] = [
       authRoutes,
       sellerRoutes,
       administratorRoutes,
-      { path: '*', element: <NotFoundPage /> },
     ],
   },
 ]
