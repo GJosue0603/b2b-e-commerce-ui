@@ -53,7 +53,7 @@ export function StoreHeader({
     closeMobileMenu()
     try {
       await onSignOut()
-      navigate(routePatterns.home, { replace: true })
+      navigate(routePatterns.signIn, { replace: true })
     } finally {
       setSigningOut(false)
     }

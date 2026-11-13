@@ -136,10 +136,10 @@ describe('StoreHeader', () => {
     )
 
     expect(
-      (await screen.findAllByRole('link', { name: 'Ingresar' })).length,
-    ).toBeGreaterThan(0)
+      await screen.findByRole('heading', { name: 'Iniciar sesión' }),
+    ).toBeVisible()
     expect(screen.queryByText('Mi cuenta')).toBeNull()
-    expect(router.state.location.pathname).toBe('/')
+    expect(router.state.location.pathname).toBe('/ingresar')
   })
 
   it('permite abrir el menú móvil utilizando el teclado', async () => {

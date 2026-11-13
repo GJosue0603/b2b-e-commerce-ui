@@ -36,8 +36,8 @@ export function DashboardHeader({
     closeAccountMenu()
     closeMobileMenu()
     try {
-      navigate(routePatterns.home, { replace: true })
       await onSignOut()
+      navigate(routePatterns.signIn, { replace: true })
     } finally {
       setSigningOut(false)
     }

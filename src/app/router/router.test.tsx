@@ -173,10 +173,8 @@ describe('mapa de rutas', () => {
       await user.click(
         within(profileDetails).getByRole('button', { name: 'Cerrar sesión' }),
       )
-      await screen.findByRole('heading', {
-        name: 'Tecnología para tu día a día y tu negocio',
-      })
-      expect(router.state.location.pathname).toBe('/')
+      await screen.findByRole('heading', { name: 'Iniciar sesión' })
+      expect(router.state.location.pathname).toBe('/ingresar')
     },
   )
 
