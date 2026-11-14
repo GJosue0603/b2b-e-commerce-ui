@@ -149,10 +149,6 @@ const sellerRoutes: RouteObject = {
       element: <EditProductPage mode="edit" />,
     },
     {
-      path: routePatterns.sellerCategories,
-      element: <CategoriesPage />,
-    },
-    {
       path: routePatterns.sellerReports,
       element: <SalesDashboardPage />,
     },
@@ -186,6 +182,10 @@ const administratorRoutes: RouteObject = {
     {
       path: routePatterns.adminUsers,
       element: <AdminUsersPage />,
+    },
+    {
+      path: routePatterns.adminCategories,
+      element: <CategoriesPage />,
     },
     {
       path: routePatterns.adminProducts,

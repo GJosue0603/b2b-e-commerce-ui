@@ -6,7 +6,6 @@ import { renderTestApp } from '../../../test/renderApp'
 describe('gestión de catálogo del Vendedor', () => {
   it.each([
     ['/vendedor/productos', 'seller', 'Productos e inventario', 'Gestión comercial'],
-    ['/vendedor/categorias', 'seller', 'Categorías de productos', 'Sincronizado con catálogo público'],
     ['/vendedor/productos/nuevo', 'seller', 'Nuevo producto', 'Catálogo compartido'],
     ['/admin/productos', 'administrator', 'Supervisión de productos', 'Supervisión administrativa'],
   ] as const)(
@@ -56,5 +55,12 @@ describe('gestión de catálogo del Vendedor', () => {
     expect(screen.queryByRole('button', { name: 'Nuevo producto' })).toBeNull()
     expect(screen.queryByRole('button', { name: 'Editar' })).toBeNull()
     expect(screen.queryByRole('button', { name: 'Desactivar' })).toBeNull()
+  })
+
+  it('reserva la gestión de categorías al área administrativa', async () => {
+    renderTestApp('/admin/categorias', 'administrator')
+
+    expect(await screen.findByRole('heading', { name: 'Categorías de productos' })).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Nueva categoría' })).toBeVisible()
   })
 })

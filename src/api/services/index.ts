@@ -1,6 +1,8 @@
 export { createCatalogApi } from './catalog'
 export { createCategoriesApi } from './categories'
 export { createUsersApi } from './users'
+export { createAdminCategoriesService } from './admin-categories'
+export { createAdminUsersService } from './admin-users'
 export {
   authApi,
   createAuthApi,

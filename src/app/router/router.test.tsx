@@ -52,11 +52,11 @@ const routeCases = [
   ['/vendedor/productos', 'Productos e inventario', 'seller'],
   ['/vendedor/productos/nuevo', 'Nuevo producto', 'seller'],
   ['/vendedor/productos/demo-producto-teclado-mecanico/editar', 'Editar: Teclado mecánico inalámbrico', 'seller'],
-  ['/vendedor/categorias', 'Categorías de productos', 'seller'],
   ['/vendedor/reportes', 'Análisis de ventas', 'seller'],
   ['/admin/acreditaciones', 'Solicitudes PYME', 'administrator'],
   ['/admin/acreditaciones/demo-solicitud-pyme-pendiente', 'Revisar solicitud PYME', 'administrator'],
   ['/admin/usuarios', 'Usuarios', 'administrator'],
+  ['/admin/categorias', 'Categorías de productos', 'administrator'],
   ['/admin/productos', 'Supervisión de productos', 'administrator'],
   ['/admin/pedidos', 'Pedidos', 'administrator'],
   ['/admin/reportes', 'Análisis de ventas', 'administrator'],
@@ -84,7 +84,7 @@ describe('mapa de rutas', () => {
     })
 
     expect(within(navigation).getByRole('link', { name: 'Productos' })).toBeVisible()
-    expect(within(navigation).getByRole('link', { name: 'Categorías' })).toBeVisible()
+    expect(within(navigation).queryByRole('link', { name: 'Categorías' })).toBeNull()
     expect(within(navigation).getByRole('link', { name: 'Reportes' })).toBeVisible()
     expect(within(navigation).queryByRole('link', { name: 'Pedidos' })).toBeNull()
     expect(
@@ -101,8 +101,8 @@ describe('mapa de rutas', () => {
     expect(
       within(navigation).getByRole('link', { name: 'Solicitudes PYME' }),
     ).toBeVisible()
+    expect(within(navigation).getByRole('link', { name: 'Categorías' })).toBeVisible()
     expect(within(navigation).getByRole('link', { name: 'Pedidos' })).toBeVisible()
-    expect(within(navigation).queryByRole('link', { name: 'Categorías' })).toBeNull()
   })
 
   it.each([

@@ -14,6 +14,31 @@ export type ApiPageLoader<TItem> = (
   pageSize: number,
 ) => Promise<ApiPage<TItem> | undefined>
 
+export async function loadApiPage<TItem>(
+  loadPage: ApiPageLoader<TItem>,
+  pageNumber: number,
+  pageSize: number,
+): Promise<ApiPage<TItem>> {
+  if (
+    !Number.isInteger(pageNumber) ||
+    pageNumber < 1 ||
+    !Number.isInteger(pageSize) ||
+    pageSize < 1 ||
+    pageSize > API_MAX_PAGE_SIZE
+  ) {
+    throw new ApiPaginationError('Los parámetros de paginación son inválidos.')
+  }
+
+  const page = await loadPage(pageNumber, pageSize)
+  validatePage(page, pageNumber)
+  if (page.cantidadPorPagina !== pageSize) {
+    throw new ApiPaginationError(
+      'La API devolvió un tamaño de página distinto al solicitado.',
+    )
+  }
+  return page
+}
+
 function validatePage<TItem>(
   page: ApiPage<TItem> | undefined,
   expectedPageNumber: number,

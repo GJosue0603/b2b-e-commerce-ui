@@ -22,13 +22,13 @@ export const buyerStoreNavigation: readonly NavigationItem[] = [
 
 const sellerNavigation: readonly NavigationItem[] = [
   { label: 'Productos', to: routePatterns.sellerProducts },
-  { label: 'Categorías', to: routePatterns.sellerCategories },
   { label: 'Reportes', to: routePatterns.sellerReports },
 ]
 
 const administratorNavigation: readonly NavigationItem[] = [
   { label: 'Solicitudes PYME', to: routePatterns.adminAccreditations },
   { label: 'Usuarios', to: routePatterns.adminUsers },
+  { label: 'Categorías', to: routePatterns.adminCategories },
   { label: 'Productos', to: routePatterns.adminProducts },
   { label: 'Pedidos', to: routePatterns.adminOrders },
   { label: 'Reportes', to: routePatterns.adminReports },

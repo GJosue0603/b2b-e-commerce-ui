@@ -1,6 +1,11 @@
 import { describe, expect, it, vi } from 'vitest'
 import type { ApiPage } from './contracts/common'
-import { API_MAX_PAGE_SIZE, ApiPaginationError, loadAllApiPages } from './pagination'
+import {
+  API_MAX_PAGE_SIZE,
+  ApiPaginationError,
+  loadAllApiPages,
+  loadApiPage,
+} from './pagination'
 
 function makePage<TItem>(
   pageNumber: number,
@@ -17,6 +22,18 @@ function makePage<TItem>(
 }
 
 describe('paginación de catálogo API', () => {
+  it('valida una página individual y respeta el máximo permitido', async () => {
+    const loadPage = vi.fn().mockResolvedValue(makePage(2, [100], 101))
+
+    const page = await loadApiPage(loadPage, 2, API_MAX_PAGE_SIZE)
+
+    expect(page.items).toEqual([100])
+    expect(loadPage).toHaveBeenCalledWith(2, API_MAX_PAGE_SIZE)
+    await expect(loadApiPage(loadPage, 1, 101)).rejects.toBeInstanceOf(
+      ApiPaginationError,
+    )
+  })
+
   it('carga el conjunto completo solicitando como máximo 100 elementos por página', async () => {
     const firstPageItems = Array.from({ length: 100 }, (_, index) => index)
     const loadPage = vi

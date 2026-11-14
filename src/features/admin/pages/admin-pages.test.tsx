@@ -44,12 +44,19 @@ describe('panel administrativo', () => {
     expect(await screen.findByText('Dictamen simulado registrado')).toBeVisible()
   })
 
-  it('muestra el directorio de usuarios con roles y condición PYME', async () => {
+  it('muestra el directorio demo de usuarios y marca la condición PYME como simulada', async () => {
     renderTestApp('/admin/usuarios', 'administrator')
 
     expect(await screen.findByRole('heading', { name: 'Usuarios' })).toBeVisible()
     expect(await screen.findByText('diego.pyme@nexotech.demo.test')).toBeVisible()
-    expect(screen.getByText('PYME activa')).toBeVisible()
+    expect(screen.getByText('PYME activa · demo')).toBeVisible()
+  })
+
+  it('deniega la ruta administrativa de categorías al Vendedor', async () => {
+    renderTestApp('/admin/categorias', 'seller')
+
+    expect(await screen.findByText('Acceso restringido')).toBeVisible()
+    expect(screen.queryByRole('heading', { name: 'Categorías de productos' })).toBeNull()
   })
 
   it('supervisa pedidos confirmados y sus referencias de pago', async () => {

@@ -1,4 +1,5 @@
 import type { AuthUser } from './state/auth-context'
+import { mapApiRole } from '../../api/mappers/users'
 
 export interface ApiAuthSession {
   readonly expiresAt: number
@@ -13,16 +14,7 @@ export class InvalidApiTokenError extends Error {
 }
 
 export function mapBackendRole(role: string): AuthUser['rol'] | null {
-  switch (role.toUpperCase()) {
-    case 'COMPRADOR':
-      return 'comprador'
-    case 'VENDEDOR':
-      return 'vendedor'
-    case 'ADMINISTRADOR':
-      return 'administrador'
-    default:
-      return null
-  }
+  return mapApiRole(role)
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {

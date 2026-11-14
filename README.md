@@ -19,14 +19,14 @@ Frontend demostrativo de una plataforma de comercio electrónico B2B. Incluye un
 ### Vendedores
 
 - Creación y edición de productos.
-- Administración de productos y categorías.
+- Administración de productos.
 - Dashboard de ventas, rankings e inventario bajo.
 - Edición de la cuenta desde el panel.
 
 ### Administradores
 
 - Revisión de solicitudes de acreditación PYME.
-- Consulta de usuarios, productos, pedidos y reportes.
+- Consulta de usuarios, categorías, productos, pedidos y reportes.
 - Supervisión del catálogo y edición de la cuenta.
 
 ## Tecnologías
@@ -104,8 +104,24 @@ backend.
 
 La API actual no incluye un endpoint de perfil (`/me`), así que algunas vistas de
 cuenta no pueden mostrar nombre y teléfono reales. Checkout, pagos, pedidos,
-acreditación y operaciones de administración continúan usando mocks; la
-autenticación y el carrito reales no los convierten en operaciones reales.
+acreditaciones, administración de productos y reportes continúan usando mocks;
+la autenticación, el catálogo, el carrito y los módulos administrativos descritos
+abajo no los convierten en operaciones reales.
+
+### Administración de usuarios y categorías
+
+Con `VITE_AUTH_MODE=api`, el directorio administrativo consulta
+`GET /v1/usuarios` por páginas de 25 elementos y solicita el detalle por el ID
+real con `GET /v1/usuarios/{usuarioId}`. El backend exige el rol
+`ADMINISTRADOR`; la búsqueda y el filtro de rol se aplican solo a la página
+cargada. La pantalla no consulta acreditaciones PYME en modo API.
+
+Con `VITE_CATALOG_DATA_MODE=api`, `/admin/categorias` lee categorías activas e
+inactivas en páginas de 25. Crear y editar envía solo `nombre` y `descripcion`;
+desactivar usa el `DELETE` lógico del backend. Esas mutaciones requieren además
+`VITE_AUTH_MODE=api` y una sesión de `ADMINISTRADOR`. No existe una operación de
+reactivación. La lectura pública de categorías del catálogo permanece disponible
+sin convertir la gestión administrativa en una función de VENDEDOR.
 
 ## Usuarios de prueba
 
@@ -171,6 +187,7 @@ La UI consume contratos definidos en `src/services`. La implementación demostra
 ## Estado de la integración
 
 - La autenticación puede ser demostrativa o usar el flujo JWT real, según `VITE_AUTH_MODE`.
+- Directorio de usuarios y gestión administrativa de categorías usan los endpoints reales bajo los modos API y permisos documentados arriba.
 - Las comprobaciones de rol del frontend solo controlan la navegación; el backend debe validar los JWT y permisos en cada endpoint.
 - Los datos y mutaciones existen solo durante la sesión actual.
 - La pasarela de pago es un simulador local y no mueve dinero real.
