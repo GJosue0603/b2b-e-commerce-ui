@@ -1,78 +1,125 @@
-# React + TypeScript + Vite
+# NexoTech B2B E-commerce
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend demostrativo de una plataforma de comercio electrónico B2B. Incluye una tienda pública, precios diferenciados para clientes PYME, compra y pago simulado, gestión de catálogo para vendedores y herramientas administrativas.
 
-Currently, two official plugins are available:
+> El proyecto funciona actualmente con repositorios y datos mock en memoria. No se conecta a una API ni procesa pagos reales; al recargar la aplicación, los cambios realizados durante la sesión se restablecen.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Funcionalidades
 
-## React Compiler
+### Tienda y compradores
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+- Inicio, búsqueda, filtros por categoría y detalle de productos.
+- Carrito con control de cantidades y resumen de compra.
+- Registro, inicio de sesión y edición del perfil.
+- Checkout protegido y simulación de pagos aprobados, rechazados o cancelados.
+- Historial y detalle de pedidos.
+- Solicitud, consulta e historial de acreditación PYME.
+- Precios PYME cuando la acreditación del comprador está vigente.
 
-Note: This will impact Vite dev & build performances.
-You can also try [the experimental native React Compiler support in plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md#rust-react-compiler) by using `compiler: true` in the plugin options instead of using the Babel plugin.
+### Vendedores
 
-## Expanding the ESLint configuration
+- Creación y edición de productos.
+- Administración de productos y categorías.
+- Dashboard de ventas, rankings e inventario bajo.
+- Edición de la cuenta desde el panel.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Administradores
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- Revisión de solicitudes de acreditación PYME.
+- Consulta de usuarios, productos, pedidos y reportes.
+- Supervisión del catálogo y edición de la cuenta.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Tecnologías
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- React 19 y TypeScript 6.
+- Vite 8.
+- React Router 7.
+- Vitest, Testing Library y jsdom.
+- ESLint 10.
+- CSS modularizado por área y design tokens propios.
 
+## Requisitos
+
+- Node.js `^20.19.0` o `>=22.12.0`.
+- npm `>=10`.
+
+## Instalación y ejecución
+
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+Vite mostrará en la terminal la URL local de la aplicación, normalmente `http://localhost:5173`.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+No se requieren variables de entorno para ejecutar la versión demostrativa.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Usuarios de prueba
 
+Desde `/ingresar` se puede acceder con cualquiera de estos perfiles:
+
+| Perfil | Correo | Contraseña |
+| --- | --- | --- |
+| Comprador regular | `camila.regular@nexotech.demo.test` | `Comprador123!` |
+| Comprador PYME | `diego.pyme@nexotech.demo.test` | `CompradorPyme123!` |
+| Vendedor | `vendedor@nexotech.demo.test` | `Vendedor123!` |
+| Administrador | `admin@nexotech.demo.test` | `Admin123!` |
+
+En desarrollo, el checkout también muestra un selector local para probar los resultados de pago `aprobado`, `rechazado` y `cancelado`.
+
+## Scripts disponibles
+
+| Comando | Descripción |
+| --- | --- |
+| `npm run dev` | Inicia el servidor de desarrollo con recarga en caliente. |
+| `npm run build` | Valida TypeScript y genera el build de producción en `dist/`. |
+| `npm run preview` | Sirve localmente el build de producción. |
+| `npm run test` | Ejecuta la suite de pruebas una vez. |
+| `npm run typecheck` | Comprueba los tipos sin generar artefactos. |
+| `npm run lint` | Ejecuta ESLint sobre el repositorio. |
+
+Para validar todos los controles principales antes de integrar cambios:
+
+```bash
+npm run lint
+npm run typecheck
+npm run test
+npm run build
 ```
+
+## Rutas principales
+
+| Área | Rutas |
+| --- | --- |
+| Pública | `/`, `/catalogo`, `/producto/:productId`, `/carrito` |
+| Autenticación | `/ingresar`, `/registro` |
+| Comprador | `/checkout`, `/pago/resultado`, `/mi-cuenta`, `/mis-pedidos`, `/acreditacion/*` |
+| Vendedor | `/vendedor/productos`, `/vendedor/categorias`, `/vendedor/reportes`, `/vendedor/cuenta` |
+| Administración | `/admin/acreditaciones`, `/admin/usuarios`, `/admin/productos`, `/admin/pedidos`, `/admin/reportes`, `/admin/cuenta` |
+
+La ruta `/componentes` está disponible únicamente en desarrollo y presenta los componentes compartidos de la interfaz.
+
+## Estructura del proyecto
+
+```text
+src/
+├── app/          # Composición, router, proveedores y sesión demo
+├── domain/       # Tipos y reglas de negocio independientes de React
+├── features/     # Módulos por capacidad: catálogo, carrito, checkout, etc.
+├── mocks/        # Fixtures y adaptadores en memoria
+├── routes/       # Vistas auxiliares y página 404
+├── services/     # Contratos de repositorios y pasarelas
+├── shared/       # UI, layouts, navegación, estilos y utilidades comunes
+└── test/         # Configuración y helpers de pruebas
+```
+
+La UI consume contratos definidos en `src/services`. La implementación demostrativa de esos contratos vive en `src/mocks`, lo que permite sustituir los mocks por adaptadores HTTP sin acoplar las páginas a una API específica. Las reglas de precios y reportes se mantienen en `src/domain` para que puedan probarse de forma aislada.
+
+## Estado de la integración
+
+- La autenticación y los permisos por rol son simulados en el navegador.
+- Los datos y mutaciones existen solo durante la sesión actual.
+- La pasarela de pago es un simulador local y no mueve dinero real.
+- El proyecto no necesita secretos ni configuración de backend en su estado actual.
+
+Para conectarlo a servicios reales, implemente los contratos de `AppServices` y entregue las nuevas dependencias mediante `AppServicesProvider`.
