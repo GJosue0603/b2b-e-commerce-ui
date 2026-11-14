@@ -15,7 +15,7 @@ export interface ApiProduct {
   readonly id: string
   readonly nombre: string
   readonly descripcion: string
-  readonly categoria: ApiCategory
+  readonly categoria: ApiCategory | null
   readonly precioRegular: number
   readonly precioPyme: number
   readonly existencias: number

@@ -107,6 +107,16 @@ export interface CatalogRepository {
   ): Promise<Producto>
 }
 
+export type CatalogReader = Pick<
+  CatalogRepository,
+  'getProductById' | 'listCategories' | 'listProducts'
+> & {
+  getCategoryById(
+    id: EntityId,
+    options?: RepositoryRequestOptions,
+  ): Promise<Categoria | null>
+}
+
 export interface CommerceRepository {
   getCartByUser(
     userId: EntityId,

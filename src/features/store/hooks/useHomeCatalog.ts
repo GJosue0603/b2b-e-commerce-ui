@@ -1,7 +1,6 @@
-import { useEffect, useState } from 'react'
 import type { Categoria, Producto } from '../../../domain'
 import type { AsyncState } from '../../../services'
-import { useAppServices } from '../../../app/services'
+import { useCatalogData } from '../../catalog/hooks/useCatalogData'
 
 const FEATURED_PRODUCT_LIMIT = 4
 
@@ -23,37 +22,13 @@ function selectHomeCatalog(
 }
 
 export function useHomeCatalog(): AsyncState<HomeCatalogData> {
-  const { catalog } = useAppServices()
-  const [state, setState] = useState<AsyncState<HomeCatalogData>>({
-    status: 'loading',
-  })
-
-  useEffect(() => {
-    const controller = new AbortController()
-
-    void Promise.all([
-      catalog.listCategories({ signal: controller.signal }),
-      catalog.listProducts({ signal: controller.signal }),
-    ])
-      .then(([categories, products]) => {
-        setState({
-          status: 'success',
-          data: selectHomeCatalog(categories, products),
-        })
-      })
-      .catch((reason: unknown) => {
-        if (controller.signal.aborted) return
-        setState({
-          status: 'error',
-          error:
-            reason instanceof Error
-              ? reason
-              : new Error('No fue posible cargar el catálogo.'),
-        })
-      })
-
-    return () => controller.abort()
-  }, [catalog])
-
-  return state
+  const catalogState = useCatalogData()
+  if (catalogState.status !== 'success') return catalogState
+  return {
+    status: 'success',
+    data: selectHomeCatalog(
+      catalogState.data.categories,
+      catalogState.data.products,
+    ),
+  }
 }

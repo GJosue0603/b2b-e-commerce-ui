@@ -54,27 +54,28 @@ Vite mostrará en la terminal la URL local de la aplicación, normalmente `http:
 
 No se requieren variables de entorno para ejecutar la versión demostrativa.
 
-### Transporte HTTP (infraestructura inicial)
+### Fuente del catálogo y transporte HTTP
 
-La interfaz continúa usando los repositorios mock. Para preparar el cliente HTTP,
-copia `.env.example` como `.env`; `VITE_API_BASE_URL=/v1` usa el proxy de desarrollo
-de Vite hacia `https://localhost:7053`. El proxy omite la validación del certificado
-HTTPS únicamente en el entorno local de desarrollo.
+El catálogo público puede usar `VITE_CATALOG_DATA_MODE=demo` (mocks) o
+`VITE_CATALOG_DATA_MODE=api` (productos y categorías del backend). El modo `demo`
+es el predeterminado. Copia `.env.example` como `.env`; `VITE_API_BASE_URL=/v1`
+usa el proxy de desarrollo de Vite hacia `https://localhost:7053`. El proxy omite
+la validación del certificado HTTPS únicamente en el entorno local de desarrollo.
 
 ```bash
 cp .env.example .env
 npm run dev
 ```
 
+Para usar el modo `api`, cambia `VITE_CATALOG_DATA_MODE` a `api` y reinicia Vite.
 La API debe estar ejecutándose con su perfil HTTPS para que las solicitudes
-`/v1/*` puedan llegar al backend. Si no está disponible, el proxy devolverá un
-error de conexión; la interfaz no sustituye ese error con datos mock. Esta
-infraestructura todavía no conecta los servicios HTTP a las pantallas.
+`/v1/*` puedan llegar al backend. Si no está disponible, el catálogo muestra el
+estado de error existente y no usa mocks como fallback.
 
-El cliente centralizado y los wrappers tipados de productos, categorías y
-usuarios viven en `src/api`. Auth y carrito tienen únicamente contratos DTO
-preparados; sus operaciones y flujos de UI se dejan para una fase posterior.
-La implementación actual de `AppServices` sigue apuntando a los mocks.
+La selección de fuente solo afecta al catálogo público (inicio, catálogo y detalle).
+Autenticación, carrito, checkout, pedidos, reportes y pantallas de administración
+siguen siendo demostrativos en esta fase. Los servicios tipados y mappers están en
+`src/api`; las mutaciones de productos no se conectan porque la API no las ofrece.
 
 ## Usuarios de prueba
 

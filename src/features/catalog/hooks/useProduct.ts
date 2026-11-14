@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 import type { Producto } from '../../../domain'
 import type { AsyncState } from '../../../services'
-import { useAppServices } from '../../../app/services'
+import { useCatalogReader } from './useCatalogReader'
 
 export function useProduct(productId: string | undefined): AsyncState<Producto | null> {
-  const { catalog } = useAppServices()
+  const catalog = useCatalogReader()
   const [state, setState] = useState<AsyncState<Producto | null>>({
     status: 'loading',
   })

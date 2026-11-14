@@ -6,7 +6,7 @@ import { Alert, Button, EmptyState, Skeleton } from '../../../shared/ui'
 import { QuantitySelector } from '../../cart/components'
 import type { CartMutationResult } from '../../cart/state'
 import { PriceDisplay, ProductGallery, StockBadge } from '../components'
-import { useCatalogData } from '../hooks/useCatalogData'
+import { useCategory } from '../hooks/useCategory'
 import { useProduct } from '../hooks/useProduct'
 import './product-detail-page.css'
 
@@ -26,7 +26,11 @@ export function ProductDetailPage({
   const [quantity, setQuantity] = useState(1)
   const [cartMessage, setCartMessage] = useState<CartMutationResult | null>(null)
   const productState = useProduct(productId)
-  const catalogState = useCatalogData()
+  const categoryId =
+    productState.status === 'success'
+      ? productState.data?.categoriaId
+      : undefined
+  const categoryState = useCategory(categoryId)
 
   if (productState.status === 'loading') return <ProductDetailSkeleton />
   if (productState.status === 'error') {
@@ -53,11 +57,7 @@ export function ProductDetailPage({
 
   const product = productState.data
   const category =
-    catalogState.status === 'success'
-      ? catalogState.data.categories.find(
-          (item) => item.id === product.categoriaId,
-        )
-      : undefined
+    categoryState.status === 'success' ? categoryState.data : undefined
 
   return (
     <div className="container product-detail-page">

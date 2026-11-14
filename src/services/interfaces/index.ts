@@ -20,6 +20,7 @@ export type {
 export type {
   BuyerProfileInput,
   CategoryInput,
+  CatalogReader,
   CatalogRepository,
   CommerceRepository,
   PymeRepository,

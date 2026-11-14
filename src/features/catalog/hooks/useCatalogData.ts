@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import type { Categoria, Producto } from '../../../domain'
 import type { AsyncState } from '../../../services'
-import { useAppServices } from '../../../app/services'
+import { useCatalogReader } from './useCatalogReader'
 
 export interface CatalogData {
   readonly categories: readonly Categoria[]
@@ -9,7 +9,7 @@ export interface CatalogData {
 }
 
 export function useCatalogData(): AsyncState<CatalogData> {
-  const { catalog } = useAppServices()
+  const catalog = useCatalogReader()
   const [state, setState] = useState<AsyncState<CatalogData>>({
     status: 'loading',
   })
