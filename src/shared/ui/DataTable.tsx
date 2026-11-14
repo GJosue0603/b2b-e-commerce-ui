@@ -12,6 +12,7 @@ export interface DataTableProps<Row> {
   readonly columns: readonly DataTableColumn<Row>[]
   readonly getRowKey: (row: Row) => Key
   readonly rows: readonly Row[]
+  readonly scrollable?: boolean
 }
 
 export function DataTable<Row>({
@@ -19,9 +20,10 @@ export function DataTable<Row>({
   columns,
   getRowKey,
   rows,
+  scrollable = false,
 }: DataTableProps<Row>) {
   return (
-    <div className="ui-data-table__scroll" tabIndex={0}>
+    <div className={`ui-data-table__scroll${scrollable ? ' table-scroll-region' : ''}`} tabIndex={0}>
       <table className="ui-data-table">
         <caption className="sr-only">{caption}</caption>
         <thead>

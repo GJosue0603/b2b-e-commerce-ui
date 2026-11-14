@@ -37,7 +37,7 @@ export function DemoStoreLayout() {
   const { signOut, user } = useAuth()
   const { state } = useDemoSession()
   const cart = useCart()
-  const authenticated = user?.rol === 'comprador'
+  const authenticated = Boolean(user)
   const showAccreditationNavigation =
     areIntegrationModesAligned() &&
     resolveAuthMode() === 'demo' &&
@@ -47,6 +47,7 @@ export function DemoStoreLayout() {
   return (
     <StoreLayout
       authenticated={authenticated}
+      role={user?.rol}
       cartItemCount={cart.itemCount}
       cartStatus={cart.status}
       showAccreditationNavigation={showAccreditationNavigation}
@@ -119,11 +120,12 @@ export function DemoDashboardLayout({
   fallbackRole,
 }: DemoDashboardLayoutProps) {
   const { signOut, user } = useAuth()
+  const cart = useCart()
   const simulatedRole = user?.rol
   const role =
     simulatedRole === 'vendedor' || simulatedRole === 'administrador'
       ? simulatedRole
       : fallbackRole
 
-  return <DashboardLayout onSignOut={signOut} role={role} />
+  return <DashboardLayout cartItemCount={cart.itemCount} cartStatus={cart.status} onSignOut={signOut} role={role} />
 }

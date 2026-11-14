@@ -12,6 +12,7 @@ import {
   DataTable,
   EmptyState,
   KpiCard,
+  TablePagination,
   Select,
   Skeleton,
   TextField,
@@ -23,6 +24,7 @@ import { resolveCatalogDataMode } from '../../catalog/hooks/useCatalogReader'
 import './vendor-pages.css'
 
 type StockFilter = 'todos' | 'disponible' | 'bajo' | 'agotado'
+const PAGE_SIZE = 25
 
 export interface ProductsPageProps {
   readonly supervision?: boolean
@@ -41,6 +43,7 @@ export function ProductsPage({ supervision = false }: ProductsPageProps) {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const [query, setQuery] = useState('')
+  const [page, setPage] = useState(1)
   const [categoryId, setCategoryId] = useState('')
   const [stock, setStock] = useState<StockFilter>('todos')
   const [pendingToggle, setPendingToggle] = useState<Producto | null>(null)
@@ -55,6 +58,10 @@ export function ProductsPage({ supervision = false }: ProductsPageProps) {
       (stock === 'todos' || stockState(product) === stock),
     )
   }, [categoryId, products, query, stock])
+
+  const totalPages = Math.max(1, Math.ceil(filteredProducts.length / PAGE_SIZE))
+  const currentPage = Math.min(page, totalPages)
+  const visibleProducts = filteredProducts.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE)
 
   const categoryNames = new Map(categories.map((category) => [category.id, category.nombre]))
   const columns: readonly DataTableColumn<Producto>[] = [
@@ -147,12 +154,12 @@ export function ProductsPage({ supervision = false }: ProductsPageProps) {
       </div>
 
       <div className="vendor-filters">
-        <TextField label="Buscar productos" onChange={(event) => setQuery(event.target.value)} placeholder="Nombre o descripción" type="search" value={query} />
-        <Select label="Categoría" onChange={(event) => setCategoryId(event.target.value)} value={categoryId}>
+        <TextField label="Buscar productos" onChange={(event) => { setQuery(event.target.value); setPage(1) }} placeholder="Nombre o descripción" type="search" value={query} />
+        <Select label="Categoría" onChange={(event) => { setCategoryId(event.target.value); setPage(1) }} value={categoryId}>
           <option value="">Todas</option>
           {categories.map((category) => <option key={category.id} value={category.id}>{category.nombre}</option>)}
         </Select>
-        <Select label="Inventario" onChange={(event) => setStock(event.target.value as StockFilter)} value={stock}>
+        <Select label="Inventario" onChange={(event) => { setStock(event.target.value as StockFilter); setPage(1) }} value={stock}>
           <option value="todos">Todos</option>
           <option value="disponible">Disponible</option>
           <option value="bajo">Bajo stock</option>
@@ -165,7 +172,10 @@ export function ProductsPage({ supervision = false }: ProductsPageProps) {
       ) : filteredProducts.length === 0 ? (
         <EmptyState description="Prueba otra búsqueda o combinación de filtros." title="No hay productos que coincidan" />
       ) : (
-        <DataTable caption="Productos administrados en NexoTech" columns={columns} getRowKey={(product) => product.id} rows={filteredProducts} />
+        <>
+          <DataTable caption="Productos administrados en NexoTech" columns={columns} getRowKey={(product) => product.id} rows={visibleProducts} scrollable />
+          <TablePagination currentPage={currentPage} totalItems={filteredProducts.length} pageSize={PAGE_SIZE} itemLabel="productos" label="Paginación de productos" onPageChange={setPage} />
+        </>
       )}
 
       <ConfirmDialog

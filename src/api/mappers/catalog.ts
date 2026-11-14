@@ -16,7 +16,9 @@ export function mapApiCategory(category: ApiCategory): Categoria {
     nombre: category.nombre,
     descripcion: category.descripcion,
     activo: category.activo,
-    creadoPor: mapCollaborator(category.creadoPor),
+    ...(category.creadoPor
+      ? { creadoPor: mapCollaborator(category.creadoPor) }
+      : {}),
     fechaCreacion: category.fechaCreacion,
     ...(category.modificadoPor
       ? { modificadoPor: mapCollaborator(category.modificadoPor) }
@@ -44,7 +46,9 @@ export function mapApiProduct(product: ApiProduct): Producto {
     existencias: product.existencias,
     imagenUrl: product.imagenUrl,
     activo: product.activo,
-    creadoPor: mapCollaborator(product.creadoPor),
+    ...(product.creadoPor
+      ? { creadoPor: mapCollaborator(product.creadoPor) }
+      : {}),
     fechaCreacion: product.fechaCreacion,
     ...(product.modificadoPor
       ? { modificadoPor: mapCollaborator(product.modificadoPor) }

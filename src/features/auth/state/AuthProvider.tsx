@@ -3,7 +3,7 @@ import type { Usuario } from '../../../domain'
 import type { BuyerProfileInput } from '../../../services'
 import { useDemoSession } from '../../../app/demoSession'
 import { useAppServices } from '../../../app/services'
-import { clearApiAccessToken, setApiAccessToken } from '../../../api/access-token-store'
+import { clearApiAccessToken, getApiAccessToken, setApiAccessToken } from '../../../api/access-token-store'
 import { authApi } from '../../../api/services/auth/auth-api'
 import { getAuthErrorMessage } from '../auth-errors'
 import { resolveAuthMode } from '../auth-mode'
@@ -166,7 +166,16 @@ function DemoAuthProvider({ children }: AuthProviderProps) {
 function ApiAuthProvider({ children }: AuthProviderProps) {
   const [apiSession, setApiSession] = useState<ReturnType<
     typeof parseApiAuthToken
-  > | null>(null)
+  > | null>(() => {
+    const token = getApiAccessToken()
+    if (!token) return null
+    try {
+      return parseApiAuthToken(token)
+    } catch {
+      clearApiAccessToken()
+      return null
+    }
+  })
   const [actionStatus, setActionStatus] = useState<AuthActionStatus>('idle')
 
   useEffect(() => {
@@ -197,8 +206,6 @@ function ApiAuthProvider({ children }: AuthProviderProps) {
       window.clearTimeout(timeout)
     }
   }, [apiSession])
-
-  useEffect(() => () => clearApiAccessToken(), [])
 
   const runApiAction = useCallback(
     async (

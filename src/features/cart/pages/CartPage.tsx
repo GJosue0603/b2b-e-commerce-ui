@@ -76,13 +76,13 @@ export function CartPage({ accreditation }: CartPageProps) {
   return (
     <div className="container cart-page">
       <header className="cart-page__header">
-        <div>
+        <div className="cart-page__heading">
           <span>
             {cart.mode === 'api' ? 'Carrito de la API' : 'Compra demostrativa'}
           </span>
           <h1>Tu carrito</h1>
         </div>
-        <div>
+        <div className="cart-page__actions">
           {lines.length > 0 && (
             <Button
               disabled={cart.mutationPending}

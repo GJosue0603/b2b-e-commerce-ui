@@ -3,6 +3,7 @@ import { useId } from 'react'
 export interface QuantitySelectorProps {
   readonly disabled?: boolean
   readonly label?: string
+  readonly accessibleLabel?: string
   readonly max: number
   readonly min?: number
   readonly onChange: (quantity: number) => void
@@ -12,6 +13,7 @@ export interface QuantitySelectorProps {
 export function QuantitySelector({
   disabled = false,
   label = 'Cantidad',
+  accessibleLabel,
   max,
   min = 1,
   onChange,
@@ -45,6 +47,7 @@ export function QuantitySelector({
           −
         </button>
         <input
+          aria-label={accessibleLabel}
           aria-invalid={value < min || value > safeMaximum || undefined}
           disabled={controlDisabled}
           id={inputId}

@@ -87,6 +87,7 @@ describe('mapa de rutas', () => {
     const navigation = await screen.findByRole('navigation', {
       name: 'Navegación de Vendedor',
     })
+    await userEvent.setup().click(within(navigation).getByRole('button', { name: 'Gestión de ventas' }))
 
     expect(within(navigation).getByRole('link', { name: 'Productos' })).toBeVisible()
     expect(within(navigation).queryByRole('link', { name: 'Categorías' })).toBeNull()
@@ -102,6 +103,7 @@ describe('mapa de rutas', () => {
     const navigation = await screen.findByRole('navigation', {
       name: 'Navegación de Administrador',
     })
+    await userEvent.setup().click(within(navigation).getByRole('button', { name: 'Administración' }))
 
     expect(
       within(navigation).getByRole('link', { name: 'Solicitudes PYME' }),
@@ -143,7 +145,7 @@ describe('mapa de rutas', () => {
       )
       expect(accountMenu).toHaveClass('header-action--icon-only')
       expect(accountMenu).not.toHaveTextContent(roleLabel)
-      const accountDetails = accountMenu.closest('details')
+      const accountDetails = accountMenu.closest<HTMLDivElement>('.account-menu')
       if (!accountDetails) throw new Error('No se encontró el menú de cuenta.')
       await user.click(accountMenu)
       const viewAccountLink = within(accountDetails).getByRole('link', {
@@ -173,7 +175,8 @@ describe('mapa de rutas', () => {
       expect(router.state.location.pathname).toBe(accountPath)
 
       const profileMenu = await screen.findByLabelText(`Cuenta de ${roleLabel}`)
-      const profileDetails = profileMenu.closest('details')
+      await user.click(profileMenu)
+      const profileDetails = profileMenu.closest<HTMLDivElement>('.account-menu')
       if (!profileDetails) throw new Error('No se encontró el menú de cuenta.')
       await user.click(
         within(profileDetails).getByRole('button', { name: 'Cerrar sesión' }),

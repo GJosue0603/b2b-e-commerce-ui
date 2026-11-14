@@ -98,7 +98,8 @@ export function CartItemRow({
       </div>
       <QuantitySelector
         disabled={pending || !product || maximumQuantity < 1}
-        label={`Cantidad de ${productName}`}
+        label="Cantidad"
+        accessibleLabel={`Cantidad de ${productName}`}
         max={maximumQuantity}
         onChange={(quantity) => void handleUpdateQuantity(quantity)}
         value={item.cantidad}

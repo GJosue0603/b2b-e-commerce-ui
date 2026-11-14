@@ -14,6 +14,7 @@ import {
   Modal,
   Skeleton,
   TextField,
+  TablePagination,
 } from '../../../shared/ui'
 import { getAdminApiErrorMessage } from '../admin-api-errors'
 import { formatAdminDate } from './admin-utils'
@@ -160,19 +161,13 @@ export function AdminUsersPage() {
         filtered.length === 0 ? (
           <EmptyState description={query || role !== 'todos' ? 'Prueba con otros términos o un rol diferente.' : 'No hay usuarios en esta página.'} title="No se encontraron usuarios" />
         ) : (
-          <div className="admin-table-scroll"><table className="admin-table"><thead><tr><th>Usuario</th><th>Correo electrónico</th><th>Rol</th><th>Estado</th><th>Fecha de creación</th><th>Acciones</th></tr></thead><tbody>
-            {filtered.map((user) => <tr key={user.id}><td><strong>{user.nombre} {user.apellidos}</strong><small>{user.id}</small></td><td>{user.correo}</td><td><Badge variant={user.rol === 'administrador' ? 'neutral' : user.rol === 'vendedor' ? 'primary' : 'success'}>{user.rol}</Badge>{authMode === 'demo' && pymeUserIds.has(user.id) && <small className="admin-pyme-label">PYME activa · demo</small>}</td><td><Badge variant={user.activo ? 'success' : 'danger'}>{user.activo ? 'Activo' : 'Inactivo'}</Badge></td><td>{formatAdminDate(user.fechaCreacion)}</td><td><Button disabled={detailLoading} onClick={() => void loadUserDetail(user.id)} size="sm" variant="secondary">Ver detalle</Button></td></tr>)}
+          <div className="admin-table-scroll table-scroll-region" tabIndex={0}><table className="admin-table"><thead><tr><th>Usuario</th><th>Correo electrónico</th><th>Rol</th><th>Estado</th><th>Fecha de creación</th><th>Acciones</th></tr></thead><tbody>
+            {filtered.map((user) => <tr key={user.id}><td><strong>{user.nombre} {user.apellidos}</strong><small>{user.id}</small></td><td>{user.correo}</td><td><Badge variant={user.rol === 'administrador' ? 'neutral' : user.rol === 'vendedor' ? 'primary' : 'success'}>{user.rol.toUpperCase()}</Badge>{authMode === 'demo' && pymeUserIds.has(user.id) && <small className="admin-pyme-label">PYME activa · demo</small>}</td><td><Badge variant={user.activo ? 'success' : 'danger'}>{user.activo ? 'Activo' : 'Inactivo'}</Badge></td><td>{formatAdminDate(user.fechaCreacion)}</td><td><Button disabled={detailLoading} onClick={() => void loadUserDetail(user.id)} size="sm" variant="secondary">Ver detalle</Button></td></tr>)}
           </tbody></table></div>
         )
       )}
       {pageInfo && !loading && !error && (
-        <div className="admin-toolbar" aria-label="Paginación de usuarios">
-          <span>Página {pageInfo.numeroDePagina} de {pageInfo.totalDePaginas} · {pageInfo.cantidadTotalDeItems} usuarios</span>
-          <div>
-            <Button disabled={pageInfo.numeroDePagina <= 1} onClick={() => { setLoading(true); setError(undefined); setPage((current) => Math.max(1, current - 1)) }} variant="secondary">Anterior</Button>
-            <Button disabled={pageInfo.numeroDePagina >= pageInfo.totalDePaginas} onClick={() => { setLoading(true); setError(undefined); setPage((current) => current + 1) }} variant="secondary">Siguiente</Button>
-          </div>
-        </div>
+        <TablePagination currentPage={pageInfo.numeroDePagina} totalItems={pageInfo.cantidadTotalDeItems} totalPages={pageInfo.totalDePaginas} pageSize={PAGE_SIZE} itemLabel="usuarios" label="Paginación de usuarios" onPageChange={(nextPage) => { setLoading(true); setError(undefined); setPage(nextPage) }} />
       )}
       <Modal onClose={() => { setDetailUser(null); setDetailError(undefined) }} open={detailLoading || Boolean(detailUser) || Boolean(detailError)} title="Detalle del usuario">
         {detailLoading && <Skeleton height="8rem" />}
@@ -183,7 +178,7 @@ export function AdminUsersPage() {
             <div><dt>ID</dt><dd>{detailUser.id}</dd></div>
             <div><dt>Correo</dt><dd>{detailUser.correo}</dd></div>
             <div><dt>Teléfono</dt><dd>{detailUser.telefono || '—'}</dd></div>
-            <div><dt>Rol</dt><dd>{detailUser.rol}</dd></div>
+            <div><dt>Rol</dt><dd>{detailUser.rol.toUpperCase()}</dd></div>
             <div><dt>Estado</dt><dd>{detailUser.activo ? 'Activo' : 'Inactivo'}</dd></div>
             <div><dt>Fecha de creación</dt><dd>{formatAdminDate(detailUser.fechaCreacion)}</dd></div>
           </dl>

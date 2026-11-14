@@ -1,7 +1,8 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen, waitFor, within } from '@testing-library/react'
+import { StrictMode } from 'react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { clearApiAccessToken, getApiAccessToken } from '../../api/access-token-store'
+import { API_SESSION_STORAGE_KEY, clearApiAccessToken, getApiAccessToken } from '../../api/access-token-store'
 import { renderTestApp } from '../../test/renderApp'
 import { AuthProvider } from './state/AuthProvider'
 import { useAuth } from './state/useAuth'
@@ -61,6 +62,55 @@ afterEach(() => {
 })
 
 describe('flujo de autenticación en modo API', () => {
+  it('conserva el menú y la sesión del administrador al ir a la tienda desde el logo', async () => {
+    vi.stubEnv('VITE_AUTH_MODE', 'api')
+    vi.stubEnv('VITE_CATALOG_DATA_MODE', 'demo')
+    vi.stubEnv('VITE_CART_DATA_MODE', 'demo')
+    const token = createToken('ADMINISTRADOR')
+    sessionStorage.setItem(API_SESSION_STORAGE_KEY, JSON.stringify({ token, expiresAt: Date.now() + 60_000 }))
+    const user = userEvent.setup()
+    const { router } = renderTestApp('/admin/cuenta')
+    await screen.findByRole('heading', { name: 'Mi cuenta' })
+    await user.click(screen.getByRole('link', { name: 'NexoTech' }))
+    expect(router.state.location.pathname).toBe('/')
+    const header = screen.getByRole('banner')
+    expect(within(header).getByRole('link', { name: /Carrito,/ })).toHaveAttribute('href', '/carrito')
+    const navigation = within(header).getByRole('navigation', { name: 'Navegación de Administrador' })
+    expect(within(navigation).getByRole('link', { name: 'Inicio' })).toHaveAttribute('href', '/')
+    expect(within(navigation).getByRole('link', { name: 'Catálogo' })).toHaveAttribute('href', '/catalogo')
+    await user.click(within(navigation).getByRole('button', { name: 'Administración' }))
+    expect(within(navigation).getByRole('link', { name: 'Usuarios' })).toHaveAttribute('href', '/admin/usuarios')
+    expect(within(navigation).getByRole('link', { name: 'Productos' })).toHaveAttribute('href', '/admin/productos')
+    const profile = within(header).getByRole('button', { name: 'Cuenta de Administrador' })
+    await user.click(profile)
+    expect(getApiAccessToken()).toBe(token)
+    expect(router.state.location.pathname).toBe('/')
+    const accountMenu = profile.closest<HTMLDivElement>('.account-menu')!
+    await user.click(within(accountMenu).getByRole('link', { name: 'Ver cuenta' }))
+    expect(router.state.location.pathname).toBe('/admin/cuenta')
+    expect(getApiAccessToken()).toBe(token)
+  })
+
+  it('restaura la sesión guardada al montar, incluso en StrictMode', () => {
+    vi.stubEnv('VITE_AUTH_MODE', 'api')
+    const token = createToken()
+    sessionStorage.setItem(API_SESSION_STORAGE_KEY, JSON.stringify({ token, expiresAt: Date.now() + 60_000 }))
+    const view = render(<StrictMode><AuthProvider><SessionProbe /></AuthProvider></StrictMode>)
+    expect(screen.getByText('user-api-1')).toBeVisible()
+    expect(getApiAccessToken()).toBe(token)
+    view.unmount()
+    render(<AuthProvider><SessionProbe /></AuthProvider>)
+    expect(screen.getByText('user-api-1')).toBeVisible()
+  })
+
+  it('descarta un JWT corrupto guardado al restaurar', () => {
+    vi.stubEnv('VITE_AUTH_MODE', 'api')
+    sessionStorage.setItem(API_SESSION_STORAGE_KEY, JSON.stringify({ token: 'invalido', expiresAt: Date.now() + 60_000 }))
+    render(<AuthProvider><SessionProbe /></AuthProvider>)
+    expect(screen.getByText('Sesión cerrada')).toBeVisible()
+    expect(getApiAccessToken()).toBeNull()
+  })
+
   it('registra, reenvía código y verifica correo sin iniciar sesión automáticamente', async () => {
     vi.stubEnv('VITE_AUTH_MODE', 'api')
     const requests = mockFetch(
