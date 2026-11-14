@@ -7,8 +7,22 @@ import { useMyOrders } from '../hooks/useMyOrders'
 import './orders-page.css'
 
 export function MyOrdersPage() {
-  const { user } = useAuth()
-  const state = useMyOrders(user?.id)
+  const { authMode, user } = useAuth()
+  const state = useMyOrders(authMode === 'demo' ? user?.id : undefined)
+
+  if (authMode === 'api') {
+    return (
+      <div className="container orders-page">
+        <header>
+          <h1>Mis pedidos</h1>
+        </header>
+        <Alert title="Pedidos no disponibles en la API" variant="info">
+          Este módulo solo consulta pedidos de pagos demostrativos. El backend
+          aún no ofrece endpoints de pedidos ni pagos.
+        </Alert>
+      </div>
+    )
+  }
 
   return (
     <div className="container orders-page">

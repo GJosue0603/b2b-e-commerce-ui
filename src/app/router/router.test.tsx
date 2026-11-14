@@ -5,7 +5,7 @@ import {
   type InitialEntry,
 } from 'react-router-dom'
 import userEvent from '@testing-library/user-event'
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { createMockServices } from '../../mocks/repositories'
 import { CartProvider } from '../../features/cart/state'
 import { AuthProvider } from '../../features/auth/state'
@@ -13,6 +13,11 @@ import type { DemoScenarioId } from '../../services'
 import { DemoSessionProvider } from '../demoSession'
 import { AppServicesProvider } from '../services'
 import { routeDefinitions } from './routes'
+
+afterEach(() => {
+  vi.restoreAllMocks()
+  vi.unstubAllEnvs()
+})
 
 function renderRoute(
   initialEntry: InitialEntry,
@@ -213,5 +218,92 @@ describe('mapa de rutas', () => {
     expect(
       await screen.findByRole('heading', { name: 'Página no encontrada' }),
     ).toBeVisible()
+  })
+
+  it('muestra la respuesta API en catálogo y no mezcla acreditación demo', async () => {
+    vi.stubEnv('VITE_API_BASE_URL', '/v1')
+    vi.stubEnv('VITE_CATALOG_DATA_MODE', 'api')
+    vi.stubEnv('VITE_AUTH_MODE', 'api')
+    vi.stubEnv('VITE_CART_DATA_MODE', 'api')
+
+    const category = {
+      id: '507f1f77bcf86cd799439012',
+      nombre: 'Categoría académica API',
+      descripcion: 'Categoría devuelta por la API',
+      activo: true,
+      creadoPor: {
+        id: '507f1f77bcf86cd799439013',
+        nombre: 'Usuario de prueba',
+        rol: 'ADMINISTRADOR',
+      },
+      fechaCreacion: '2026-01-01T00:00:00Z',
+    }
+    const product = {
+      id: '507f1f77bcf86cd799439011',
+      nombre: 'Producto académico API',
+      descripcion: 'Producto devuelto por la API',
+      categoria: category,
+      precioRegular: 10000,
+      precioPyme: 5000,
+      existencias: 3,
+      imagenUrl: '/images/api/producto.jpg',
+      activo: true,
+      creadoPor: category.creadoPor,
+      fechaCreacion: '2026-01-01T00:00:00Z',
+    }
+    const fetcher = vi.spyOn(globalThis, 'fetch').mockImplementation(
+      async (input) => {
+        const path = new URL(String(input), 'http://localhost').pathname
+        const items = path === '/v1/productos' ? [product] : [category]
+        const body = {
+          cantidadTotalDeItems: items.length,
+          items,
+          numeroDePagina: 1,
+          cantidadPorPagina: 100,
+          totalDePaginas: 1,
+        }
+        return new Response(JSON.stringify(body), {
+          headers: { 'Content-Type': 'application/json' },
+        })
+      },
+    )
+
+    renderRoute('/catalogo', 'buyer-pyme-active')
+
+    expect(await screen.findByText('Producto académico API')).toBeVisible()
+    expect(screen.getAllByText('Categoría académica API').length).toBeGreaterThan(0)
+    expect(screen.queryByText('Teclado mecánico inalámbrico')).toBeNull()
+    expect(screen.queryByText('Precio PYME')).toBeNull()
+    const paths = fetcher.mock.calls.map(
+      ([input]) => new URL(String(input), 'http://localhost').pathname,
+    )
+    expect(paths).toContain('/v1/productos')
+    expect(paths).toContain('/v1/categorias')
+  })
+
+  it('muestra el estado vacío de la respuesta API sin recurrir a fixtures', async () => {
+    vi.stubEnv('VITE_API_BASE_URL', '/v1')
+    vi.stubEnv('VITE_CATALOG_DATA_MODE', 'api')
+    vi.stubEnv('VITE_AUTH_MODE', 'api')
+    vi.stubEnv('VITE_CART_DATA_MODE', 'api')
+
+    vi.spyOn(globalThis, 'fetch').mockImplementation(async () =>
+      new Response(
+        JSON.stringify({
+          cantidadTotalDeItems: 0,
+          items: [],
+          numeroDePagina: 1,
+          cantidadPorPagina: 100,
+          totalDePaginas: 0,
+        }),
+        { headers: { 'Content-Type': 'application/json' } },
+      ),
+    )
+    renderRoute('/catalogo')
+
+    expect(
+      await screen.findByRole('heading', { name: 'No encontramos productos' }),
+    ).toBeVisible()
+    expect(screen.queryByText('Teclado mecánico inalámbrico')).toBeNull()
   })
 })

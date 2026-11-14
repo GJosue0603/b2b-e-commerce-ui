@@ -4,18 +4,21 @@ import { routePatterns } from '../../../app/router/paths'
 import { useAppServices } from '../../../app/services'
 import type { SolicitudPyme, Usuario } from '../../../domain'
 import { Alert, Badge, Button, EmptyState, Skeleton } from '../../../shared/ui'
+import { useAuth } from '../../auth/state'
 import { formatAdminDate } from './admin-utils'
 import './admin-pages.css'
 
 export function AdminAccreditationDetailPage() {
   const { requestId } = useParams()
   const { pyme, users } = useAppServices()
+  const { authMode } = useAuth()
   const [request, setRequest] = useState<SolicitudPyme>()
   const [buyer, setBuyer] = useState<Usuario>()
   const [loading, setLoading] = useState(true)
   const [decision, setDecision] = useState<'approved' | 'rejected'>()
 
   useEffect(() => {
+    if (authMode === 'api') return
     let active = true
     void Promise.all([pyme.listRequests(), users.list()]).then(([requests, directory]) => {
       if (!active) return
@@ -25,8 +28,18 @@ export function AdminAccreditationDetailPage() {
       setLoading(false)
     })
     return () => { active = false }
-  }, [pyme, requestId, users])
+  }, [authMode, pyme, requestId, users])
 
+  if (authMode === 'api') {
+    return (
+      <section className="admin-page">
+        <Alert title="Acreditaciones no disponibles en la API" variant="info">
+          Este expediente y sus acciones son demostrativos. El backend aún no
+          ofrece endpoints de acreditación ni de dictamen administrativo.
+        </Alert>
+      </section>
+    )
+  }
   if (loading) return <Skeleton height="30rem" />
   if (!request) return <EmptyState action={<Link to={routePatterns.adminAccreditations}>Volver a solicitudes</Link>} description="La solicitud indicada no existe en los datos demostrativos." title="Expediente no encontrado" />
 
@@ -45,6 +58,10 @@ export function AdminAccreditationDetailPage() {
         <Badge variant={request.estado === 'aprobada' ? 'success' : request.estado === 'rechazada' ? 'danger' : 'warning'}>{request.estado}</Badge>
       </header>
 
+      <Alert title="Expediente demostrativo">
+        El backend aún no tiene endpoints de acreditación ni de dictamen. Los
+        datos y cambios de esta vista no son registros de la API.
+      </Alert>
       {decision && <Alert title="Dictamen simulado registrado" variant={decision === 'approved' ? 'success' : 'warning'}>La decisión se mantiene únicamente en esta vista hasta que el backend exponga la operación administrativa.</Alert>}
 
       <div className="admin-detail-layout">

@@ -8,7 +8,30 @@ import { CatalogPage } from '../../features/catalog/pages/CatalogPage'
 import { ProductDetailPage } from '../../features/catalog/pages/ProductDetailPage'
 import { HomePage } from '../../features/store/pages/HomePage'
 import { useAuth } from '../../features/auth/state'
+import { resolveAuthMode } from '../../features/auth/auth-mode'
+import { resolveCartDataMode } from '../../features/cart/cart-mode'
+import { resolveCatalogDataMode } from '../../features/catalog/hooks/useCatalogReader'
 import { useDemoSession } from './useDemoSession'
+
+function areIntegrationModesAligned() {
+  const modes = [
+    resolveAuthMode(),
+    resolveCatalogDataMode(),
+    resolveCartDataMode(),
+  ] as const
+
+  return modes.every((mode) => mode === modes[0])
+}
+
+function getDemoAccreditation(
+  state: ReturnType<typeof useDemoSession>['state'],
+) {
+  if (!areIntegrationModesAligned() || resolveAuthMode() !== 'demo') {
+    return null
+  }
+
+  return state.status === 'success' ? state.data.session.accreditation : null
+}
 
 export function DemoStoreLayout() {
   const { signOut, user } = useAuth()
@@ -16,6 +39,8 @@ export function DemoStoreLayout() {
   const cart = useCart()
   const authenticated = user?.rol === 'comprador'
   const showAccreditationNavigation =
+    areIntegrationModesAligned() &&
+    resolveAuthMode() === 'demo' &&
     state.status === 'success' &&
     state.data.session.scenario.id !== 'buyer-regular'
 
@@ -32,23 +57,22 @@ export function DemoStoreLayout() {
 
 export function DemoHomePage() {
   const { state } = useDemoSession()
-  const accreditation =
-    state.status === 'success' ? state.data.session.accreditation : null
-
-  return <HomePage accreditation={accreditation} />
+  return <HomePage accreditation={getDemoAccreditation(state)} />
 }
 
 export function DemoCatalogPage() {
   const { state } = useDemoSession()
   const { addItem } = useCart()
-  const accreditation =
-    state.status === 'success' ? state.data.session.accreditation : null
+  const canUseConfiguredCart = areIntegrationModesAligned()
 
   return (
     <CatalogPage
-      accreditation={accreditation}
-      onAddToCart={(product, quantity) =>
-        addItem(product.id, quantity, product.existencias)
+      accreditation={getDemoAccreditation(state)}
+      onAddToCart={
+        canUseConfiguredCart
+          ? (product, quantity) =>
+              addItem(product.id, quantity, product.existencias)
+          : undefined
       }
     />
   )
@@ -57,14 +81,16 @@ export function DemoCatalogPage() {
 export function DemoProductDetailPage() {
   const { state } = useDemoSession()
   const { addItem } = useCart()
-  const accreditation =
-    state.status === 'success' ? state.data.session.accreditation : null
+  const canUseConfiguredCart = areIntegrationModesAligned()
 
   return (
     <ProductDetailPage
-      accreditation={accreditation}
-      onAddToCart={(product, quantity) =>
-        addItem(product.id, quantity, product.existencias)
+      accreditation={getDemoAccreditation(state)}
+      onAddToCart={
+        canUseConfiguredCart
+          ? (product, quantity) =>
+              addItem(product.id, quantity, product.existencias)
+          : undefined
       }
     />
   )
@@ -72,26 +98,17 @@ export function DemoProductDetailPage() {
 
 export function DemoCartPage() {
   const { state } = useDemoSession()
-  const accreditation =
-    state.status === 'success' ? state.data.session.accreditation : null
-
-  return <CartPage accreditation={accreditation} />
+  return <CartPage accreditation={getDemoAccreditation(state)} />
 }
 
 export function DemoCheckoutPage() {
   const { state } = useDemoSession()
-  const accreditation =
-    state.status === 'success' ? state.data.session.accreditation : null
-
-  return <CheckoutPage accreditation={accreditation} />
+  return <CheckoutPage accreditation={getDemoAccreditation(state)} />
 }
 
 export function DemoPaymentResultPage() {
   const { state } = useDemoSession()
-  const accreditation =
-    state.status === 'success' ? state.data.session.accreditation : null
-
-  return <PaymentResultPage accreditation={accreditation} />
+  return <PaymentResultPage accreditation={getDemoAccreditation(state)} />
 }
 
 export interface DemoDashboardLayoutProps {

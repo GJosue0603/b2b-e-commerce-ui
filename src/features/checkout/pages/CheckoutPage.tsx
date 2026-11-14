@@ -10,6 +10,7 @@ import { Alert, EmptyState, Skeleton } from '../../../shared/ui'
 import { formatCRC } from '../../../shared/utils/pricing'
 import type { MockPaymentOutcome } from '../../../services'
 import { useAuth } from '../../auth/state'
+import { resolveCatalogDataMode } from '../../catalog/hooks/useCatalogReader'
 import { useCartProducts } from '../../cart/hooks/useCartProducts'
 import { useCart } from '../../cart/state'
 import {
@@ -26,9 +27,13 @@ export interface CheckoutPageProps {
 export function CheckoutPage({ accreditation }: CheckoutPageProps) {
   const [paymentOutcome, setPaymentOutcome] =
     useState<MockPaymentOutcome>('aprobado')
-  const { user } = useAuth()
+  const { authMode, user } = useAuth()
   const cart = useCart()
   const productsState = useCartProducts()
+  const apiModeActive =
+    authMode === 'api' ||
+    cart.mode === 'api' ||
+    resolveCatalogDataMode() === 'api'
 
   if (cart.status === 'loading' || productsState.status === 'loading') {
     return <CheckoutLoading />
@@ -44,7 +49,7 @@ export function CheckoutPage({ accreditation }: CheckoutPageProps) {
     )
   }
 
-  if (cart.mode === 'api') {
+  if (apiModeActive) {
     return (
       <div className="container checkout-page">
         <header className="checkout-page__header">
@@ -53,9 +58,9 @@ export function CheckoutPage({ accreditation }: CheckoutPageProps) {
           <p>El carrito API está disponible, pero checkout y pagos todavía no.</p>
         </header>
         <Alert title="No se inició ninguna compra" variant="info">
-          Este flujo sigue siendo demostrativo y no puede usar ni vaciar un
-          carrito de la API. Vuelve al carrito para continuar cuando checkout
-          esté integrado.
+          Checkout y pagos solo están disponibles en modo demostrativo. No se
+          combinarán una sesión, catálogo o carrito API con una compra mock.
+          Vuelve al carrito; el backend aún no tiene endpoints de checkout.
         </Alert>
         <Link to={routePatterns.cart}>Volver al carrito</Link>
       </div>

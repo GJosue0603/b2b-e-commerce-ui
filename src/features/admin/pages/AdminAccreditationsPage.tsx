@@ -4,6 +4,7 @@ import { paths } from '../../../app/router/paths'
 import { useAppServices } from '../../../app/services'
 import type { SolicitudPyme, Usuario } from '../../../domain'
 import { Alert, Badge, KpiCard, Skeleton, TextField } from '../../../shared/ui'
+import { useAuth } from '../../auth/state'
 import { formatAdminDate } from './admin-utils'
 import './admin-pages.css'
 
@@ -14,12 +15,14 @@ interface AccreditationRow {
 
 export function AdminAccreditationsPage() {
   const { pyme, users } = useAppServices()
+  const { authMode } = useAuth()
   const [rows, setRows] = useState<readonly AccreditationRow[]>([])
   const [query, setQuery] = useState('')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string>()
 
   useEffect(() => {
+    if (authMode === 'api') return
     let active = true
     void Promise.all([pyme.listRequests(), users.list()])
       .then(([requests, directory]) => {
@@ -30,7 +33,7 @@ export function AdminAccreditationsPage() {
       .catch(() => active && setError('No se pudo cargar el registro de solicitudes.'))
       .finally(() => active && setLoading(false))
     return () => { active = false }
-  }, [pyme, users])
+  }, [authMode, pyme, users])
 
   const filtered = useMemo(() => {
     const normalized = query.trim().toLocaleLowerCase('es')
@@ -43,6 +46,22 @@ export function AdminAccreditationsPage() {
   }, [query, rows])
 
   const count = (status: SolicitudPyme['estado']) => rows.filter(({ request }) => request.estado === status).length
+
+  if (authMode === 'api') {
+    return (
+      <section className="admin-page">
+        <header className="admin-page__header">
+          <div>
+            <h1 className="dashboard-page-title">Solicitudes de acreditación PYME</h1>
+          </div>
+        </header>
+        <Alert title="Acreditaciones no disponibles en la API" variant="info">
+          Esta pantalla de revisión usa datos demostrativos. El backend aún no
+          ofrece endpoints de acreditación.
+        </Alert>
+      </section>
+    )
+  }
 
   return (
     <section className="admin-page">

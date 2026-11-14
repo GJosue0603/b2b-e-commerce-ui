@@ -1,7 +1,12 @@
 import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { renderTestApp } from '../../../test/renderApp'
+
+afterEach(() => {
+  vi.restoreAllMocks()
+  vi.unstubAllEnvs()
+})
 
 describe('gestión de catálogo del Vendedor', () => {
   it.each([
@@ -62,5 +67,75 @@ describe('gestión de catálogo del Vendedor', () => {
 
     expect(await screen.findByRole('heading', { name: 'Categorías de productos' })).toBeVisible()
     expect(screen.getByRole('button', { name: 'Nueva categoría' })).toBeVisible()
+  })
+
+  it('usa la lista pública de productos en API y bloquea mutaciones sin endpoint', async () => {
+    vi.stubEnv('VITE_API_BASE_URL', '/v1')
+    vi.stubEnv('VITE_CATALOG_DATA_MODE', 'api')
+    vi.stubEnv('VITE_AUTH_MODE', 'demo')
+    vi.stubEnv('VITE_CART_DATA_MODE', 'demo')
+
+    const category = {
+      id: '507f1f77bcf86cd799439012',
+      nombre: 'Categoría académica API',
+      descripcion: 'Categoría devuelta por la API',
+      activo: true,
+      creadoPor: {
+        id: '507f1f77bcf86cd799439013',
+        nombre: 'Usuario de prueba',
+        rol: 'ADMINISTRADOR',
+      },
+      fechaCreacion: '2026-01-01T00:00:00Z',
+    }
+    const product = {
+      id: '507f1f77bcf86cd799439011',
+      nombre: 'Producto académico API',
+      descripcion: 'Producto devuelto por la API',
+      categoria: category,
+      precioRegular: 10000,
+      precioPyme: 9000,
+      existencias: 3,
+      imagenUrl: '/images/api/producto.jpg',
+      activo: true,
+      creadoPor: category.creadoPor,
+      fechaCreacion: '2026-01-01T00:00:00Z',
+    }
+    const fetcher = vi.spyOn(globalThis, 'fetch').mockImplementation(
+      async (input) => {
+        const path = new URL(String(input), 'http://localhost').pathname
+        const items = path === '/v1/productos' ? [product] : [category]
+        return new Response(
+          JSON.stringify({
+            cantidadTotalDeItems: items.length,
+            items,
+            numeroDePagina: 1,
+            cantidadPorPagina: 100,
+            totalDePaginas: 1,
+          }),
+          { headers: { 'Content-Type': 'application/json' } },
+        )
+      },
+    )
+    const { router } = renderTestApp('/vendedor/productos', 'seller')
+
+    expect(await screen.findByText('Producto académico API')).toBeVisible()
+    expect(screen.queryByText('Teclado mecánico inalámbrico')).toBeNull()
+    expect(screen.getByText(/Catálogo API en modo de solo lectura/)).toBeVisible()
+    expect(screen.queryByRole('button', { name: 'Nuevo producto' })).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Editar' })).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Desactivar' })).toBeNull()
+    expect(
+      fetcher.mock.calls.some(
+        ([input]) =>
+          new URL(String(input), 'http://localhost').pathname ===
+          '/v1/productos',
+      ),
+    ).toBe(true)
+
+    await router.navigate('/vendedor/productos/nuevo')
+    expect(
+      await screen.findByText(/Edición de productos no disponible en la API/),
+    ).toBeVisible()
+    expect(screen.queryByLabelText('Nombre*')).toBeNull()
   })
 })

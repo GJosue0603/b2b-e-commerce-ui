@@ -5,6 +5,7 @@ import { useAppServices } from '../../../app/services'
 import type { Categoria, Producto } from '../../../domain'
 import type { ProductInput } from '../../../services'
 import { Alert, Skeleton } from '../../../shared/ui'
+import { resolveCatalogDataMode } from '../../catalog/hooks/useCatalogReader'
 import { ProductForm } from '../components'
 import { createProduct } from '../usecases/createProduct'
 import { updateProduct } from '../usecases/updateProduct'
@@ -16,6 +17,7 @@ export interface EditProductPageProps {
 
 export function EditProductPage({ mode }: EditProductPageProps) {
   const { catalog } = useAppServices()
+  const apiCatalogMode = resolveCatalogDataMode() === 'api'
   const navigate = useNavigate()
   const { productId } = useParams()
   const [categories, setCategories] = useState<readonly Categoria[]>([])
@@ -24,6 +26,7 @@ export function EditProductPage({ mode }: EditProductPageProps) {
   const [notFound, setNotFound] = useState(false)
 
   useEffect(() => {
+    if (apiCatalogMode) return
     let active = true
     void (async () => {
       const [nextCategories, products] = await Promise.all([
@@ -40,7 +43,7 @@ export function EditProductPage({ mode }: EditProductPageProps) {
       setLoading(false)
     })()
     return () => { active = false }
-  }, [catalog, mode, productId])
+  }, [apiCatalogMode, catalog, mode, productId])
 
   const handleSubmit = async (input: ProductInput) => {
     if (mode === 'create') {
@@ -51,6 +54,16 @@ export function EditProductPage({ mode }: EditProductPageProps) {
     navigate(`${routePatterns.sellerProducts}?guardado=${mode === 'create' ? 'creado' : 'editado'}`)
   }
 
+  if (apiCatalogMode) {
+    return (
+      <section className="vendor-page">
+        <Alert title="Edición de productos no disponible en la API">
+          El backend solo permite consultar el catálogo público. Crear y editar
+          productos continúa disponible únicamente en modo demostrativo.
+        </Alert>
+      </section>
+    )
+  }
   if (loading) return <Skeleton height="28rem" />
   if (notFound) return <Alert variant="danger">El producto solicitado no existe en el catálogo demo.</Alert>
 
@@ -67,6 +80,10 @@ export function EditProductPage({ mode }: EditProductPageProps) {
           <p>Configura datos, precios, inventario, imagen y visibilidad en catálogo.</p>
         </div>
       </header>
+      <Alert title="Modo de demostración">
+        Los cambios se guardan únicamente en el repositorio local de mocks; no
+        se persisten en el backend.
+      </Alert>
       <ProductForm
         categories={categories}
         initialProduct={product ?? undefined}

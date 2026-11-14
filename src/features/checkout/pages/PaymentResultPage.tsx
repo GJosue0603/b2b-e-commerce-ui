@@ -12,6 +12,7 @@ import { Alert, Skeleton } from '../../../shared/ui'
 import { formatCRC } from '../../../shared/utils/pricing'
 import type { MockPaymentOutcome } from '../../../services'
 import { useAuth } from '../../auth/state'
+import { resolveCatalogDataMode } from '../../catalog/hooks/useCatalogReader'
 import { useCartProducts } from '../../cart/hooks/useCartProducts'
 import { useCart } from '../../cart/state'
 import { createMockOrderFromApprovedPayment } from '../usecases'
@@ -29,9 +30,13 @@ export interface PaymentResultPageProps {
 
 export function PaymentResultPage({ accreditation }: PaymentResultPageProps) {
   const { orders, paymentGateway } = useAppServices()
-  const { user } = useAuth()
+  const { authMode, user } = useAuth()
   const cart = useCart()
   const productsState = useCartProducts()
+  const apiModeActive =
+    authMode === 'api' ||
+    cart.mode === 'api' ||
+    resolveCatalogDataMode() === 'api'
   const [searchParams] = useSearchParams()
   const [state, setState] = useState<PaymentResultState>({
     status: 'verifying',
@@ -47,7 +52,7 @@ export function PaymentResultPage({ accreditation }: PaymentResultPageProps) {
 
   useEffect(() => {
     if (settledRef.current) return
-    if (cart.mode === 'api') return
+    if (apiModeActive) return
     if (
       !user ||
       cart.status !== 'success' ||
@@ -130,6 +135,7 @@ export function PaymentResultPage({ accreditation }: PaymentResultPageProps) {
     }
   }, [
     accreditation,
+    apiModeActive,
     cart,
     orders,
     outcome,
@@ -139,9 +145,9 @@ export function PaymentResultPage({ accreditation }: PaymentResultPageProps) {
     user,
   ])
 
-  if (cart.mode === 'api') {
+  if (apiModeActive) {
     return (
-      <PaymentError message="Checkout y pagos siguen simulados. El carrito API no se modificó." />
+      <PaymentError message="Checkout y pagos solo están disponibles en modo demostrativo. No se inició ni persistió una compra." />
     )
   }
 

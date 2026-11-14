@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import type { AcreditacionPyme } from '../../../domain'
 import { paths, routePatterns } from '../../../app/router/paths'
 import { ProductCard } from '../../catalog/components'
+import { resolveCatalogDataMode } from '../../catalog/hooks/useCatalogReader'
 import { Alert, EmptyState, Skeleton } from '../../../shared/ui'
 import { useHomeCatalog, type HomeCatalogData } from '../hooks/useHomeCatalog'
 import './home-page.css'
@@ -102,7 +103,11 @@ function HomeCatalogSections({
             Ir al catálogo
           </Link>
         }
-        description="Los productos demostrativos aparecerán aquí cuando estén disponibles."
+        description={
+          resolveCatalogDataMode() === 'api'
+            ? 'La API no devolvió categorías ni productos activos.'
+            : 'Los productos demostrativos aparecerán aquí cuando estén disponibles.'
+        }
         icon="◇"
         title="El catálogo está vacío"
       />

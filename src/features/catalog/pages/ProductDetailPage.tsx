@@ -7,6 +7,7 @@ import { QuantitySelector } from '../../cart/components'
 import type { CartMutationResult } from '../../cart/state'
 import { PriceDisplay, ProductGallery, StockBadge } from '../components'
 import { useCategory } from '../hooks/useCategory'
+import { resolveCatalogDataMode } from '../hooks/useCatalogReader'
 import { useProduct } from '../hooks/useProduct'
 import './product-detail-page.css'
 
@@ -57,6 +58,7 @@ export function ProductDetailPage({
   }
 
   const product = productState.data
+  const apiCatalogMode = resolveCatalogDataMode() === 'api'
   const category =
     categoryState.status === 'success' ? categoryState.data : undefined
 
@@ -146,11 +148,13 @@ export function ProductDetailPage({
           )}
         </section>
       </div>
-      <section className="product-assurances" aria-label="Beneficios del producto">
-        <span><strong>Despacho 24h</strong><small>Entrega ágil en Costa Rica</small></span>
-        <span><strong>Garantía local</strong><small>Respaldo directo NexoTech</small></span>
-        <span><strong>Facturación DGT</strong><small>Comprobante electrónico</small></span>
-      </section>
+      {!apiCatalogMode && (
+        <section className="product-assurances" aria-label="Beneficios del producto">
+          <span><strong>Despacho 24h</strong><small>Entrega ágil en Costa Rica</small></span>
+          <span><strong>Garantía local</strong><small>Respaldo directo NexoTech</small></span>
+          <span><strong>Facturación DGT</strong><small>Comprobante electrónico</small></span>
+        </section>
+      )}
       <section className="product-specifications" aria-labelledby="specifications-title">
         <header>
           <div>
@@ -159,14 +163,18 @@ export function ProductDetailPage({
           </div>
           <small>Información del catálogo NexoTech</small>
         </header>
-        <dl>
-          <div><dt>Conectividad</dt><dd>Bluetooth y conexión USB</dd></div>
-          <div><dt>Compatibilidad</dt><dd>Windows, macOS y dispositivos móviles</dd></div>
-          <div><dt>Materiales</dt><dd>Construcción durable para uso profesional</dd></div>
-          <div><dt>Garantía</dt><dd>12 meses con soporte técnico local</dd></div>
-          <div><dt>Disponibilidad</dt><dd>{product.existencias} unidades en inventario</dd></div>
-          <div><dt>Categoría</dt><dd>{category?.nombre ?? 'Tecnología'}</dd></div>
-        </dl>
+        {apiCatalogMode ? (
+          <p>La API actual no proporciona especificaciones técnicas adicionales para este producto.</p>
+        ) : (
+          <dl>
+            <div><dt>Conectividad</dt><dd>Bluetooth y conexión USB</dd></div>
+            <div><dt>Compatibilidad</dt><dd>Windows, macOS y dispositivos móviles</dd></div>
+            <div><dt>Materiales</dt><dd>Construcción durable para uso profesional</dd></div>
+            <div><dt>Garantía</dt><dd>12 meses con soporte técnico local</dd></div>
+            <div><dt>Disponibilidad</dt><dd>{product.existencias} unidades en inventario</dd></div>
+            <div><dt>Categoría</dt><dd>{category?.nombre ?? 'Tecnología'}</dd></div>
+          </dl>
+        )}
       </section>
     </div>
   )

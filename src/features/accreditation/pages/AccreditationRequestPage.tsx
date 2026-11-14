@@ -15,12 +15,12 @@ export function AccreditationRequestPage() {
   const navigate = useNavigate()
   const { pyme } = useAppServices()
   const { retry } = useDemoSession()
-  const { user } = useAuth()
+  const { authMode, user } = useAuth()
   const [loading, setLoading] = useState(false)
   const [submitError, setSubmitError] = useState('')
 
   const submitRequest = async (values: AccreditationRequestValues) => {
-    if (!user) return
+    if (!user || authMode === 'api') return
     setLoading(true)
     setSubmitError('')
     try {
@@ -49,6 +49,20 @@ export function AccreditationRequestPage() {
     }
   }
 
+  if (authMode === 'api') {
+    return (
+      <div className="container accreditation-page">
+        <header className="accreditation-page__header">
+          <h1>Solicitar acreditación PYME o MicroPYME</h1>
+        </header>
+        <Alert title="Acreditación solo demostrativa" variant="info">
+          El backend aún no tiene endpoints de acreditación. No se mostrarán ni
+          guardarán solicitudes simuladas junto a una sesión API.
+        </Alert>
+      </div>
+    )
+  }
+
   return (
     <div className="container accreditation-page">
       <ol className="accreditation-steps" aria-label="Progreso de acreditación">
@@ -67,6 +81,10 @@ export function AccreditationRequestPage() {
       <Alert title="Importante" variant="info">
         Enviar una solicitud no habilita inmediatamente PrecioPyme. Los archivos
         no se cargan a servicios externos.
+      </Alert>
+      <Alert title="Modo de demostración">
+        La solicitud se guarda solo en el repositorio local de mocks; el backend
+        aún no ofrece este endpoint.
       </Alert>
       <div className="accreditation-page__layout">
         <section className="accreditation-card" aria-labelledby="request-form-title">

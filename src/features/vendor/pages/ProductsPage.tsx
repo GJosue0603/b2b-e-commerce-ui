@@ -19,6 +19,7 @@ import {
 } from '../../../shared/ui'
 import { useManagedCatalog } from '../hooks/useManagedCatalog'
 import { setProductActive } from '../usecases/updateProduct'
+import { resolveCatalogDataMode } from '../../catalog/hooks/useCatalogReader'
 import './vendor-pages.css'
 
 type StockFilter = 'todos' | 'disponible' | 'bajo' | 'agotado'
@@ -36,6 +37,7 @@ function stockState(product: Producto): Exclude<StockFilter, 'todos'> {
 export function ProductsPage({ supervision = false }: ProductsPageProps) {
   const { catalog } = useAppServices()
   const { categories, error, loading, products, reload } = useManagedCatalog()
+  const apiMode = resolveCatalogDataMode() === 'api'
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const [query, setQuery] = useState('')
@@ -81,7 +83,7 @@ export function ProductsPage({ supervision = false }: ProductsPageProps) {
         </div>
       ),
     },
-    ...(!supervision
+    ...(!supervision && !apiMode
       ? [{
           id: 'actions',
           header: 'Acciones',
@@ -120,10 +122,22 @@ export function ProductsPage({ supervision = false }: ProductsPageProps) {
           </h1>
           <p>Catálogo compartido de NexoTech con precios regulares, PYME y existencias.</p>
         </div>
-        {!supervision && <Button onClick={() => navigate(paths.sellerProductCreate)}>Nuevo producto</Button>}
+        {!supervision && !apiMode && <Button onClick={() => navigate(paths.sellerProductCreate)}>Nuevo producto</Button>}
       </header>
 
-      {searchParams.get('guardado') && <Alert variant="success">El producto se guardó en el repositorio mock y ya está disponible según su estado.</Alert>}
+        {apiMode ? (
+          <Alert title="Catálogo API en modo de solo lectura">
+            Se muestran productos activos del catálogo público. El backend no
+            ofrece endpoints para productos de un vendedor, ni para crear,
+            editar, activar o desactivar productos.
+          </Alert>
+        ) : (
+          <Alert title="Gestión de productos demostrativa">
+            Esta pantalla usa el repositorio mock. Sus cambios no se guardan en
+            el backend; no existen endpoints de gestión de productos.
+          </Alert>
+        )}
+        {!apiMode && searchParams.get('guardado') && <Alert variant="success">El producto se guardó en el repositorio mock y ya está disponible según su estado.</Alert>}
       {(error || actionError) && <Alert variant="danger">{error ?? actionError}</Alert>}
 
       <div className="vendor-kpis">

@@ -35,7 +35,7 @@ const previewOptions = [
 export function AccreditationStatusPage() {
   const location = useLocation()
   const { demoSession, pyme } = useAppServices()
-  const { user } = useAuth()
+  const { authMode, user } = useAuth()
   const [state, setState] = useState<AsyncState<AccreditationData>>({
     status: 'loading',
   })
@@ -45,7 +45,7 @@ export function AccreditationStatusPage() {
   )
 
   const load = useCallback(async () => {
-    if (!user) return
+    if (!user || authMode === 'api') return
     setState({ status: 'loading' })
     try {
       const [requests, accreditations] = await Promise.all([
@@ -62,7 +62,7 @@ export function AccreditationStatusPage() {
             : new Error('No fue posible consultar la acreditación.'),
       })
     }
-  }, [pyme, user])
+  }, [authMode, pyme, user])
 
   const preview = async (status: PreviewStatus) => {
     const option = previewOptions.find((item) => item.id === status)
@@ -88,9 +88,24 @@ export function AccreditationStatusPage() {
   }
 
   useEffect(() => {
+    if (authMode === 'api') return
     const timer = window.setTimeout(() => void load(), 0)
     return () => window.clearTimeout(timer)
-  }, [load])
+  }, [authMode, load])
+
+  if (authMode === 'api') {
+    return (
+      <div className="container accreditation-page accreditation-status-page">
+        <header className="accreditation-page__header">
+          <h1>Mi acreditación PYME o MicroPYME</h1>
+        </header>
+        <Alert title="Acreditación solo demostrativa" variant="info">
+          El backend aún no tiene endpoints de acreditación. No se mostrarán
+          estados ni solicitudes simuladas junto a una sesión API.
+        </Alert>
+      </div>
+    )
+  }
 
   return (
     <div className="container accreditation-page accreditation-status-page">
@@ -101,6 +116,10 @@ export function AccreditationStatusPage() {
           beneficio comercial.
         </p>
       </header>
+      <Alert title="Vista de demostración">
+        Los estados y solicitudes provienen de mocks locales. El backend aún
+        no ofrece endpoints de acreditación.
+      </Alert>
       {submitted && (
         <Alert title="Solicitud registrada" variant="success">
           Se guardó como Pendiente en los datos demostrativos. Todavía no activa
