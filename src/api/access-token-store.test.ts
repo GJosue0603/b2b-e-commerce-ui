@@ -1,12 +1,13 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import {
   clearApiAccessToken,
+  API_SESSION_STORAGE_KEY,
   getApiAccessToken,
   setApiAccessToken,
 } from './access-token-store'
 import { ApiClient } from './http-client'
 
-describe('almacén en memoria del bearer', () => {
+describe('almacén de sesión del bearer', () => {
   afterEach(() => {
     clearApiAccessToken()
     vi.useRealTimers()
@@ -28,6 +29,22 @@ describe('almacén en memoria del bearer', () => {
     clearApiAccessToken()
 
     expect(getApiAccessToken()).toBeNull()
+    expect(sessionStorage.getItem(API_SESSION_STORAGE_KEY)).toBeNull()
+  })
+
+  it('restaura el bearer después de recargar el módulo', async () => {
+    setApiAccessToken('persisted-token', Date.now() + 60_000)
+    vi.resetModules()
+    const reloaded = await import('./access-token-store')
+    expect(reloaded.getApiAccessToken()).toBe('persisted-token')
+    reloaded.clearApiAccessToken()
+  })
+
+  it('descarta almacenamiento corrupto', () => {
+    clearApiAccessToken()
+    sessionStorage.setItem(API_SESSION_STORAGE_KEY, '{invalido')
+    expect(getApiAccessToken()).toBeNull()
+    expect(sessionStorage.getItem(API_SESSION_STORAGE_KEY)).toBeNull()
   })
 
   it('adjunta el bearer en solicitudes del cliente centralizado', async () => {

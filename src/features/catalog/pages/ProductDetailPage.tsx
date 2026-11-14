@@ -101,7 +101,6 @@ export function ProductDetailPage({
           {category && <span className="product-detail__category">{category.nombre}</span>}
           <h1>{product.nombre}</h1>
           <StockBadge quantity={product.existencias} />
-          <p>{product.descripcion}</p>
           <PriceDisplay
             accreditation={accreditation}
             pymePrice={product.precioPyme}
@@ -158,23 +157,15 @@ export function ProductDetailPage({
       <section className="product-specifications" aria-labelledby="specifications-title">
         <header>
           <div>
-            <span>Especificaciones técnicas</span>
-            <h2 id="specifications-title">Ficha Técnica Detallada</h2>
+            <h2 id="specifications-title">Información del producto</h2>
           </div>
           <small>Información del catálogo NexoTech</small>
         </header>
-        {apiCatalogMode ? (
-          <p>La API actual no proporciona especificaciones técnicas adicionales para este producto.</p>
-        ) : (
           <dl>
-            <div><dt>Conectividad</dt><dd>Bluetooth y conexión USB</dd></div>
-            <div><dt>Compatibilidad</dt><dd>Windows, macOS y dispositivos móviles</dd></div>
-            <div><dt>Materiales</dt><dd>Construcción durable para uso profesional</dd></div>
-            <div><dt>Garantía</dt><dd>12 meses con soporte técnico local</dd></div>
+            <div><dt>Descripción</dt><dd>{product.descripcion}</dd></div>
             <div><dt>Disponibilidad</dt><dd>{product.existencias} unidades en inventario</dd></div>
-            <div><dt>Categoría</dt><dd>{category?.nombre ?? 'Tecnología'}</dd></div>
+            <div><dt>Categoría</dt><dd>{category?.nombre ?? 'Sin categoría'}</dd></div>
           </dl>
-        )}
       </section>
     </div>
   )

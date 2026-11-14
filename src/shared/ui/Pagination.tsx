@@ -4,6 +4,7 @@ export interface PaginationProps {
   label?: string
   onPageChange: (page: number) => void
   totalPages: number
+  hideWhenSinglePage?: boolean
 }
 
 type PaginationItem = number | 'ellipsis'
@@ -31,8 +32,9 @@ export function Pagination({
   label = 'Paginación',
   onPageChange,
   totalPages,
+  hideWhenSinglePage = true,
 }: PaginationProps) {
-  if (totalPages < 2) return null
+  if (totalPages < 2 && hideWhenSinglePage) return null
 
   const safeCurrentPage = Math.min(Math.max(currentPage, 1), totalPages)
   const items = getPaginationItems(safeCurrentPage, totalPages)

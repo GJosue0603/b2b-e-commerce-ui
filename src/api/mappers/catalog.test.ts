@@ -42,8 +42,8 @@ describe('mapeadores del catálogo API', () => {
       descripcion: category.descripcion,
       activo: true,
       creadoPor: {
-        id: category.creadoPor.id,
-        nombre: category.creadoPor.nombre,
+        id: category.creadoPor!.id,
+        nombre: category.creadoPor!.nombre,
       },
       fechaCreacion: category.fechaCreacion,
     })
@@ -61,11 +61,25 @@ describe('mapeadores del catálogo API', () => {
       imagenUrl: product.imagenUrl,
       activo: true,
       creadoPor: {
-        id: product.creadoPor.id,
-        nombre: product.creadoPor.nombre,
+        id: product.creadoPor!.id,
+        nombre: product.creadoPor!.nombre,
       },
       fechaCreacion: product.fechaCreacion,
     })
+  })
+
+  it('permite categorías importadas sin colaboradores de auditoría', () => {
+    const result = mapApiCategory({ ...category, creadoPor: null, modificadoPor: null })
+    expect(result.id).toBe(category.id)
+    expect(result).not.toHaveProperty('creadoPor')
+    expect(result).not.toHaveProperty('modificadoPor')
+  })
+
+  it('permite productos importados sin colaboradores de auditoría', () => {
+    const result = mapApiProduct({ ...product, creadoPor: null, modificadoPor: null })
+    expect(result.categoriaId).toBe(category.id)
+    expect(result).not.toHaveProperty('creadoPor')
+    expect(result).not.toHaveProperty('modificadoPor')
   })
 
   it('rechaza productos sin categoría válida en vez de fabricar una categoría', () => {

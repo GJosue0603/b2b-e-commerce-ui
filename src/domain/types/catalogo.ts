@@ -10,7 +10,7 @@ export interface Categoria {
   readonly nombre: string
   readonly descripcion: string
   readonly activo: boolean
-  readonly creadoPor: Colaborador
+  readonly creadoPor?: Colaborador
   readonly fechaCreacion: IsoDateTime
   readonly modificadoPor?: Colaborador
   readonly fechaModificacion?: IsoDateTime
@@ -26,7 +26,7 @@ export interface Producto {
   readonly existencias: number
   readonly imagenUrl: string
   readonly activo: boolean
-  readonly creadoPor: Colaborador
+  readonly creadoPor?: Colaborador
   readonly fechaCreacion: IsoDateTime
   readonly modificadoPor?: Colaborador
   readonly fechaModificacion?: IsoDateTime

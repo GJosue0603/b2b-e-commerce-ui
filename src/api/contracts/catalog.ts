@@ -5,7 +5,7 @@ export interface ApiCategory {
   readonly nombre: string
   readonly descripcion: string
   readonly activo: boolean
-  readonly creadoPor: ApiCollaborator
+  readonly creadoPor: ApiCollaborator | null
   readonly fechaCreacion: string
   readonly modificadoPor?: ApiCollaborator | null
   readonly fechaModificacion?: string | null
@@ -21,7 +21,7 @@ export interface ApiProduct {
   readonly existencias: number
   readonly imagenUrl: string
   readonly activo: boolean
-  readonly creadoPor: ApiCollaborator
+  readonly creadoPor: ApiCollaborator | null
   readonly fechaCreacion: string
   readonly modificadoPor?: ApiCollaborator | null
   readonly fechaModificacion?: string | null

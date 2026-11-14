@@ -1,8 +1,10 @@
 import { Outlet } from 'react-router-dom'
-import { StoreFooter, StoreHeader } from '../navigation'
+import { DashboardHeader, getDashboardNavigation, StoreFooter, StoreHeader } from '../navigation'
+import type { RolUsuario } from '../../domain'
 
 export interface StoreLayoutProps {
   readonly authenticated?: boolean
+  readonly role?: RolUsuario
   readonly cartItemCount?: number
   readonly cartStatus?: 'loading' | 'success' | 'error' | 'unauthenticated'
   readonly showAccreditationNavigation?: boolean
@@ -11,6 +13,7 @@ export interface StoreLayoutProps {
 
 export function StoreLayout({
   authenticated = false,
+  role,
   cartItemCount = 0,
   cartStatus = 'success',
   showAccreditationNavigation = true,
@@ -18,17 +21,21 @@ export function StoreLayout({
 }: StoreLayoutProps) {
   return (
     <div className="store-layout">
-      <StoreHeader
-        authenticated={authenticated}
-        cartItemCount={cartItemCount}
-        cartStatus={cartStatus}
-        showAccreditationNavigation={showAccreditationNavigation}
-        onSignOut={onSignOut}
-      />
+      {authenticated && role && role !== 'comprador' ? (
+        <DashboardHeader cartItemCount={cartItemCount} cartStatus={cartStatus} items={getDashboardNavigation(role)} onSignOut={onSignOut ?? (() => {})} role={role} />
+      ) : (
+        <StoreHeader
+          authenticated={authenticated}
+          cartItemCount={cartItemCount}
+          cartStatus={cartStatus}
+          showAccreditationNavigation={showAccreditationNavigation}
+          onSignOut={onSignOut}
+        />
+      )}
       <main className="store-layout__content">
         <Outlet />
       </main>
-      <StoreFooter authenticated={authenticated} />
+      <StoreFooter authenticated={authenticated} role={role} />
     </div>
   )
 }

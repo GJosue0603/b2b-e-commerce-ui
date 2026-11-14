@@ -150,7 +150,7 @@ Las cuentas demo no funcionan cuando `VITE_AUTH_MODE=api`.
 | Perfil, acreditación PYME, checkout, pagos y pedidos | Simulados o no disponibles en la API |
 | Reportes | Datos demo |
 
-El JWT se mantiene solo en memoria. Al recargar la página se cierra la sesión.
+El JWT se conserva en `sessionStorage`: al recargar la misma pestaña se restaura la sesión mientras el token siga vigente. Cerrar sesión elimina el token guardado. Cerrar la pestaña finaliza su almacenamiento de sesión.
 
 ## Variables de entorno
 

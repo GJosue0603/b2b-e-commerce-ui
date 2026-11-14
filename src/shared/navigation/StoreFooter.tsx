@@ -1,11 +1,13 @@
 import { Link } from 'react-router-dom'
 import { routePatterns } from '../../app/router/paths'
+import type { RolUsuario } from '../../domain'
 
 export interface StoreFooterProps {
   authenticated?: boolean
+  role?: RolUsuario
 }
 
-export function StoreFooter({ authenticated = false }: StoreFooterProps) {
+export function StoreFooter({ authenticated = false, role = 'comprador' }: StoreFooterProps) {
   return (
     <footer className="store-footer">
       <div className="container store-footer__content">
@@ -23,7 +25,7 @@ export function StoreFooter({ authenticated = false }: StoreFooterProps) {
           </span>
           <small className="store-footer__session">
             {authenticated
-              ? 'Sesión de comprador activa'
+              ? `Sesión de ${role} activa`
               : 'Compra como visitante o inicia sesión'}
           </small>
         </div>

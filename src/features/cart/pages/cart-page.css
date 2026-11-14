@@ -6,6 +6,7 @@
 
 .cart-page__header {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--space-2);
   align-items: end;
   justify-content: space-between;
@@ -24,7 +25,15 @@
   font-size: clamp(2rem, 4vw, 3rem);
 }
 
-.cart-page__header > a {
+.cart-page__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+}
+
+.cart-page__actions > a {
+  padding: 0.5rem;
   font-weight: 650;
   text-decoration: none;
 }
@@ -38,6 +47,7 @@
 
 .cart-page__items {
   display: grid;
+  min-width: 0;
   gap: var(--space-2);
 }
 

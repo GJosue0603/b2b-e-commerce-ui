@@ -116,7 +116,7 @@ export function LoginPage() {
               <span>Recordar mis datos en este dispositivo</span>
             </label>
           ) : (
-            <span>La sesión se mantiene solo en memoria y se cierra al recargar.</span>
+            <span>La sesión se conserva al recargar esta pestaña mientras siga vigente.</span>
           )}
           <span>Acceso seguro</span>
         </div>

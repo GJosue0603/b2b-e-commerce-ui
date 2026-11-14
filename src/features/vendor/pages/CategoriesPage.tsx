@@ -17,6 +17,7 @@ import {
   KpiCard,
   Skeleton,
   TextField,
+  TablePagination,
   type DataTableColumn,
 } from '../../../shared/ui'
 import { getAdminApiErrorMessage } from '../../admin/admin-api-errors'
@@ -245,17 +246,11 @@ export function CategoriesPage() {
       {loading ? <Skeleton height="16rem" /> : error ? null : filteredCategories.length === 0 ? (
         <EmptyState description={query ? 'Prueba con otra palabra clave.' : 'Aún no hay categorías disponibles.'} title={query ? 'No hay categorías que coincidan' : 'No hay categorías'} />
       ) : (
-        <DataTable caption="Categorías del catálogo NexoTech" columns={columns} getRowKey={(category) => category.id} rows={filteredCategories} />
+        <DataTable caption="Categorías del catálogo NexoTech" columns={columns} getRowKey={(category) => category.id} rows={filteredCategories} scrollable />
       )}
 
       {pageInfo && !loading && !error && (
-        <div className="vendor-filters vendor-filters--single" aria-label="Paginación de categorías">
-          <span>Página {pageInfo.numeroDePagina} de {pageInfo.totalDePaginas} · {pageInfo.cantidadTotalDeItems} categorías</span>
-          <div className="vendor-row-actions">
-            <Button disabled={pageInfo.numeroDePagina <= 1} onClick={() => { setLoading(true); setError(null); setPage((current) => Math.max(1, current - 1)) }} variant="secondary">Anterior</Button>
-            <Button disabled={pageInfo.numeroDePagina >= pageInfo.totalDePaginas} onClick={() => { setLoading(true); setError(null); setPage((current) => current + 1) }} variant="secondary">Siguiente</Button>
-          </div>
-        </div>
+        <TablePagination currentPage={pageInfo.numeroDePagina} totalItems={pageInfo.cantidadTotalDeItems} totalPages={pageInfo.totalDePaginas} pageSize={PAGE_SIZE} itemLabel="categorías" label="Paginación de categorías" onPageChange={(nextPage) => { setLoading(true); setError(null); setPage(nextPage) }} />
       )}
 
       <Alert title="Alcance del catálogo">Esta herramienta gestiona solo categorías del catálogo propio de NexoTech; no administra proveedores ni tiendas externas.</Alert>

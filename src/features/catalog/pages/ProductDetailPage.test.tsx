@@ -164,9 +164,9 @@ describe('ProductDetailPage', () => {
     )
 
     expect(await screen.findByRole('heading', { name: product.nombre })).toBeVisible()
-    expect(screen.getByText(product.descripcion)).toBeVisible()
+    expect(screen.getAllByText(product.descripcion)[0]).toBeVisible()
     expect(
-      screen.getByText(/La API actual no proporciona especificaciones técnicas/),
+      screen.getByRole('heading', { name: 'Información del producto' }),
     ).toBeVisible()
     expect(screen.queryByText('Bluetooth y conexión USB')).toBeNull()
     expect(screen.queryByText('12 meses con soporte técnico local')).toBeNull()

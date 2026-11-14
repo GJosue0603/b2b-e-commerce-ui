@@ -123,7 +123,7 @@ describe('StoreHeader', () => {
     const router = renderStore('buyer-regular')
 
     const accountButton = await screen.findByLabelText('Mi cuenta')
-    const accountMenu = accountButton.closest('details')
+    const accountMenu = accountButton.closest<HTMLDivElement>('.account-menu')
     if (!accountMenu) throw new Error('No se encontró el menú de cuenta.')
     await user.click(accountButton)
     expect(within(accountMenu).getByRole('link', { name: 'Ver cuenta' })).toHaveAttribute(

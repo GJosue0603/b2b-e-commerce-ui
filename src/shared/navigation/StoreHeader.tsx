@@ -1,9 +1,11 @@
-import { useEffect, useRef, useState, type KeyboardEvent } from 'react'
+import { useRef, useState, type KeyboardEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { routePatterns } from '../../app/router/paths'
 import { NavigationLinks } from './NavigationLinks'
-import { AccountIcon, CartIcon, MenuIcon } from './StoreIcons'
+import { AccountIcon, MenuIcon } from './StoreIcons'
+import { CartLink } from './CartLink'
 import { StoreSearchForm } from './StoreSearchForm'
+import { AccountMenu } from './AccountMenu'
 import {
   buyerStoreNavigation,
   publicStoreNavigation,
@@ -25,7 +27,6 @@ export function StoreHeader({
   onSignOut,
 }: StoreHeaderProps) {
   const navigate = useNavigate()
-  const accountMenu = useRef<HTMLDetailsElement>(null)
   const mobileMenu = useRef<HTMLDetailsElement>(null)
   const [signingOut, setSigningOut] = useState(false)
   const navigation = !authenticated
@@ -39,19 +40,11 @@ export function StoreHeader({
     ? routePatterns.account
     : routePatterns.signIn
   const accountLabel = authenticated ? 'Mi cuenta' : 'Ingresar'
-  const cartLabel =
-    cartStatus === 'loading'
-      ? 'Carrito, cargando productos'
-      : cartStatus === 'unauthenticated'
-        ? 'Carrito, inicia sesión para consultar'
-        : `Carrito, ${cartItemCount} ${cartItemCount === 1 ? 'producto' : 'productos'}`
 
   const closeMobileMenu = () => mobileMenu.current?.removeAttribute('open')
-  const closeAccountMenu = () => accountMenu.current?.removeAttribute('open')
   const handleSignOut = async () => {
     if (!onSignOut || signingOut) return
     setSigningOut(true)
-    closeAccountMenu()
     closeMobileMenu()
     try {
       await onSignOut()
@@ -67,23 +60,6 @@ export function StoreHeader({
       mobileMenu.current.open = !mobileMenu.current.open
     }
   }
-
-  useEffect(() => {
-    const closeOnOutsideInteraction = (event: PointerEvent) => {
-      if (!accountMenu.current?.contains(event.target as Node)) {
-        closeAccountMenu()
-      }
-    }
-    const closeOnEscape = (event: globalThis.KeyboardEvent) => {
-      if (event.key === 'Escape') closeAccountMenu()
-    }
-    document.addEventListener('pointerdown', closeOnOutsideInteraction)
-    document.addEventListener('keydown', closeOnEscape)
-    return () => {
-      document.removeEventListener('pointerdown', closeOnOutsideInteraction)
-      document.removeEventListener('keydown', closeOnEscape)
-    }
-  }, [])
 
   return (
     <header className="store-header">
@@ -105,27 +81,7 @@ export function StoreHeader({
 
         <div className="store-header__actions">
           {authenticated ? (
-            <details className="account-menu" ref={accountMenu}>
-              <summary
-                aria-label={accountLabel}
-                className="header-action header-action--account header-action--icon-only"
-                title={accountLabel}
-              >
-                <AccountIcon />
-              </summary>
-              <div className="account-menu__panel">
-                <Link onClick={closeAccountMenu} to={routePatterns.account}>
-                  Ver cuenta
-                </Link>
-                <button
-                  disabled={signingOut}
-                  onClick={() => void handleSignOut()}
-                  type="button"
-                >
-                  {signingOut ? 'Cerrando sesión…' : 'Cerrar sesión'}
-                </button>
-              </div>
-            </details>
+            <AccountMenu accountPath={routePatterns.account} label={accountLabel} onSignOut={handleSignOut} signingOut={signingOut} />
           ) : (
             <Link
               aria-label="Ingresar"
@@ -136,22 +92,7 @@ export function StoreHeader({
               <AccountIcon />
             </Link>
           )}
-          <Link
-            aria-busy={cartStatus === 'loading' || undefined}
-            aria-label={cartLabel}
-            className="header-action header-action--cart"
-            title={cartStatus === 'error' ? 'No se pudo consultar el carrito' : undefined}
-            to={routePatterns.cart}
-          >
-            <CartIcon />
-            <span aria-hidden="true" className="cart-count">
-              {cartStatus === 'loading'
-                ? '…'
-                : cartStatus === 'unauthenticated'
-                  ? 0
-                  : cartItemCount}
-            </span>
-          </Link>
+          <CartLink cartItemCount={cartItemCount} cartStatus={cartStatus} />
 
           <details className="store-header__mobile-menu" ref={mobileMenu}>
             <summary aria-label="Abrir menú" onKeyDown={handleMenuKeyDown}>

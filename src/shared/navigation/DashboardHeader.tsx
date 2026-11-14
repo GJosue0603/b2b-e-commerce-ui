@@ -1,12 +1,15 @@
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { routePatterns } from '../../app/router/paths'
-import { AccountIcon, MenuIcon } from './StoreIcons'
+import { MenuIcon } from './StoreIcons'
+import { AccountMenu } from './AccountMenu'
+import { CartLink, type CartLinkProps } from './CartLink'
 import { NavigationLinks } from './NavigationLinks'
+import { ManagementMenu } from './ManagementMenu'
 import type { DashboardRole, NavigationItem } from './navigation'
-import { getRoleLabel } from './navigation'
+import { getRoleLabel, publicStoreNavigation } from './navigation'
 
-export interface DashboardHeaderProps {
+export interface DashboardHeaderProps extends CartLinkProps {
   readonly items: readonly NavigationItem[]
   readonly onSignOut: () => Promise<void> | void
   readonly role: DashboardRole
@@ -16,9 +19,10 @@ export function DashboardHeader({
   items,
   onSignOut,
   role,
+  cartItemCount,
+  cartStatus,
 }: DashboardHeaderProps) {
   const navigate = useNavigate()
-  const accountMenu = useRef<HTMLDetailsElement>(null)
   const mobileMenu = useRef<HTMLDetailsElement>(null)
   const [signingOut, setSigningOut] = useState(false)
   const roleLabel = getRoleLabel(role)
@@ -27,13 +31,12 @@ export function DashboardHeader({
       ? routePatterns.sellerAccount
       : routePatterns.adminAccount
   const navigationLabel = `Navegación de ${roleLabel}`
+  const managementLabel = role === 'administrador' ? 'Administración' : 'Gestión de ventas'
 
   const closeMobileMenu = () => mobileMenu.current?.removeAttribute('open')
-  const closeAccountMenu = () => accountMenu.current?.removeAttribute('open')
   const handleSignOut = async () => {
     if (signingOut) return
     setSigningOut(true)
-    closeAccountMenu()
     closeMobileMenu()
     try {
       await onSignOut()
@@ -42,26 +45,6 @@ export function DashboardHeader({
       setSigningOut(false)
     }
   }
-
-  useEffect(() => {
-    const closeOnOutsideInteraction = (event: PointerEvent) => {
-      if (!accountMenu.current?.contains(event.target as Node)) {
-        closeAccountMenu()
-      }
-    }
-    const closeOnEscape = (event: globalThis.KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        closeAccountMenu()
-        closeMobileMenu()
-      }
-    }
-    document.addEventListener('pointerdown', closeOnOutsideInteraction)
-    document.addEventListener('keydown', closeOnEscape)
-    return () => {
-      document.removeEventListener('pointerdown', closeOnOutsideInteraction)
-      document.removeEventListener('keydown', closeOnEscape)
-    }
-  }, [])
 
   return (
     <header className="store-header dashboard-header">
@@ -79,31 +62,13 @@ export function DashboardHeader({
           aria-label={navigationLabel}
           className="store-header__nav dashboard-header__nav"
         >
-          <NavigationLinks items={items} />
+          <NavigationLinks items={publicStoreNavigation} />
+          <ManagementMenu items={items} label={managementLabel} />
         </nav>
 
         <div className="store-header__actions dashboard-header__actions">
-          <details className="account-menu" ref={accountMenu}>
-            <summary
-              aria-label={`Cuenta de ${roleLabel}`}
-              className="header-action header-action--account header-action--icon-only"
-              title={`Cuenta de ${roleLabel}`}
-            >
-              <AccountIcon />
-            </summary>
-            <div className="account-menu__panel">
-              <Link onClick={closeAccountMenu} to={accountPath}>
-                Ver cuenta
-              </Link>
-              <button
-                disabled={signingOut}
-                onClick={() => void handleSignOut()}
-                type="button"
-              >
-                {signingOut ? 'Cerrando sesión…' : 'Cerrar sesión'}
-              </button>
-            </div>
-          </details>
+          <AccountMenu accountPath={accountPath} label={`Cuenta de ${roleLabel}`} onSignOut={handleSignOut} signingOut={signingOut} />
+          <CartLink cartItemCount={cartItemCount} cartStatus={cartStatus} />
 
           <details className="store-header__mobile-menu" ref={mobileMenu}>
             <summary aria-label={`Abrir menú de ${roleLabel}`}>
@@ -114,6 +79,8 @@ export function DashboardHeader({
                 aria-label={`${navigationLabel} móvil`}
                 onClick={closeMobileMenu}
               >
+                <NavigationLinks items={publicStoreNavigation} />
+                <span className="management-menu__heading">{managementLabel}</span>
                 <NavigationLinks items={items} />
                 <Link className="navigation-link" to={accountPath}>
                   Ver cuenta
