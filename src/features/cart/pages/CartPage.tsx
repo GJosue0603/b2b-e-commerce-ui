@@ -1,10 +1,11 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   calculateCartTotals,
   type AcreditacionPyme,
 } from '../../../domain'
 import { routePatterns } from '../../../app/router/paths'
-import { Alert, EmptyState, Skeleton } from '../../../shared/ui'
+import { Alert, Button, EmptyState, Skeleton } from '../../../shared/ui'
 import { CartItemRow, SummaryCard } from '../components'
 import { useCartProducts } from '../hooks/useCartProducts'
 import { useCart } from '../state'
@@ -17,6 +18,25 @@ export interface CartPageProps {
 export function CartPage({ accreditation }: CartPageProps) {
   const cart = useCart()
   const productsState = useCartProducts()
+  const [clearError, setClearError] = useState('')
+
+  const handleClear = async () => {
+    setClearError('')
+    const result = await cart.clear()
+    if (!result.ok) setClearError(result.message)
+  }
+
+  if (cart.status === 'unauthenticated') {
+    return (
+      <div className="container cart-page">
+        <h1>Tu carrito</h1>
+        <Alert title="Inicia sesión para consultar tu carrito" variant="info">
+          El carrito API pertenece a una cuenta autenticada.{' '}
+          <Link to={routePatterns.signIn}>Iniciar sesión</Link>
+        </Alert>
+      </div>
+    )
+  }
 
   if (cart.status === 'loading' || productsState.status === 'loading') {
     return <CartPageSkeleton />
@@ -27,7 +47,10 @@ export function CartPage({ accreditation }: CartPageProps) {
       <div className="container cart-page">
         <h1>Tu carrito</h1>
         <Alert title="No pudimos cargar el carrito" variant="danger">
-          Intenta nuevamente dentro de unos instantes.
+          {cart.errorMessage ??
+            (productsState.status === 'error'
+              ? productsState.error.message
+              : 'Intenta nuevamente dentro de unos instantes.')}
         </Alert>
       </div>
     )
@@ -35,13 +58,18 @@ export function CartPage({ accreditation }: CartPageProps) {
 
   const products = productsState.status === 'success' ? productsState.data : []
   const productById = new Map(products.map((product) => [product.id, product]))
-  const lines = cart.items.flatMap((item) => {
-    const product = productById.get(item.productoId)
-    return product ? [{ item, product }] : []
-  })
+  const lines = cart.items.map((item) => ({
+    item,
+    product: productById.get(item.productoId),
+    serverItem: cart.serverCart?.items.find(
+      (serverItem) => serverItem.productoId === item.productoId,
+    ),
+  }))
 
   const totals = calculateCartTotals(
-    lines.map(({ item, product }) => ({ product, quantity: item.cantidad })),
+    lines.flatMap(({ item, product }) =>
+      product ? [{ product, quantity: item.cantidad }] : [],
+    ),
     accreditation,
   )
 
@@ -49,11 +77,34 @@ export function CartPage({ accreditation }: CartPageProps) {
     <div className="container cart-page">
       <header className="cart-page__header">
         <div>
-          <span>Compra demostrativa</span>
+          <span>
+            {cart.mode === 'api' ? 'Carrito de la API' : 'Compra demostrativa'}
+          </span>
           <h1>Tu carrito</h1>
         </div>
-        {lines.length > 0 && <Link to={routePatterns.catalog}>Seguir comprando</Link>}
+        <div>
+          {lines.length > 0 && (
+            <Button
+              disabled={cart.mutationPending}
+              loading={cart.mutationPending}
+              onClick={() => void handleClear()}
+              size="sm"
+              variant="ghost"
+            >
+              Vaciar carrito
+            </Button>
+          )}
+          {lines.length > 0 && (
+            <Link to={routePatterns.catalog}>Seguir comprando</Link>
+          )}
+        </div>
       </header>
+
+      {clearError && (
+        <Alert title="No se pudo vaciar el carrito" variant="danger">
+          {clearError}
+        </Alert>
+      )}
 
       {lines.length === 0 ? (
         <EmptyState
@@ -65,21 +116,25 @@ export function CartPage({ accreditation }: CartPageProps) {
       ) : (
         <div className="cart-page__layout">
           <section aria-label="Productos en el carrito" className="cart-page__items">
-            {lines.map(({ item, product }) => (
+            {lines.map(({ item, product, serverItem }) => (
               <CartItemRow
                 accreditation={accreditation}
                 item={item}
-                key={product.id}
+                key={item.productoId}
                 onRemove={cart.removeItem}
                 onUpdateQuantity={cart.updateQuantity}
+                pending={cart.mutationPending}
                 product={product}
+                serverItem={serverItem}
               />
             ))}
           </section>
           <div className="cart-page__summary">
             <SummaryCard
-              itemCount={totals.itemCount}
+              itemCount={cart.itemCount}
+              mode={cart.mode}
               regularSubtotal={totals.regularSubtotal}
+              serverTotal={cart.serverCart?.total}
               savings={totals.savings}
               total={totals.total}
             />

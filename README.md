@@ -77,6 +77,15 @@ El cliente HTTP tipado está en `src/api` e incluye autorización Bearer cuando 
 una sesión API activa. Las mutaciones de productos no se conectan porque la API
 no las ofrece.
 
+El carrito puede configurarse por separado con `VITE_CART_DATA_MODE=demo` o
+`VITE_CART_DATA_MODE=api`. El modo API requiere también
+`VITE_AUTH_MODE=api` y `VITE_CATALOG_DATA_MODE=api`; si el catálogo sigue en demo,
+el carrito API se bloquea para no enviar identificadores de fixtures. En modo
+API, el carrito requiere una sesión autenticada y muestra los precios,
+subtotales, disponibilidad y total devueltos por el backend. El checkout y los
+pagos no están conectados, por lo que la aplicación no permite continuar al pago
+ni vacía el carrito API mediante una compra simulada.
+
 ### Autenticación
 
 `VITE_AUTH_MODE=demo` conserva la autenticación demostrativa predeterminada.
@@ -94,9 +103,9 @@ interfaz. Esa decodificación no verifica la firma ni sustituye la autorización
 backend.
 
 La API actual no incluye un endpoint de perfil (`/me`), así que algunas vistas de
-cuenta no pueden mostrar nombre y teléfono reales. Carrito, checkout, pagos,
-pedidos, acreditación y operaciones de administración continúan usando mocks;
-la autenticación real no los convierte en operaciones reales.
+cuenta no pueden mostrar nombre y teléfono reales. Checkout, pagos, pedidos,
+acreditación y operaciones de administración continúan usando mocks; la
+autenticación y el carrito reales no los convierten en operaciones reales.
 
 ## Usuarios de prueba
 

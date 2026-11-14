@@ -7,6 +7,7 @@ export {
   type ApiVerifiedUser,
   type AuthApi,
 } from './auth/auth-api'
+export { cartApi, createCartApi } from './cart/cart-api'
 export type {
   ApiEmailVerificationRequest,
   ApiLoginRequest,

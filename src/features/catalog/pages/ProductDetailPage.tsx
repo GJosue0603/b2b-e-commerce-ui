@@ -15,7 +15,7 @@ export interface ProductDetailPageProps {
   readonly onAddToCart?: (
     product: Producto,
     quantity: number,
-  ) => CartMutationResult
+  ) => CartMutationResult | Promise<CartMutationResult>
 }
 
 export function ProductDetailPage({
@@ -25,6 +25,7 @@ export function ProductDetailPage({
   const { productId } = useParams<{ productId: string }>()
   const [quantity, setQuantity] = useState(1)
   const [cartMessage, setCartMessage] = useState<CartMutationResult | null>(null)
+  const [addingToCart, setAddingToCart] = useState(false)
   const productState = useProduct(productId)
   const categoryId =
     productState.status === 'success'
@@ -58,6 +59,25 @@ export function ProductDetailPage({
   const product = productState.data
   const category =
     categoryState.status === 'success' ? categoryState.data : undefined
+
+  const handleAddToCart = async () => {
+    if (!onAddToCart) return
+    setAddingToCart(true)
+    setCartMessage(null)
+    try {
+      setCartMessage(await onAddToCart(product, quantity))
+    } catch (reason) {
+      setCartMessage({
+        message:
+          reason instanceof Error
+            ? reason.message
+            : 'No fue posible agregar el producto al carrito.',
+        ok: false,
+      })
+    } finally {
+      setAddingToCart(false)
+    }
+  }
 
   return (
     <div className="container product-detail-page">
@@ -109,11 +129,8 @@ export function ProductDetailPage({
             <Button
               disabled={product.existencias < 1 || !onAddToCart}
               fullWidth
-              onClick={() => {
-                if (onAddToCart) {
-                  setCartMessage(onAddToCart(product, quantity))
-                }
-              }}
+              loading={addingToCart}
+              onClick={() => void handleAddToCart()}
               size="lg"
             >
               Agregar al carrito

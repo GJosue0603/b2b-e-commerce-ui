@@ -29,7 +29,7 @@ export interface CatalogPageProps {
   readonly onAddToCart?: (
     product: Producto,
     quantity: number,
-  ) => CartMutationResult
+  ) => CartMutationResult | Promise<CartMutationResult>
 }
 
 export function CatalogPage({ accreditation, onAddToCart }: CatalogPageProps) {
@@ -118,9 +118,30 @@ function CatalogContent({
   updateFilters,
 }: CatalogContentProps) {
   const result = filterCatalogProducts(products, filters, accreditation)
+  const [pendingProductId, setPendingProductId] = useState<string>()
+  const [cartAction, setCartAction] = useState<CartMutationResult>()
   const categoryNames = new Map(
     categories.map((category) => [category.id, category.nombre]),
   )
+
+  const handleAddToCart = async (product: Producto) => {
+    if (!onAddToCart) return
+    setCartAction(undefined)
+    setPendingProductId(product.id)
+    try {
+      setCartAction(await onAddToCart(product, 1))
+    } catch (reason) {
+      setCartAction({
+        message:
+          reason instanceof Error
+            ? reason.message
+            : 'No fue posible agregar el producto al carrito.',
+        ok: false,
+      })
+    } finally {
+      setPendingProductId(undefined)
+    }
+  }
 
   const filtersElement = (
     <CatalogFilters
@@ -185,6 +206,14 @@ function CatalogContent({
             <option value="price-desc">Precio: mayor a menor</option>
           </Select>
         </div>
+        {cartAction && (
+          <Alert
+            title={cartAction.ok ? 'Carrito actualizado' : 'No se pudo agregar'}
+            variant={cartAction.ok ? 'success' : 'danger'}
+          >
+            {cartAction.message}
+          </Alert>
+        )}
 
         {result.totalItems === 0 ? (
           <EmptyState
@@ -209,7 +238,9 @@ function CatalogContent({
                       ? {
                           kind: 'add-to-cart',
                           label: 'Agregar al carrito',
-                          onClick: () => onAddToCart(product, 1),
+                          loading: pendingProductId === product.id,
+                          disabled: pendingProductId !== undefined,
+                          onClick: () => void handleAddToCart(product),
                         }
                       : {
                           kind: 'detail',

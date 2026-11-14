@@ -1,7 +1,13 @@
 import { createContext } from 'react'
+import type { ApiCart } from '../../../api/services/cart/contracts'
 import type { EntityId, ItemCarrito } from '../../../domain'
+import type { CartDataMode } from '../cart-mode'
 
-export type CartStatus = 'loading' | 'success' | 'error'
+export type CartStatus =
+  | 'loading'
+  | 'success'
+  | 'error'
+  | 'unauthenticated'
 
 export interface CartMutationResult {
   readonly message: string
@@ -13,17 +19,21 @@ export interface CartContextValue {
     productId: EntityId,
     quantity: number,
     availableStock: number,
-  ) => CartMutationResult
-  readonly clear: () => void
+  ) => Promise<CartMutationResult>
+  readonly clear: () => Promise<CartMutationResult>
+  readonly errorMessage?: string
   readonly itemCount: number
   readonly items: readonly ItemCarrito[]
-  readonly removeItem: (productId: EntityId) => void
+  readonly mode: CartDataMode
+  readonly mutationPending: boolean
+  readonly removeItem: (productId: EntityId) => Promise<CartMutationResult>
+  readonly serverCart: ApiCart | null
   readonly status: CartStatus
   readonly updateQuantity: (
     productId: EntityId,
     quantity: number,
     availableStock: number,
-  ) => CartMutationResult
+  ) => Promise<CartMutationResult>
 }
 
 export const CartContext = createContext<CartContextValue | null>(null)

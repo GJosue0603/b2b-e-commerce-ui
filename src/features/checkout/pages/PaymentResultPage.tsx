@@ -47,6 +47,7 @@ export function PaymentResultPage({ accreditation }: PaymentResultPageProps) {
 
   useEffect(() => {
     if (settledRef.current) return
+    if (cart.mode === 'api') return
     if (
       !user ||
       cart.status !== 'success' ||
@@ -103,8 +104,10 @@ export function PaymentResultPage({ accreditation }: PaymentResultPageProps) {
           products,
         })
         if (!active || result.order === null) return
+        const clearResult = await cart.clear()
+        if (!clearResult.ok) throw new Error(clearResult.message)
+        if (!active) return
         settledRef.current = true
-        cart.clear()
         setState({
           status: 'approved',
           order: result.order,
@@ -135,6 +138,12 @@ export function PaymentResultPage({ accreditation }: PaymentResultPageProps) {
     productsState.status,
     user,
   ])
+
+  if (cart.mode === 'api') {
+    return (
+      <PaymentError message="Checkout y pagos siguen simulados. El carrito API no se modificó." />
+    )
+  }
 
   if (cart.status === 'error' || productsState.status === 'error') {
     return <PaymentError message="No pudimos preparar la simulación de pago." />

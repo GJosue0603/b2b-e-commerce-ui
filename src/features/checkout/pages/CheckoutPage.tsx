@@ -44,6 +44,24 @@ export function CheckoutPage({ accreditation }: CheckoutPageProps) {
     )
   }
 
+  if (cart.mode === 'api') {
+    return (
+      <div className="container checkout-page">
+        <header className="checkout-page__header">
+          <span>Checkout no conectado</span>
+          <h1>Revisar y pagar</h1>
+          <p>El carrito API está disponible, pero checkout y pagos todavía no.</p>
+        </header>
+        <Alert title="No se inició ninguna compra" variant="info">
+          Este flujo sigue siendo demostrativo y no puede usar ni vaciar un
+          carrito de la API. Vuelve al carrito para continuar cuando checkout
+          esté integrado.
+        </Alert>
+        <Link to={routePatterns.cart}>Volver al carrito</Link>
+      </div>
+    )
+  }
+
   const products = productsState.status === 'success' ? productsState.data : []
   const productById = new Map(products.map((product) => [product.id, product]))
   const lines = cart.items.flatMap((item) => {

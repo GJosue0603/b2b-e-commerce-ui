@@ -12,7 +12,7 @@ import {
 export interface StoreHeaderProps {
   readonly authenticated?: boolean
   readonly cartItemCount?: number
-  readonly cartStatus?: 'loading' | 'success' | 'error'
+  readonly cartStatus?: 'loading' | 'success' | 'error' | 'unauthenticated'
   readonly showAccreditationNavigation?: boolean
   readonly onSignOut?: () => Promise<void> | void
 }
@@ -42,7 +42,9 @@ export function StoreHeader({
   const cartLabel =
     cartStatus === 'loading'
       ? 'Carrito, cargando productos'
-      : `Carrito, ${cartItemCount} ${cartItemCount === 1 ? 'producto' : 'productos'}`
+      : cartStatus === 'unauthenticated'
+        ? 'Carrito, inicia sesión para consultar'
+        : `Carrito, ${cartItemCount} ${cartItemCount === 1 ? 'producto' : 'productos'}`
 
   const closeMobileMenu = () => mobileMenu.current?.removeAttribute('open')
   const closeAccountMenu = () => accountMenu.current?.removeAttribute('open')
@@ -143,7 +145,11 @@ export function StoreHeader({
           >
             <CartIcon />
             <span aria-hidden="true" className="cart-count">
-              {cartStatus === 'loading' ? '…' : cartItemCount}
+              {cartStatus === 'loading'
+                ? '…'
+                : cartStatus === 'unauthenticated'
+                  ? 0
+                  : cartItemCount}
             </span>
           </Link>
 

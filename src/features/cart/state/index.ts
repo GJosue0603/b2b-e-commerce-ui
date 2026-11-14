@@ -4,4 +4,5 @@ export type {
   CartMutationResult,
   CartStatus,
 } from './cart-context'
+export { type CartDataMode } from '../cart-mode'
 export { useCart } from './useCart'

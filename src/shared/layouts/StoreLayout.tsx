@@ -4,7 +4,7 @@ import { StoreFooter, StoreHeader } from '../navigation'
 export interface StoreLayoutProps {
   readonly authenticated?: boolean
   readonly cartItemCount?: number
-  readonly cartStatus?: 'loading' | 'success' | 'error'
+  readonly cartStatus?: 'loading' | 'success' | 'error' | 'unauthenticated'
   readonly showAccreditationNavigation?: boolean
   readonly onSignOut?: () => Promise<void> | void
 }
