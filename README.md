@@ -1,153 +1,181 @@
-# NexoTech B2B E-commerce
+# NexoTech
 
-Frontend demostrativo de una plataforma de comercio electrónico B2B. Incluye una tienda pública, precios diferenciados para clientes PYME, compra y pago simulado, gestión de catálogo para vendedores y herramientas administrativas.
+Frontend de una plataforma de comercio electrónico B2B construido con React,
+TypeScript y Vite. Puede ejecutarse de dos formas:
 
-> El modo demostrativo utiliza repositorios y datos mock en memoria. El catálogo y la autenticación pueden configurarse por separado para usar la API; carrito, checkout, pagos y demás módulos continúan siendo simulados.
-
-## Funcionalidades
-
-### Tienda y compradores
-
-- Inicio, búsqueda, filtros por categoría y detalle de productos.
-- Carrito con control de cantidades y resumen de compra.
-- Registro, inicio de sesión y edición del perfil.
-- Checkout protegido y simulación de pagos aprobados, rechazados o cancelados.
-- Historial y detalle de pedidos.
-- Solicitud, consulta e historial de acreditación PYME.
-- Precios PYME cuando la acreditación del comprador está vigente.
-
-### Vendedores
-
-- Creación y edición de productos.
-- Administración de productos.
-- Dashboard de ventas, rankings e inventario bajo.
-- Edición de la cuenta desde el panel.
-
-### Administradores
-
-- Revisión de solicitudes de acreditación PYME.
-- Consulta de usuarios, categorías, productos, pedidos y reportes.
-- Supervisión del catálogo y edición de la cuenta.
-
-## Tecnologías
-
-- React 19 y TypeScript 6.
-- Vite 8.
-- React Router 7.
-- Vitest, Testing Library y jsdom.
-- ESLint 10.
-- CSS modularizado por área y design tokens propios.
+- **Demo:** usa datos locales y no necesita el backend.
+- **API:** conecta autenticación, catálogo, carrito, usuarios y categorías con el
+  backend ASP.NET Core y MongoDB.
 
 ## Requisitos
 
 - Node.js `^20.19.0` o `>=22.12.0`.
-- npm `>=10`.
+- npm `10` o superior.
+- Para el modo API: .NET SDK 10, MongoDB y el repositorio del backend.
 
-## Instalación y ejecución
+Comprueba las versiones instaladas:
+
+```bash
+node --version
+npm --version
+dotnet --version
+```
+
+## Inicio rápido: modo demo
+
+No requiere variables de entorno ni servicios externos.
 
 ```bash
 npm install
 npm run dev
 ```
 
-Vite mostrará en la terminal la URL local de la aplicación, normalmente `http://localhost:5173`.
+Abre `http://localhost:5173`.
 
-No se requieren variables de entorno para ejecutar la versión demostrativa.
-
-### Fuente del catálogo y transporte HTTP
-
-El catálogo público puede usar `VITE_CATALOG_DATA_MODE=demo` (mocks) o
-`VITE_CATALOG_DATA_MODE=api` (productos y categorías del backend). El modo `demo`
-es el predeterminado. Copia `.env.example` como `.env`; `VITE_API_BASE_URL=/v1`
-usa el proxy de desarrollo de Vite hacia `https://localhost:7053`. El proxy omite
-la validación del certificado HTTPS únicamente en el entorno local de desarrollo.
-
-```bash
-cp .env.example .env
-npm run dev
-```
-
-Para usar el modo `api`, cambia `VITE_CATALOG_DATA_MODE` a `api` y reinicia Vite.
-La API debe estar ejecutándose con su perfil HTTPS para que las solicitudes
-`/v1/*` puedan llegar al backend. Si no está disponible, el catálogo muestra el
-estado de error existente y no usa mocks como fallback.
-
-La selección de fuente solo afecta al catálogo público (inicio, catálogo y detalle).
-El cliente HTTP tipado está en `src/api` e incluye autorización Bearer cuando hay
-una sesión API activa. Las mutaciones de productos no se conectan porque la API
-no las ofrece.
-
-El carrito puede configurarse por separado con `VITE_CART_DATA_MODE=demo` o
-`VITE_CART_DATA_MODE=api`. El modo API requiere también
-`VITE_AUTH_MODE=api` y `VITE_CATALOG_DATA_MODE=api`; si el catálogo sigue en demo,
-el carrito API se bloquea para no enviar identificadores de fixtures. En modo
-API, el carrito requiere una sesión autenticada y muestra los precios,
-subtotales, disponibilidad y total devueltos por el backend. El checkout y los
-pagos no están conectados, por lo que la aplicación no permite continuar al pago
-ni vacía el carrito API mediante una compra simulada.
-
-### Autenticación
-
-`VITE_AUTH_MODE=demo` conserva la autenticación demostrativa predeterminada.
-Configura `VITE_AUTH_MODE=api` para usar registro, verificación de correo,
-reenvío de código e inicio de sesión en `/v1/autenticacion/*`. El registro no
-inicia sesión: el usuario verifica el correo y después inicia sesión.
-
-En modo API el JWT se guarda **solo en memoria**. No se persiste en
-`localStorage`, `sessionStorage` ni cookies: recargar la página cierra la sesión,
-y no hay refresh token ni endpoint remoto de logout. Esto reduce la exposición
-persistente del bearer ante XSS, pero un XSS activo todavía podría acceder al
-token mientras la aplicación está abierta. El vencimiento se lee del claim `exp`;
-los demás claims decodificados se usan únicamente para estado y navegación de
-interfaz. Esa decodificación no verifica la firma ni sustituye la autorización del
-backend.
-
-La API actual no incluye un endpoint de perfil (`/me`), así que algunas vistas de
-cuenta no pueden mostrar nombre y teléfono reales. Checkout, pagos, pedidos,
-acreditaciones, administración de productos y reportes continúan usando mocks;
-la autenticación, el catálogo, el carrito y los módulos administrativos descritos
-abajo no los convierten en operaciones reales.
-
-### Administración de usuarios y categorías
-
-Con `VITE_AUTH_MODE=api`, el directorio administrativo consulta
-`GET /v1/usuarios` por páginas de 25 elementos y solicita el detalle por el ID
-real con `GET /v1/usuarios/{usuarioId}`. El backend exige el rol
-`ADMINISTRADOR`; la búsqueda y el filtro de rol se aplican solo a la página
-cargada. La pantalla no consulta acreditaciones PYME en modo API.
-
-Con `VITE_CATALOG_DATA_MODE=api`, `/admin/categorias` lee categorías activas e
-inactivas en páginas de 25. Crear y editar envía solo `nombre` y `descripcion`;
-desactivar usa el `DELETE` lógico del backend. Esas mutaciones requieren además
-`VITE_AUTH_MODE=api` y una sesión de `ADMINISTRADOR`. No existe una operación de
-reactivación. La lectura pública de categorías del catálogo permanece disponible
-sin convertir la gestión administrativa en una función de VENDEDOR.
-
-## Usuarios de prueba
-
-Desde `/ingresar` se puede acceder con cualquiera de estos perfiles:
+### Usuarios demo
 
 | Perfil | Correo | Contraseña |
 | --- | --- | --- |
-| Comprador regular | `camila.regular@nexotech.demo.test` | `Comprador123!` |
+| Comprador | `camila.regular@nexotech.demo.test` | `Comprador123!` |
 | Comprador PYME | `diego.pyme@nexotech.demo.test` | `CompradorPyme123!` |
 | Vendedor | `vendedor@nexotech.demo.test` | `Vendedor123!` |
 | Administrador | `admin@nexotech.demo.test` | `Admin123!` |
 
-En desarrollo, el checkout también muestra un selector local para probar los resultados de pago `aprobado`, `rechazado` y `cancelado`.
+Estas cuentas solo existen en el frontend y no funcionan contra la API.
 
-## Scripts disponibles
+## Ejecución con el backend
 
-| Comando | Descripción |
+Se recomienda mantener ambos repositorios en la misma carpeta:
+
+```text
+proyectos/
+├── b2b-e-commerce-backend/
+└── b2b-e-commerce-ui-migration/
+```
+
+### 1. Configurar el backend
+
+En `b2b-e-commerce-backend`, crea los archivos locales a partir de sus
+plantillas:
+
+```bash
+cp env.example .env
+cp src/b2b-e-commerce-api/appSettings.yaml.token src/b2b-e-commerce-api/appSettings.yaml
+cp src/b2b-e-commerce-email-worker/appSettings.yaml.token src/b2b-e-commerce-email-worker/appSettings.yaml
+```
+
+En PowerShell, usa `Copy-Item` en lugar de `cp`.
+
+Completa únicamente con valores autorizados:
+
+- `.env`: token de LocalStack.
+- API `appSettings.yaml`: secreto JWT, conexión de MongoDB y nombre de base de
+  datos.
+- Worker `appSettings.yaml`: conexión SQS y SMTP.
+
+No publiques estos archivos ni copies secretos en el README. Consulta el
+`README.md` del repositorio `b2b-e-commerce-backend` para configurar MongoDB,
+LocalStack y el envío de correos.
+
+### 2. Iniciar servicios del backend
+
+Para usar registro y verificación por correo, inicia LocalStack:
+
+```bash
+cd ../b2b-e-commerce-backend
+docker compose up -d
+```
+
+Inicia la API con el perfil HTTPS:
+
+```bash
+dotnet run --project src/b2b-e-commerce-api/b2b-e-commerce-api.csproj --launch-profile https
+```
+
+La API debe responder en:
+
+- API: `https://localhost:7053`
+- Swagger: `https://localhost:7053/swagger`
+
+Para completar el registro por correo, inicia también el worker en otra
+terminal:
+
+```bash
+dotnet run --project src/b2b-e-commerce-email-worker/b2b-e-commerce-email-worker.csproj
+```
+
+El login de cuentas ya verificadas no requiere ejecutar el worker.
+
+### 3. Configurar el frontend
+
+Regresa al repositorio del frontend:
+
+```bash
+cd ../b2b-e-commerce-ui-migration
+cp .env.example .env
+```
+
+Edita `.env` con estos valores:
+
+```dotenv
+VITE_API_BASE_URL=/v1
+VITE_AUTH_MODE=api
+VITE_CATALOG_DATA_MODE=api
+VITE_CART_DATA_MODE=api
+```
+
+`/v1` utiliza el proxy de Vite configurado hacia
+`https://localhost:7053`. El certificado local se acepta únicamente desde el
+proxy de desarrollo.
+
+### 4. Iniciar el frontend
+
+```bash
+npm install
+npm run dev
+```
+
+Abre `http://localhost:5173` e inicia sesión con una cuenta activa de MongoDB.
+Las cuentas demo no funcionan cuando `VITE_AUTH_MODE=api`.
+
+## Qué está conectado a la API
+
+| Módulo | Estado |
 | --- | --- |
-| `npm run dev` | Inicia el servidor de desarrollo con recarga en caliente. |
-| `npm run build` | Valida TypeScript y genera el build de producción en `dist/`. |
-| `npm run preview` | Sirve localmente el build de producción. |
-| `npm run test` | Ejecuta la suite de pruebas una vez. |
-| `npm run typecheck` | Comprueba los tipos sin generar artefactos. |
-| `npm run lint` | Ejecuta ESLint sobre el repositorio. |
+| Registro, verificación, reenvío de código y login | API real |
+| Productos y categorías públicas | API real en modo `api` |
+| Carrito | API real en modo `api` |
+| Directorio administrativo de usuarios | API real; requiere `ADMINISTRADOR` |
+| Gestión administrativa de categorías | API real; requiere `ADMINISTRADOR` |
+| Perfil, acreditación PYME, checkout, pagos y pedidos | Simulados o no disponibles en la API |
+| Reportes | Datos demo |
 
-Para validar todos los controles principales antes de integrar cambios:
+El JWT se mantiene solo en memoria. Al recargar la página se cierra la sesión.
+
+## Variables de entorno
+
+| Variable | Valores | Descripción |
+| --- | --- | --- |
+| `VITE_API_BASE_URL` | `/v1` | Ruta base de la API mediante el proxy local. |
+| `VITE_AUTH_MODE` | `demo` / `api` | Fuente de autenticación. |
+| `VITE_CATALOG_DATA_MODE` | `demo` / `api` | Fuente de productos y categorías. |
+| `VITE_CART_DATA_MODE` | `demo` / `api` | Fuente del carrito. |
+
+Para usar el carrito real, las tres variables de modo deben estar en `api`.
+Después de cambiar `.env`, reinicia Vite.
+
+## Comandos útiles
+
+| Comando | Uso |
+| --- | --- |
+| `npm run dev` | Inicia el servidor de desarrollo. |
+| `npm run build` | Valida TypeScript y genera `dist/`. |
+| `npm run preview` | Sirve localmente el build. |
+| `npm run test` | Ejecuta las pruebas. |
+| `npm run typecheck` | Comprueba los tipos. |
+| `npm run lint` | Ejecuta ESLint. |
+
+Validación recomendada antes de integrar cambios:
 
 ```bash
 npm run lint
@@ -156,41 +184,42 @@ npm run test
 npm run build
 ```
 
-## Rutas principales
+## Solución de problemas
 
-| Área | Rutas |
-| --- | --- |
-| Pública | `/`, `/catalogo`, `/producto/:productId`, `/carrito` |
-| Autenticación | `/ingresar`, `/registro` |
-| Comprador | `/checkout`, `/pago/resultado`, `/mi-cuenta`, `/mis-pedidos`, `/acreditacion/*` |
-| Vendedor | `/vendedor/productos`, `/vendedor/categorias`, `/vendedor/reportes`, `/vendedor/cuenta` |
-| Administración | `/admin/acreditaciones`, `/admin/usuarios`, `/admin/productos`, `/admin/pedidos`, `/admin/reportes`, `/admin/cuenta` |
+### El frontend muestra un error de red
 
-La ruta `/componentes` está disponible únicamente en desarrollo y presenta los componentes compartidos de la interfaz.
+- Confirma que la API esté activa en `https://localhost:7053`.
+- Confirma que el frontend esté abierto desde `http://localhost:5173`.
+- Reinicia Vite después de modificar `.env`.
 
-## Estructura del proyecto
+### El login devuelve 401
 
-```text
-src/
-├── app/          # Composición, router, proveedores y sesión demo
-├── domain/       # Tipos y reglas de negocio independientes de React
-├── features/     # Módulos por capacidad: catálogo, carrito, checkout, etc.
-├── mocks/        # Fixtures y adaptadores en memoria
-├── routes/       # Vistas auxiliares y página 404
-├── services/     # Contratos de repositorios y pasarelas
-├── shared/       # UI, layouts, navegación, estilos y utilidades comunes
-└── test/         # Configuración y helpers de pruebas
+- Las cuentas demo no existen en MongoDB.
+- Usa una cuenta activa y verificada del backend.
+- Verifica el correo y la contraseña; las contraseñas se almacenan como hashes
+  PBKDF2 y no pueden recuperarse en texto plano.
+
+### El registro no envía el código
+
+- Confirma que LocalStack y el Email Worker estén ejecutándose.
+- Revisa la configuración SQS y SMTP del backend.
+
+### Una ruta administrativa devuelve 401 o 403
+
+- Inicia sesión con una cuenta activa.
+- Confirma que el usuario tenga el rol requerido en MongoDB.
+
+### El navegador rechaza el certificado
+
+Abre `https://localhost:7053/swagger` y acepta el certificado de desarrollo, o
+confía en el certificado local de .NET:
+
+```bash
+dotnet dev-certs https --trust
 ```
 
-La UI consume contratos definidos en `src/services`. La implementación demostrativa de esos contratos vive en `src/mocks`, lo que permite sustituir los mocks por adaptadores HTTP sin acoplar las páginas a una API específica. Las reglas de precios y reportes se mantienen en `src/domain` para que puedan probarse de forma aislada.
+## Seguridad
 
-## Estado de la integración
-
-- La autenticación puede ser demostrativa o usar el flujo JWT real, según `VITE_AUTH_MODE`.
-- Directorio de usuarios y gestión administrativa de categorías usan los endpoints reales bajo los modos API y permisos documentados arriba.
-- Las comprobaciones de rol del frontend solo controlan la navegación; el backend debe validar los JWT y permisos en cada endpoint.
-- Los datos y mutaciones existen solo durante la sesión actual.
-- La pasarela de pago es un simulador local y no mueve dinero real.
-- El proyecto no necesita secretos ni configuración de backend en su estado actual.
-
-Para conectarlo a servicios reales, implemente los contratos de `AppServices` y entregue las nuevas dependencias mediante `AppServicesProvider`.
+- `.env` y `.env.*` están ignorados por Git, excepto `.env.example`.
+- No subas contraseñas, tokens, JWT ni cadenas de conexión.
+- Usa únicamente credenciales de desarrollo autorizadas.
