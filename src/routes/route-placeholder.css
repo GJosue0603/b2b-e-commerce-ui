@@ -1,0 +1,229 @@
+.route-placeholder {
+  width: min(100%, 52rem);
+  margin-inline: auto;
+  padding: clamp(var(--space-3), 6vw, 5rem) var(--space-2);
+}
+
+.store-layout .route-placeholder {
+  min-height: 28rem;
+}
+
+.route-placeholder__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  align-items: center;
+  margin-block-end: var(--space-2);
+}
+
+.route-placeholder__meta code {
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--color-border) 55%, var(--color-surface));
+  color: color-mix(in srgb, var(--color-text) 72%, transparent);
+  font-size: 0.8125rem;
+  overflow-wrap: anywhere;
+}
+
+.route-placeholder h1 {
+  margin-block-end: var(--space-1);
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+}
+
+.route-placeholder > p {
+  max-width: 42rem;
+  color: color-mix(in srgb, var(--color-text) 70%, transparent);
+}
+
+.route-placeholder__notice {
+  margin-block-start: var(--space-3);
+  padding: var(--space-2);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.route-placeholder__link {
+  display: inline-flex;
+  margin-block-start: var(--space-2);
+  font-weight: 700;
+}
+
+.not-found-page {
+  padding-block: clamp(var(--space-3), 5vw, 4.5rem);
+}
+
+.not-found-card {
+  position: relative;
+  display: grid;
+  min-height: 31rem;
+  grid-template-columns: minmax(17rem, 0.9fr) minmax(20rem, 1fr);
+  gap: clamp(var(--space-3), 5vw, 5rem);
+  align-items: center;
+  padding: clamp(var(--space-3), 5vw, 4.5rem);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: calc(var(--radius-lg) * 1.5);
+  background:
+    radial-gradient(
+      circle at 10% 15%,
+      color-mix(in srgb, var(--color-primary-soft) 70%, transparent) 0 9rem,
+      transparent 9.1rem
+    ),
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--color-primary-soft) 38%, var(--color-surface)),
+      var(--color-surface) 48%,
+      color-mix(in srgb, var(--color-accent-soft) 22%, var(--color-surface))
+    );
+  box-shadow: 0 1rem 2.5rem color-mix(in srgb, var(--color-text) 7%, transparent);
+}
+
+.not-found-card::after {
+  position: absolute;
+  width: 14rem;
+  height: 14rem;
+  border-radius: 50%;
+  inset: auto -5rem -6rem auto;
+  background: color-mix(in srgb, var(--color-accent-soft) 72%, transparent);
+  content: '';
+}
+
+.not-found-card__illustration {
+  position: relative;
+  width: min(100%, 27rem);
+  justify-self: center;
+}
+
+.not-found-card__illustration svg {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  filter: drop-shadow(0 1.25rem 1.5rem color-mix(in srgb, var(--color-text) 12%, transparent));
+}
+
+.not-found-card__orb {
+  position: absolute;
+  width: 15rem;
+  height: 15rem;
+  border-radius: 50%;
+  inset: 12% auto auto 9%;
+  background: color-mix(in srgb, var(--color-primary-soft) 88%, transparent);
+}
+
+.not-found-card__shadow {
+  fill: color-mix(in srgb, var(--color-text) 12%, transparent);
+}
+
+.not-found-card__device {
+  fill: var(--color-text);
+}
+
+.not-found-card__screen {
+  fill: var(--color-surface);
+}
+
+.not-found-card__base {
+  fill: color-mix(in srgb, var(--color-text) 88%, var(--color-primary));
+}
+
+.not-found-card__signal {
+  fill: var(--color-primary-soft);
+}
+
+.not-found-card__line,
+.not-found-card__question,
+.not-found-card__spark {
+  fill: none;
+  stroke: var(--color-primary);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.not-found-card__line {
+  stroke-width: 4;
+}
+
+.not-found-card__question {
+  stroke-width: 7;
+}
+
+.not-found-card__spark {
+  stroke-width: 3;
+}
+
+.not-found-card__copy {
+  position: relative;
+  z-index: 1;
+  max-width: 32rem;
+}
+
+.not-found-card__copy h1 {
+  margin-block: var(--space-2) var(--space-2);
+  font-size: clamp(2.25rem, 5vw, 3.75rem);
+  letter-spacing: -0.04em;
+}
+
+.not-found-card__description {
+  margin: 0;
+  color: color-mix(in srgb, var(--color-text) 68%, transparent);
+  font-size: 1.0625rem;
+}
+
+.not-found-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  margin-block-start: var(--space-3);
+}
+
+.not-found-card__actions a {
+  text-decoration: none;
+}
+
+.not-found-card__hint {
+  max-width: 28rem;
+  margin: var(--space-2) 0 0;
+  color: color-mix(in srgb, var(--color-text) 58%, transparent);
+  font-size: 0.8125rem;
+}
+
+@media (max-width: 48rem) {
+  .not-found-card {
+    min-height: auto;
+    grid-template-columns: 1fr;
+    gap: var(--space-2);
+    text-align: center;
+  }
+
+  .not-found-card__illustration {
+    width: min(75%, 18rem);
+  }
+
+  .not-found-card__copy {
+    justify-self: center;
+  }
+
+  .not-found-card__actions {
+    justify-content: center;
+  }
+
+  .not-found-card__hint {
+    margin-inline: auto;
+  }
+}
+
+@media (max-width: 30rem) {
+  .not-found-page {
+    padding-block: var(--space-2);
+  }
+
+  .not-found-card {
+    padding: var(--space-3) var(--space-2);
+  }
+
+  .not-found-card__actions,
+  .not-found-card__actions a {
+    width: 100%;
+  }
+}

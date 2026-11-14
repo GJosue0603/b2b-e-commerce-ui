@@ -1,0 +1,239 @@
+.sales-dashboard {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.sales-dashboard__header h1,
+.sales-dashboard__inventory h2,
+.chart-card h2,
+.report-ranking h2 {
+  margin: 0;
+}
+
+.sales-dashboard__header p,
+.sales-dashboard__inventory p,
+.chart-card p {
+  margin: 0.35rem 0 0;
+  color: color-mix(in srgb, var(--color-text) 65%, transparent);
+}
+
+.sales-dashboard__header p {
+  margin-block-start: 0.5rem;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.report-filter-bar {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) repeat(2, minmax(0, 1fr));
+  gap: var(--space-2);
+  align-items: end;
+  padding: var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.report-filter-bar__periods {
+  display: flex;
+  min-width: 0;
+  gap: 0.25rem;
+  padding: 0.25rem;
+  border-radius: var(--radius-md);
+  background: var(--color-background);
+}
+
+.report-filter-bar__periods button {
+  min-height: 2.5rem;
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+  border: 0;
+  border-radius: calc(var(--radius-md) - 0.15rem);
+  background: transparent;
+  color: var(--color-text);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 650;
+}
+
+.report-filter-bar__periods button[aria-pressed='true'] {
+  background: var(--color-primary);
+  color: var(--color-surface);
+}
+
+.sales-dashboard__kpis {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+
+.sales-dashboard__charts,
+.sales-dashboard__secondary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+
+.sales-dashboard__secondary {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.chart-card,
+.report-ranking,
+.sales-dashboard__inventory {
+  padding: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.chart-card > header {
+  display: flex;
+  gap: var(--space-2);
+  align-items: start;
+  justify-content: space-between;
+}
+
+.chart-card__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  font-size: 0.75rem;
+}
+
+.chart-card__legend span {
+  display: inline-flex;
+  gap: 0.35rem;
+  align-items: center;
+}
+
+.chart-card__legend i {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  background: var(--color-primary);
+}
+
+.chart-card__legend .chart-card__legend-dot--accent {
+  background: var(--color-accent);
+}
+
+.chart-card__content {
+  margin-block-start: var(--space-3);
+}
+
+.report-bar-chart,
+.report-ranking ol {
+  display: grid;
+  gap: var(--space-2);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.report-bar-chart li > div,
+.report-ranking li {
+  display: flex;
+  gap: var(--space-1);
+  align-items: center;
+  justify-content: space-between;
+}
+
+.report-bar-chart strong,
+.report-ranking strong,
+.report-ranking small {
+  white-space: nowrap;
+}
+
+.report-bar-chart__track {
+  display: block;
+  height: 0.55rem;
+  margin-block-start: 0.4rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-primary) 10%, var(--color-surface));
+}
+
+.report-bar-chart__track > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--color-primary);
+}
+
+.report-ranking h2 {
+  margin-block-end: var(--space-2);
+}
+
+.report-ranking li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  padding-block-end: var(--space-1);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.report-ranking small {
+  grid-column: 1 / -1;
+  color: color-mix(in srgb, var(--color-text) 62%, transparent);
+}
+
+.sales-dashboard__inventory {
+  display: grid;
+  gap: var(--space-2);
+}
+
+@media (max-width: 64rem) {
+  .sales-dashboard__kpis,
+  .sales-dashboard__secondary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .sales-dashboard__secondary .chart-card {
+    grid-column: 1 / -1;
+  }
+
+  .report-filter-bar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .report-filter-bar__periods {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 48rem) {
+  .report-filter-bar,
+  .sales-dashboard__charts,
+  .sales-dashboard__secondary {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .sales-dashboard__secondary .chart-card {
+    grid-column: auto;
+  }
+
+  .report-filter-bar__periods {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 30rem) {
+  .sales-dashboard__kpis {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .report-filter-bar__periods {
+    align-items: stretch;
+    flex-wrap: wrap;
+  }
+
+  .report-filter-bar__periods button {
+    flex: 1 1 5rem;
+    padding-inline: 0.5rem;
+  }
+
+  .chart-card > header {
+    flex-direction: column;
+  }
+}

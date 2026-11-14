@@ -1,0 +1,96 @@
+import { useEffect, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
+import { routePatterns } from '../../../app/router/paths'
+import { useAppServices } from '../../../app/services'
+import type { Categoria, Producto } from '../../../domain'
+import type { ProductInput } from '../../../services'
+import { Alert, Skeleton } from '../../../shared/ui'
+import { resolveCatalogDataMode } from '../../catalog/hooks/useCatalogReader'
+import { ProductForm } from '../components'
+import { createProduct } from '../usecases/createProduct'
+import { updateProduct } from '../usecases/updateProduct'
+import './vendor-pages.css'
+
+export interface EditProductPageProps {
+  readonly mode: 'create' | 'edit'
+}
+
+export function EditProductPage({ mode }: EditProductPageProps) {
+  const { catalog } = useAppServices()
+  const apiCatalogMode = resolveCatalogDataMode() === 'api'
+  const navigate = useNavigate()
+  const { productId } = useParams()
+  const [categories, setCategories] = useState<readonly Categoria[]>([])
+  const [product, setProduct] = useState<Producto | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [notFound, setNotFound] = useState(false)
+
+  useEffect(() => {
+    if (apiCatalogMode) return
+    let active = true
+    void (async () => {
+      const [nextCategories, products] = await Promise.all([
+        catalog.listManagedCategories(),
+        mode === 'edit' ? catalog.listManagedProducts() : Promise.resolve([]),
+      ])
+      if (!active) return
+      setCategories(nextCategories)
+      if (mode === 'edit') {
+        const found = products.find((item) => item.id === productId) ?? null
+        setProduct(found)
+        setNotFound(!found)
+      }
+      setLoading(false)
+    })()
+    return () => { active = false }
+  }, [apiCatalogMode, catalog, mode, productId])
+
+  const handleSubmit = async (input: ProductInput) => {
+    if (mode === 'create') {
+      await createProduct(catalog, input)
+    } else if (productId) {
+      await updateProduct(catalog, productId, input)
+    }
+    navigate(`${routePatterns.sellerProducts}?guardado=${mode === 'create' ? 'creado' : 'editado'}`)
+  }
+
+  if (apiCatalogMode) {
+    return (
+      <section className="vendor-page">
+        <Alert title="Edición de productos no disponible en la API">
+          El backend solo permite consultar el catálogo público. Crear y editar
+          productos continúa disponible únicamente en modo demostrativo.
+        </Alert>
+      </section>
+    )
+  }
+  if (loading) return <Skeleton height="28rem" />
+  if (notFound) return <Alert variant="danger">El producto solicitado no existe en el catálogo demo.</Alert>
+
+  return (
+    <section className="vendor-page">
+      <header className="vendor-page__header">
+        <div>
+          <h1
+            aria-label={mode === 'create' ? undefined : `Editar: ${product?.nombre ?? ''}`}
+            className="dashboard-page-title"
+          >
+            {mode === 'create' ? 'Nuevo producto' : `Editar producto: ${product?.nombre ?? ''}`}
+          </h1>
+          <p>Configura datos, precios, inventario, imagen y visibilidad en catálogo.</p>
+        </div>
+      </header>
+      <Alert title="Modo de demostración">
+        Los cambios se guardan únicamente en el repositorio local de mocks; no
+        se persisten en el backend.
+      </Alert>
+      <ProductForm
+        categories={categories}
+        initialProduct={product ?? undefined}
+        onCancel={() => navigate(routePatterns.sellerProducts)}
+        onSubmit={handleSubmit}
+        submitLabel={mode === 'create' ? 'Crear producto' : 'Guardar cambios'}
+      />
+    </section>
+  )
+}
