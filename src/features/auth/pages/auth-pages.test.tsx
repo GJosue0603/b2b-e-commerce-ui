@@ -13,7 +13,8 @@ describe('autenticación demostrativa', () => {
     expect(await screen.findByText('El nombre es obligatorio.')).toBeVisible()
 
     await user.type(screen.getByLabelText(/Nombre/), 'Lucía')
-    await user.type(screen.getByLabelText(/Apellidos/), 'Vargas Mora')
+    await user.type(screen.getByLabelText(/Primer apellido/), 'Vargas')
+    await user.type(screen.getByLabelText(/Segundo apellido/), 'Mora')
     await user.type(screen.getByLabelText(/Correo electrónico/), 'lucia@example.test')
     await user.type(screen.getByLabelText(/Teléfono/), '+506 8888-7777')
     await user.type(screen.getByLabelText(/^Contraseña/), 'Clave1234')

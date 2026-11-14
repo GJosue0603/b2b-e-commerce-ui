@@ -16,7 +16,7 @@ function landingPath(role: RolUsuario): string {
 export function LoginPage() {
   const navigate = useNavigate()
   const location = useLocation()
-  const { actionStatus, signIn } = useAuth()
+  const { actionStatus, authMode, signIn } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [passwordVisible, setPasswordVisible] = useState(false)
@@ -110,10 +110,14 @@ export function LoginPage() {
           value={password}
         />
         <div className="auth-form__options">
-          <label className="auth-form__checkbox">
-            <input type="checkbox" />
-            <span>Recordar mis datos en este dispositivo</span>
-          </label>
+          {authMode === 'demo' ? (
+            <label className="auth-form__checkbox">
+              <input type="checkbox" />
+              <span>Recordar mis datos en este dispositivo</span>
+            </label>
+          ) : (
+            <span>La sesión se mantiene solo en memoria y se cierra al recargar.</span>
+          )}
           <span>Acceso seguro</span>
         </div>
         <Button

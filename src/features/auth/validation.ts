@@ -3,7 +3,9 @@ import type { BuyerProfileInput } from '../../services'
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const PHONE_PATTERN = /^\+?[\d\s-]{8,20}$/
 
-export interface RegistrationValues extends BuyerProfileInput {
+export interface RegistrationValues extends Omit<BuyerProfileInput, 'apellidos'> {
+  readonly apellido1: string
+  readonly apellido2: string
   readonly confirmPassword: string
   readonly password: string
 }
@@ -43,7 +45,14 @@ export function validateRegistration(
   values: RegistrationValues,
 ): RegistrationErrors {
   const errors: RegistrationErrors = {
-    ...validateBuyerProfile(values),
+    apellido1: values.apellido1.trim()
+      ? undefined
+      : 'El primer apellido es obligatorio.',
+    correo: validateEmail(values.correo),
+    nombre: values.nombre.trim() ? undefined : 'El nombre es obligatorio.',
+    telefono: PHONE_PATTERN.test(values.telefono.trim())
+      ? undefined
+      : 'Ingresa un teléfono válido.',
     password: validatePassword(values.password),
     confirmPassword:
       values.confirmPassword === values.password

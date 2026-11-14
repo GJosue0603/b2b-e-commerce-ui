@@ -11,7 +11,8 @@ import {
 import './auth-pages.css'
 
 const initialValues: RegistrationValues = {
-  apellidos: '',
+  apellido1: '',
+  apellido2: '',
   confirmPassword: '',
   correo: '',
   nombre: '',
@@ -20,12 +21,23 @@ const initialValues: RegistrationValues = {
 }
 
 export function RegisterPage() {
-  const { actionStatus, register } = useAuth()
+  const {
+    actionStatus,
+    authMode,
+    register,
+    resendVerificationCode,
+    verifyEmail,
+  } = useAuth()
   const [values, setValues] = useState(initialValues)
   const [errors, setErrors] = useState<RegistrationErrors>({})
   const [acceptedTerms, setAcceptedTerms] = useState(false)
   const [termsError, setTermsError] = useState<string>()
   const [result, setResult] = useState<{ ok: boolean; message: string }>()
+  const [pendingEmail, setPendingEmail] = useState('')
+  const [verificationCode, setVerificationCode] = useState('')
+  const [verificationResult, setVerificationResult] =
+    useState<{ ok: boolean; message: string }>()
+  const [isVerified, setIsVerified] = useState(false)
 
   const setValue = (field: keyof RegistrationValues, value: string) => {
     setValues((current) => ({ ...current, [field]: value }))
@@ -43,16 +55,40 @@ export function RegisterPage() {
     if (Object.keys(nextErrors).length > 0 || nextTermsError) return
 
     const response = await register({
-      apellidos: values.apellidos.trim(),
+      apellido1: values.apellido1.trim(),
+      apellido2: values.apellido2.trim(),
       correo: values.correo.trim(),
       nombre: values.nombre.trim(),
+      password: values.password,
       telefono: values.telefono.trim(),
     })
     setResult(response)
     if (response.ok) {
+      if (authMode === 'api') setPendingEmail(values.correo.trim())
       setValues(initialValues)
       setAcceptedTerms(false)
     }
+  }
+
+  const handleVerify = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    setVerificationResult(undefined)
+    if (!/^\d{6}$/.test(verificationCode.trim())) {
+      setVerificationResult({
+        message: 'Ingresa el código de seis dígitos enviado a tu correo.',
+        ok: false,
+      })
+      return
+    }
+
+    const response = await verifyEmail(pendingEmail, verificationCode)
+    setVerificationResult(response)
+    if (response.ok) setIsVerified(true)
+  }
+
+  const handleResend = async () => {
+    setVerificationResult(undefined)
+    setVerificationResult(await resendVerificationCode(pendingEmail))
   }
 
   return (
@@ -62,23 +98,90 @@ export function RegisterPage() {
         Acreditación PYME posteriormente desde tu perfil.
       </Alert>
       <header className="auth-page__header">
-        <h1>Crear cuenta</h1>
-        <p>Acceso completo al catálogo, compras, pedidos y facturación.</p>
+        <h1>{pendingEmail ? 'Verificar correo' : 'Crear cuenta'}</h1>
+        <p>
+          {pendingEmail
+            ? 'Completa la verificación para habilitar tu cuenta.'
+            : 'Acceso completo al catálogo, compras, pedidos y facturación.'}
+        </p>
       </header>
       {result && (
         <Alert
-          title={result.ok ? 'Cuenta creada con éxito' : 'No pudimos crear la cuenta'}
+          title={
+            result.ok
+              ? authMode === 'api'
+                ? 'Registro recibido'
+                : 'Cuenta creada con éxito'
+              : 'No pudimos crear la cuenta'
+          }
           variant={result.ok ? 'success' : 'danger'}
         >
           {result.ok ? (
-            <span>
-              Ya puedes comprar o consultar <Link to={routePatterns.account}>Mi cuenta</Link>.
-            </span>
+            authMode === 'api'
+              ? result.message
+              : <span>Ya puedes comprar o consultar <Link to={routePatterns.account}>Mi cuenta</Link>.</span>
           ) : (
             result.message
           )}
         </Alert>
       )}
+      {pendingEmail && isVerified ? (
+        <Alert title="Correo verificado" variant="success">
+          <p>Ahora inicia sesión para acceder a tu cuenta.</p>
+          <Link to={routePatterns.signIn}>Ir a iniciar sesión</Link>
+        </Alert>
+      ) : pendingEmail ? (
+        <>
+          <Alert title="Revisa tu correo" variant="info">
+            Ingresa el código de seis dígitos enviado a {pendingEmail}. El
+            registro no inicia sesión automáticamente.
+          </Alert>
+          {verificationResult && (
+            <Alert
+              title={
+                verificationResult.ok
+                  ? 'Verificación completada'
+                  : 'No pudimos verificar el correo'
+              }
+              variant={verificationResult.ok ? 'success' : 'danger'}
+            >
+              {verificationResult.message}
+            </Alert>
+          )}
+          <form className="auth-form" noValidate onSubmit={handleVerify}>
+            <TextField
+              autoComplete="one-time-code"
+              error={
+                verificationResult?.ok === false &&
+                verificationResult.message.startsWith('Ingresa')
+                  ? verificationResult.message
+                  : undefined
+              }
+              label="Código de verificación"
+              onChange={(event) => setVerificationCode(event.target.value)}
+              required
+              value={verificationCode}
+            />
+            <Button
+              fullWidth
+              loading={actionStatus === 'loading'}
+              size="lg"
+              type="submit"
+            >
+              Verificar correo
+            </Button>
+            <Button
+              fullWidth
+              disabled={actionStatus === 'loading'}
+              onClick={() => void handleResend()}
+              type="button"
+              variant="secondary"
+            >
+              Reenviar código
+            </Button>
+          </form>
+        </>
+      ) : (
       <form className="auth-form" noValidate onSubmit={handleSubmit}>
         <div className="auth-form__row">
           <TextField
@@ -91,13 +194,20 @@ export function RegisterPage() {
           />
           <TextField
             autoComplete="family-name"
-            error={errors.apellidos}
-            label="Apellidos"
-            onChange={(event) => setValue('apellidos', event.target.value)}
+            error={errors.apellido1}
+            label="Primer apellido"
+            onChange={(event) => setValue('apellido1', event.target.value)}
             required
-            value={values.apellidos}
+            value={values.apellido1}
           />
         </div>
+        <TextField
+          autoComplete="family-name"
+          error={errors.apellido2}
+          label="Segundo apellido (opcional)"
+          onChange={(event) => setValue('apellido2', event.target.value)}
+          value={values.apellido2}
+        />
         <TextField
           autoComplete="email"
           error={errors.correo}
@@ -156,6 +266,7 @@ export function RegisterPage() {
           Crear cuenta
         </Button>
       </form>
+      )}
       <p className="auth-page__switch">
         ¿Ya tienes una cuenta? <Link to={routePatterns.signIn}>Iniciar sesión</Link>
       </p>

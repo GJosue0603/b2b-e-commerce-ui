@@ -12,6 +12,7 @@ export type {
   ApiHttpMethod,
   ApiRequestOptions,
 } from './http-client'
+export { clearApiAccessToken, getApiAccessToken } from './access-token-store'
 export type {
   ApiCategory,
   ApiCategoryInput,

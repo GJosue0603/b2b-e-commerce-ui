@@ -1,13 +1,30 @@
 import { Link } from 'react-router-dom'
 import { routePatterns } from '../../../app/router/paths'
-import { Badge } from '../../../shared/ui'
+import { Alert, Badge } from '../../../shared/ui'
 import { ProfileForm } from '../components'
 import { useAuth } from '../../auth/state'
+import { hasCompleteAuthProfile } from '../../auth/state/auth-context'
 import './account-page.css'
 
 export function AccountPage() {
   const { actionStatus, updateProfile, user } = useAuth()
   if (!user) return null
+  if (!hasCompleteAuthProfile(user)) {
+    return (
+      <div className="container account-page">
+        <header className="account-page__header">
+          <div>
+            <h1>Mi cuenta</h1>
+            <p>Consulta tus datos personales y de contacto.</p>
+          </div>
+        </header>
+        <Alert title="Perfil no disponible" variant="info">
+          La sesión de la API solo incluye identidad y rol. El backend todavía
+          no ofrece un endpoint para consultar los datos completos del perfil.
+        </Alert>
+      </div>
+    )
+  }
 
   return (
     <div className="container account-page">

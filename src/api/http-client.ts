@@ -1,3 +1,5 @@
+import { getApiAccessToken } from './access-token-store'
+
 export interface ApiClientConfig {
   readonly baseUrl?: string
   readonly fetcher?: typeof fetch
@@ -6,6 +8,7 @@ export interface ApiClientConfig {
 
 export interface ApiRequestOptions {
   readonly headers?: HeadersInit
+  readonly skipAuthorization?: boolean
   readonly signal?: AbortSignal
 }
 
@@ -142,7 +145,7 @@ export class ApiClient {
     options: ApiRequestOptions & { readonly body?: unknown } = {},
   ): Promise<TResponse | undefined> {
     const headers = new Headers({ Accept: 'application/json' })
-    const token = this.getAccessToken?.()
+    const token = options.skipAuthorization ? null : this.getAccessToken?.()
 
     if (token) headers.set('Authorization', `Bearer ${token}`)
     new Headers(options.headers).forEach((value, key) => headers.set(key, value))
@@ -189,4 +192,5 @@ export class ApiClient {
 
 export const apiClient = new ApiClient({
   baseUrl: import.meta.env.VITE_API_BASE_URL || '/v1',
+  getAccessToken: () => getApiAccessToken(),
 })

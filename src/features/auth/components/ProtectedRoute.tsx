@@ -13,7 +13,7 @@ export interface ProtectedRouteProps {
 
 export function ProtectedRoute({ allowedRoles, children }: ProtectedRouteProps) {
   const location = useLocation()
-  const { status, user } = useAuth()
+  const { authMode, status, user } = useAuth()
 
   if (status === 'loading') {
     return (
@@ -38,12 +38,17 @@ export function ProtectedRoute({ allowedRoles, children }: ProtectedRouteProps) 
       <main className="container route-access-state">
         <Alert title="Acceso restringido" variant="warning">
           <p>Tu sesión no tiene permisos para consultar esta sección.</p>
+          {authMode === 'api' && (
+            <p>El backend también debe validar el token y autorizar cada operación.</p>
+          )}
           <Link to={routePatterns.home}>Volver a la tienda</Link>
         </Alert>
-        <p>
-          Esta protección es visual y demostrativa. La autorización definitiva
-          será responsabilidad del backend .NET.
-        </p>
+        {authMode === 'demo' && (
+          <p>
+            Esta protección es visual y demostrativa. La autorización definitiva
+            será responsabilidad del backend .NET.
+          </p>
+        )}
       </main>
     )
   }

@@ -71,9 +71,9 @@ export function CheckoutPage({ accreditation }: CheckoutPageProps) {
             <section className="checkout-panel" aria-labelledby="buyer-title">
               <h2 id="buyer-title">Identidad del comprador</h2>
               <dl className="checkout-buyer">
-                <div><dt>Nombre</dt><dd>{user.nombre} {user.apellidos}</dd></div>
+                <div><dt>Nombre</dt><dd>{[user.nombre, user.apellidos].filter(Boolean).join(' ') || 'No disponible desde la API'}</dd></div>
                 <div><dt>Correo</dt><dd>{user.correo}</dd></div>
-                <div><dt>Teléfono</dt><dd>{user.telefono}</dd></div>
+                <div><dt>Teléfono</dt><dd>{user.telefono ?? 'No disponible desde la API'}</dd></div>
               </dl>
             </section>
           ) : (

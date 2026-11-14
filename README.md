@@ -2,7 +2,7 @@
 
 Frontend demostrativo de una plataforma de comercio electrónico B2B. Incluye una tienda pública, precios diferenciados para clientes PYME, compra y pago simulado, gestión de catálogo para vendedores y herramientas administrativas.
 
-> El proyecto funciona actualmente con repositorios y datos mock en memoria. No se conecta a una API ni procesa pagos reales; al recargar la aplicación, los cambios realizados durante la sesión se restablecen.
+> El modo demostrativo utiliza repositorios y datos mock en memoria. El catálogo y la autenticación pueden configurarse por separado para usar la API; carrito, checkout, pagos y demás módulos continúan siendo simulados.
 
 ## Funcionalidades
 
@@ -73,9 +73,30 @@ La API debe estar ejecutándose con su perfil HTTPS para que las solicitudes
 estado de error existente y no usa mocks como fallback.
 
 La selección de fuente solo afecta al catálogo público (inicio, catálogo y detalle).
-Autenticación, carrito, checkout, pedidos, reportes y pantallas de administración
-siguen siendo demostrativos en esta fase. Los servicios tipados y mappers están en
-`src/api`; las mutaciones de productos no se conectan porque la API no las ofrece.
+El cliente HTTP tipado está en `src/api` e incluye autorización Bearer cuando hay
+una sesión API activa. Las mutaciones de productos no se conectan porque la API
+no las ofrece.
+
+### Autenticación
+
+`VITE_AUTH_MODE=demo` conserva la autenticación demostrativa predeterminada.
+Configura `VITE_AUTH_MODE=api` para usar registro, verificación de correo,
+reenvío de código e inicio de sesión en `/v1/autenticacion/*`. El registro no
+inicia sesión: el usuario verifica el correo y después inicia sesión.
+
+En modo API el JWT se guarda **solo en memoria**. No se persiste en
+`localStorage`, `sessionStorage` ni cookies: recargar la página cierra la sesión,
+y no hay refresh token ni endpoint remoto de logout. Esto reduce la exposición
+persistente del bearer ante XSS, pero un XSS activo todavía podría acceder al
+token mientras la aplicación está abierta. El vencimiento se lee del claim `exp`;
+los demás claims decodificados se usan únicamente para estado y navegación de
+interfaz. Esa decodificación no verifica la firma ni sustituye la autorización del
+backend.
+
+La API actual no incluye un endpoint de perfil (`/me`), así que algunas vistas de
+cuenta no pueden mostrar nombre y teléfono reales. Carrito, checkout, pagos,
+pedidos, acreditación y operaciones de administración continúan usando mocks;
+la autenticación real no los convierte en operaciones reales.
 
 ## Usuarios de prueba
 
@@ -140,7 +161,8 @@ La UI consume contratos definidos en `src/services`. La implementación demostra
 
 ## Estado de la integración
 
-- La autenticación y los permisos por rol son simulados en el navegador.
+- La autenticación puede ser demostrativa o usar el flujo JWT real, según `VITE_AUTH_MODE`.
+- Las comprobaciones de rol del frontend solo controlan la navegación; el backend debe validar los JWT y permisos en cada endpoint.
 - Los datos y mutaciones existen solo durante la sesión actual.
 - La pasarela de pago es un simulador local y no mueve dinero real.
 - El proyecto no necesita secretos ni configuración de backend en su estado actual.
